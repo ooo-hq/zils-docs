@@ -7,7 +7,7 @@ const jsonlDownloads = new Set(downloads.filter(file => file.endsWith('.jsonl'))
 export default defineConfig({
   srcDir: '.generated',
   title: 'Zils Docs',
-  description: 'Use H2O and Imajev decision models, SDKs and CLI, and operate qualified miners. Guides and research evidence.',
+  description: 'Understand Zils and integrate decision models. Starting paths for developers, miners, validators and researchers.',
   lang: 'en-US',
   cleanUrls: true,
   // VitePress treats .jsonl as page URLs; check.mjs validates these actual files.
@@ -33,7 +33,8 @@ export default defineConfig({
   themeConfig: {
     siteTitle: false,
     nav: [
-      { text: 'Guides', link: '/getting-started/quickstart' },
+      { text: 'Start here', link: '/' },
+      { text: 'Developers', link: '/getting-started/quickstart' },
       { text: 'Research', link: '/research/' },
       { text: 'zils.ai', link: 'https://zils.ai' },
     ],
@@ -42,18 +43,26 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/ooo-hq/zils-docs' }],
     sidebar: [
       { text: 'Start here', items: [
-        { text: 'Introduction', link: '/' },
-        { text: 'API quickstart', link: '/getting-started/quickstart' },
-        { text: 'H2O and Imajev', link: '/getting-started/models' },
-        { text: 'Repositories', link: '/getting-started/repositories' },
-        { text: 'How decisions work', link: '/getting-started/decisions' },
-        { text: 'Roadmap & limitations', link: '/getting-started/roadmap' },
+        { text: 'What is Zils?', link: '/' },
+        { text: 'Fit Zils into your application', link: '/getting-started/ecosystem' },
+        { text: 'How decision models work', link: '/getting-started/decisions' },
+        { text: 'Available today & planned work', link: '/getting-started/roadmap' },
       ] },
-      { text: 'Decision API', items: [
+      { text: 'Choose your path', items: [
+        { text: 'Developers: first decision', link: '/getting-started/quickstart' },
+        { text: 'Miners: contribute compute', link: '/operations/miners' },
+        { text: 'Validators: evaluate candidates', link: '/operations/validators' },
+        { text: 'Learn & research', link: '/research/getting-started' },
+      ] },
+      { text: 'Build with Zils', items: [
         { text: 'SDKs, CLI and MCP', link: '/sdks/overview' },
         { text: 'Image decisions', link: '/api/images' },
         { text: 'API reference & bulk jobs', link: '/api/reference' },
         { text: 'Run JevK5 locally', link: '/getting-started/local-inference' },
+      ] },
+      { text: 'Models & source', collapsed: true, items: [
+        { text: 'H2O and Imajev', link: '/getting-started/models' },
+        { text: 'Repositories & contributions', link: '/getting-started/repositories' },
       ] },
       { text: 'Work with your data', items: [
         { text: 'Prepare a dataset', link: '/training/data' },
@@ -66,20 +75,20 @@ export default defineConfig({
         { text: 'Automatic training & activation', link: '/training/automatic' },
         { text: 'Model versions & upgrades', link: '/training/versions' },
       ] },
-      { text: 'Operations', items: [
+      { text: 'Miner & validator operations', collapsed: true, items: [
+        { text: 'Miner qualification', link: '/operations/miner-qualification' },
+        { text: 'Checkpoint evaluation', link: '/evaluation/checkpoints' },
+        { text: 'Local and testnet fleets', link: '/operations/fleet-miners' },
+        { text: 'Apple silicon (JevK5)', link: '/operations/mac-miners' },
+        { text: 'Register on Bittensor', link: '/operations/bittensor-registration' },
+      ] },
+      { text: 'Platform operations', collapsed: true, items: [
         { text: 'Platform source setup', link: '/operations/platform-setup' },
         { text: 'Deploy H2O adapters', link: '/operations/h2o' },
         { text: 'Deploy the decision API', link: '/operations/decision-api' },
         { text: 'Deploy customer models', link: '/operations/customer-models' },
         { text: 'Deploy the training service', link: '/operations/training-service' },
-        { text: 'Run a miner: H2O + Imajev', link: '/operations/miners' },
-        { text: 'Miner qualification', link: '/operations/miner-qualification' },
-        { text: 'Local and testnet fleets', link: '/operations/fleet-miners' },
-        { text: 'Apple silicon (JevK5)', link: '/operations/mac-miners' },
-        { text: 'Register on Bittensor', link: '/operations/bittensor-registration' },
-        { text: 'Run a validator', link: '/operations/validators' },
         { text: 'Local development', link: '/operations/development' },
-        { text: 'Checkpoint evaluation', link: '/evaluation/checkpoints' },
       ] },
       { text: 'Research record', collapsed: true, items: [
         { text: 'Results & evidence', link: '/research/' },

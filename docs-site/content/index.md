@@ -1,38 +1,53 @@
 ---
-title: Introduction
-description: Use H2O and Imajev adapters, Zils SDKs and the decision API.
+title: What is Zils?
+description: Understand Zils, see how decisions fit into your application, and get started as a developer, miner, validator or researcher.
 ---
 
-<div class="docs-status">H2O + Imajev · Decision API</div>
+<div class="docs-status">Decision models for your applications</div>
 
-# Build around a better decision.
+<span id="build-around-a-better-decision"></span>
 
-<p class="intro-lead">Zils turns context and defined outcomes into decisions with probabilities. Use the API or SDK, evaluate decisions on your task, and train a private H2O text adapter or Imajev image adapter when your data supports an improvement.</p>
+# What is Zils?
+
+<p class="intro-lead">Zils helps applications choose between defined outcomes using text or images. You supply the context and possible answers. A decision model returns probabilities, and your application decides what to do with them.</p>
+
+Use Zils at a decision point in an existing product: route a support request, select an agent's next tool, or classify a product photo. These are tasks to evaluate on your own data, not promises of accuracy. Your application keeps control of rules, permissions, actions and human review.
 
 <div class="decision-example">
-<p><strong>One question. Defined outcomes.</strong></p>
-<p>“Which team should handle this request?”</p>
-<p><code>billing</code> · <code>technical</code> · <code>account</code></p>
-<p>Start with the shared model. Measure its decisions. Promote a candidate only when it passes your acceptance criteria.</p>
+<p><strong>Example: route a support request</strong></p>
+<p><strong>Input:</strong> “Please send the invoice for my last order.”</p>
+<p><strong>Question:</strong> Which team should handle this request?</p>
+<p><strong>Possible result:</strong> billing 90% · technical 6% · account 4%</p>
+<p><strong>Application action:</strong> route to billing if your tested review policy allows it; otherwise ask a person to review.</p>
+<p>These probabilities are illustrative. They are not a live model result or a correctness guarantee.</p>
 </div>
+
+Read [how Zils fits into your application](/getting-started/ecosystem) for the complete workflow, or [how decision models work](/getting-started/decisions) for the concepts.
 
 ## Choose your starting point
 
 <div class="start-links">
-<a href="/getting-started/quickstart"><strong>Call the Zils API</strong><span>Create an API key, list available models, and request your first decision.</span></a>
-<a href="/training/data"><strong>Train for your task</strong><span>Prepare labeled examples and evaluate a private adapter against the model it would replace.</span></a>
-<a href="/operations/miners"><strong>Run H2O and Imajev miners</strong><span>Connect an approved GPU miner to the hosted training queue.</span></a>
-<a href="/sdks/overview"><strong>Install the SDK or CLI</strong><span>Use Python, TypeScript, browser sign-in, and terminal training commands.</span></a>
+<a href="/getting-started/quickstart"><strong>Developers</strong><span>Make your first decision through the API, then connect it to your application with an SDK.</span></a>
+<a href="/operations/miners"><strong>Miners</strong><span>Check access and hardware requirements, then run approved text or image training workloads.</span></a>
+<a href="/operations/validators"><strong>Validators</strong><span>Understand independent evaluation and the access needed to operate a validator.</span></a>
+<a href="/research/getting-started"><strong>Learn and research</strong><span>Understand decision models, design a first experiment, and read the evidence.</span></a>
 </div>
+
+## How the pieces fit together
+
+Developers integrate decisions and supply examples when they want to improve a task. Miners execute model workloads. Validators independently evaluate trained candidates before acceptance. The platform coordinates accounts, jobs and access to accepted models.
+
+You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text adapters use **H2O**; **Imajev** handles image-and-text tasks. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
 
 ## What works today
 
-**Zils has a hosted decision API with shared and account-owned models.** It supports API keys, model listing, typed predictions, and bulk jobs. Start with the [API quickstart](/getting-started/quickstart) or read the [full API guide](/api/reference).
+| Start with | Access today |
+| --- | --- |
+| Hosted decisions | A Zils account with API access; use the models listed for your account |
+| SDKs and command-line tools | [JavaScript/TypeScript SDK and CLI](/sdks/overview) on npm; Python and the Model Context Protocol (MCP) server currently require source access |
+| Miner training work | Operator approval and qualification for each model |
+| Validator operation | Operator coordination and protected access; public permissionless onboarding is not available |
 
-**New text adapter jobs use pinned H2O Lightning 4B. Imajev remains the image profile.** Miners execute model workloads and validators evaluate candidates. H2O training does not change the shared inference alias; use the model catalog to select an inference release. The [automatic workflow](/training/automatic) can assign approved work, evaluate candidates, and activate an accepted private adapter after verifying its serving identity. [Version selection](/training/versions) compares upgrades with the customer's previous accepted model and protects the active version from stale runs.
+Miners are the model execution architecture. Development GPUs are used for bootstrapping and testing. The current approved-worker queue does not establish an open network that discovers and routes inference to arbitrary public miners. Read [capabilities and remaining work](/getting-started/roadmap) for the boundary between available workflows and planned network capabilities.
 
-A completed training job can return **no qualifying model**. That leaves the shared model or existing customer version available. Research results and synthetic workflow checks do not establish customer-task quality or production capacity; see the [roadmap and limits](/getting-started/roadmap).
-
-The [repository map](/getting-started/repositories) separates miners, hosted services, SDKs, the website and these docs. [Model profiles](/getting-started/models) explain runtime pins and eligibility. Local and closed testnet fleets have their own setup; older Kev results remain historical evidence in the legacy and [research sections](/research/).
-
-For access or a pilot, [contact Zils](https://zils.ai/contact).
+For access or a pilot, [contact Zils](https://zils.ai/contact). To contribute code or documentation, use the [repository map](/getting-started/repositories).

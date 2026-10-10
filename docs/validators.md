@@ -1,28 +1,43 @@
 # Run a validator
 
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
-Run from the zils-platform checkout with the pinned sibling zils checkout available,
-unless a section explicitly says to use the subnet checkout.
+A validator checks whether a miner's trained candidate meets the task's requirements. It verifies the submitted artifacts and runs its own evaluation on data withheld from the miner. A miner's reported score is not enough to accept a model.
+
+**Access today:** validator operation requires coordination with the operator. There is no public, permissionless onboarding. If you want to participate, [contact Zils about validator access](https://zils.ai/contact) before provisioning services. If you want to study model quality without running infrastructure, start with [decision-model evaluation](/research/getting-started).
+
+## Choose your validator workflow
 
 Choose the workflow before starting a validator. Both evaluate miner candidates,
 but only the closed Bittensor fleet can publish weights to the chain.
 
 | Workflow | Model | Validator role |
 | --- | --- | --- |
-| [Hosted training queue](#h2o-queue-validator) | H2O Lightning 4B; legacy JevK5 | Trusted processor validates datasets, evaluates candidates, and exports accepted models |
+| [Hosted training queue](#h2o-queue-validator) | H2O text; Imajev image; retained legacy jobs | Trusted processor validates datasets, evaluates candidates, and exports accepted models |
 | [Closed Bittensor testnet](#bittensor-testnet-validator) | Kev 0.8B | Registered validator scores the configured miner roster and explicitly publishes testnet weights |
 
-There is no public, permissionless validator onboarding in this workflow.
 Queue validators need protected operator credentials. Testnet validators need
 operator coordination, registered identities, and chain eligibility. Mainnet is
 rejected by the fleet.
 
+In the hosted queue, a **processor** is the service performing validation. It checks data boundaries and candidate identity, fits probability calibration on a separate split, and evaluates held-out test examples. Calibration adjusts probabilities using labeled examples; the test split measures the result without being used to train the candidate.
+
+Queue validation does not submit Bittensor weights. Chain weights are a separate network scoring output in the closed testnet workflow.
+
 ## H2O queue validator
 
-Use the [H2O rollout guide](/operations/h2o) for the default text model, isolated
-GPU runtime, worker qualification, and references for existing jobs.
+H2O is the default for new text adapter jobs. Start here for the current hosted text workflow:
+
+1. **Confirm your role and access.** Obtain the operator's configuration and authorization to handle protected datasets and credentials. Hosted platform source requires organization access.
+2. **Install the platform source.** Follow [source installation](/operations/platform-setup#source-installation), using its pinned sibling subnet checkout. Keep processor credentials and evaluation data away from miner accounts.
+3. **Configure the H2O processor.** Follow [H2O installation and qualification](/operations/h2o#install-and-qualify) for the isolated runtime, reference and processor command. For an existing deployment, confirm which setup steps the operator has already completed before applying migrations or changing services.
+4. **Verify evaluation and delivery.** Inspect the [training result](/training/results) and the operator's protected reports. A rejected candidate can correctly return `no_qualifying_model`. Acceptance and serving readiness are separate; [activation](/training/automatic) must reach `ready` before the model can be called.
+
+For image candidates, use the [Imajev training and runtime guide](/training/imajev). Each model needs its own pinned reference and runtime. Adding H2O does not convert an existing JevK5 or Imajev job.
+
+The operational goal is a verified evaluation and recorded acceptance decision. A rejected candidate is a valid result; a running processor alone does not prove that evaluation or serving works.
 
 ## JevK5 queue validator
+
+This section is for existing JevK5 jobs. New H2O deployments use the path above. Run service commands from the zils-platform checkout after completing [source installation](/operations/platform-setup#source-installation), unless a section says to use the subnet checkout.
 
 ### 1. Prepare the model host
 

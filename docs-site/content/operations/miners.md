@@ -1,9 +1,15 @@
 # Run a text or image queue miner
 
+A miner contributes compute to model workloads. In this guide, that work is training adapters: changes that specialize a base model for a customer's task. Validators check submitted candidates independently before acceptance.
+
+**Access today:** the hosted queue accepts operator-approved workers. If you do not have a coordinator and approval, [contact Zils about miner access](https://zils.ai/contact) before installing models. A public checkout or a registered Bittensor identity does not grant queue access.
+
 A queue miner downloads assigned training examples, trains the pinned adapter, and
 submits signed artifacts for independent evaluation. It connects to the
 coordinator over outbound HTTPS. It needs an approved hotkey and model hardware;
 it does not need Supabase credentials or an inbound public server.
+
+The path is **confirm access → qualify your hardware and model → run the worker → submit a candidate → receive evaluation**. Your first operational milestone is a signed submission reaching the coordinator; the validator determines acceptance separately. This guide covers training work, not permissionless inference serving or guaranteed earnings.
 
 The initial setup below is for **H2O Lightning 4B text training**; add **ImaJev 4B image
 training** with the steps below. For a **Bittensor testnet fleet**, use
@@ -26,6 +32,8 @@ Get the following from the operator before downloading models:
 - The wallet name, hotkey name, and local wallet directory for the hotkey you
   control. Provision the hotkey privately on the miner host; keep the coldkey
   and recovery phrases off the host and out of the repository.
+
+A **hotkey** is the signing identity your worker uses. **SS58** is the address format used for its public identifier. Model qualification checks the exact model and runtime on your hardware before the operator approves assignments.
 
 Use Linux or WSL 2 with Git, Python 3.13, `uv`, a BF16-capable NVIDIA GPU and its
 CUDA driver. Allow at least 25 GB of free disk for models and dependencies,
@@ -137,6 +145,8 @@ configuration using the [model transition guide](/training/h2o#existing-jobs).
 Do not change model identifiers or hashes to make an incompatible reference pass.
 
 ## Add the image vertical
+
+Use this section to add Imajev image-and-text training to an approved text worker.
 
 Complete [image runtime installation and worker qualification](https://github.com/ooo-hq/zils-platform/blob/main/docs/image-training.md#worker-and-service-setup)
 before advertising image support. The operator must approve this hotkey for the

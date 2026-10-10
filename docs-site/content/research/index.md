@@ -4,6 +4,8 @@ title: Results and evidence
 
 # Results and evidence
 
+New to decision models? Start with [learn about decision models](/research/getting-started) for concepts and a first evaluation. This page is the record of completed studies.
+
 Experiments answer specific questions under recorded conditions. They are not model releases or guarantees of customer-task performance. Unfavorable comparisons remain part of the record.
 
 ## Tuned open models can compete
