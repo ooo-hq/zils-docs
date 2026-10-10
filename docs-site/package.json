@@ -1,0 +1,14 @@
+{
+  "name": "zils-docs",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "node prepare.mjs && vitepress dev --host 127.0.0.1",
+    "build": "node prepare.mjs && vitepress build",
+    "preview": "vite preview --outDir .vitepress/dist --host 127.0.0.1",
+    "check": "npm run build && node check.mjs"
+  },
+  "devDependencies": { "vitepress": "1.6.4" },
+  "overrides": { "vite": "6.4.3" }
+}

@@ -1,0 +1,128 @@
+{
+  "protocol_sha256": "e312741c6ba5df8f32a02eaa912c5f9976010a16d8c459d5b97175fa94b831cf",
+  "source_revision": "7916cdf6ab75a462e77f20ab40428a10923998d5",
+  "sources": {
+    "shopping_queries_dataset_examples.parquet": "4a735b693b4a424a6fc67f5be6e4c811495c488bbf66d02a602d308b2744263a",
+    "shopping_queries_dataset_products.parquet": "25124442d064d64b26f74082d6fa09438d679efc0c183cf28d19064a2b65a265"
+  },
+  "splits": {
+    "train": {
+      "sha256": "18bc59659563239bfb2311566a82825978beec2a1f740c85865ae5ddf07daa3c",
+      "pairs": 2048,
+      "queries": 1991,
+      "labels": {
+        "C": 512,
+        "I": 512,
+        "S": 512,
+        "E": 512
+      },
+      "max_tokens": 543
+    },
+    "calibration": {
+      "sha256": "c998fd679fa9f0d5a3155ab2537d1c03d5d88fb1d1811c5e0c95b9f6713e0322",
+      "pairs": 256,
+      "queries": 32,
+      "labels": {
+        "S": 54,
+        "E": 166,
+        "C": 16,
+        "I": 20
+      },
+      "max_tokens": 438
+    },
+    "test": {
+      "sha256": "01e0bb6a4a70226ebc5c726ce79a0b7bc4b026401edb25db95c2a8aed9efdec5",
+      "pairs": 512,
+      "queries": 64,
+      "labels": {
+        "E": 371,
+        "S": 100,
+        "I": 35,
+        "C": 6
+      },
+      "max_tokens": 461
+    }
+  },
+  "excluded": {
+    "train": 0,
+    "calibration": 0,
+    "test": 0
+  },
+  "demo_queries": [
+    "mermaid party",
+    "womens running shoes wide",
+    "light blue curtains",
+    "youth golf",
+    "teen girl clothes 13 years old",
+    "seachem flourish excel",
+    "microsoft xbox one controller",
+    "outdoor urns planters large"
+  ],
+  "demo_ids": [
+    "esci-1357344",
+    "esci-2206375",
+    "esci-2206362",
+    "esci-1227774",
+    "esci-1507800",
+    "esci-1357335",
+    "esci-1227767",
+    "esci-2206370",
+    "esci-1357337",
+    "esci-1343181",
+    "esci-2245683",
+    "esci-1788200",
+    "esci-2245689",
+    "esci-1227775",
+    "esci-1977961",
+    "esci-2206363",
+    "esci-1343182",
+    "esci-2245687",
+    "esci-1977967",
+    "esci-1343168",
+    "esci-1977956",
+    "esci-1227772",
+    "esci-1357336",
+    "esci-1357341",
+    "esci-1788197",
+    "esci-1788201",
+    "esci-1788189",
+    "esci-1343175",
+    "esci-1343169",
+    "esci-1977957",
+    "esci-1343174",
+    "esci-1343171",
+    "esci-1227769",
+    "esci-1507795",
+    "esci-1788188",
+    "esci-2245692",
+    "esci-1507806",
+    "esci-2206372",
+    "esci-2206369",
+    "esci-1343167",
+    "esci-1788198",
+    "esci-1788202",
+    "esci-1977966",
+    "esci-1977960",
+    "esci-1977959",
+    "esci-1507792",
+    "esci-1507803",
+    "esci-2206364",
+    "esci-1357334",
+    "esci-1227764",
+    "esci-2206366",
+    "esci-1507793",
+    "esci-2245679",
+    "esci-1507798",
+    "esci-1227766",
+    "esci-1507799",
+    "esci-1357339",
+    "esci-2245685",
+    "esci-1357340",
+    "esci-2245688",
+    "esci-2245684",
+    "esci-1788192",
+    "esci-1227777",
+    "esci-1977958"
+  ],
+  "product_overlap_train_test": 4
+}

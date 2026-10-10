@@ -1,0 +1,22 @@
+{
+  "experiment": "commerce-001",
+  "seed": 1004,
+  "model": "alibiserikbay/JevK5",
+  "revision": "c4f7fdb3aeab5582336406e78d3bef11bf98833d",
+  "dataset_revision": "7916cdf6ab75a462e77f20ab40428a10923998d5",
+  "task": "ESCI query-product classification",
+  "locale": "us",
+  "labels": ["E", "S", "C", "I"],
+  "train_per_class": 512,
+  "calibration_queries": 32,
+  "test_queries": 64,
+  "evaluation_pairs_per_query": 8,
+  "demo_queries": 8,
+  "input_fields": {"query_chars": 256, "title_chars": 512, "brand_chars": 80, "color_chars": 80, "bullet_chars": 384},
+  "max_tokens": 768,
+  "training": {"epochs": 1, "rank": 16, "alpha": 32, "dropout": 0.05, "learning_rate": 0.00003, "weight_decay": 0, "batch_size": 1, "gradient_accumulation": 8, "warmup_steps": 16, "gradient_clip": 1.0, "dtype": "bfloat16", "schedule": "linear warmup and cosine decay", "loss": "cross entropy on four option-letter logits"},
+  "evaluation": {"primary_metric": "macro_f1", "temperature_default": 1.22, "temperature_fit": "calibration NLL only; 81 logarithmically spaced absolute temperatures from 0.25 to 4", "bootstrap": "2000 paired resamples of test query groups, seed 1004", "review_threshold": 0.9, "promotion": "none; report both gains and regressions"},
+  "split_method": "SHA256 deterministic selection; normalized queries do not overlap. Test uses official test only; calibration and additional training use official train. Training is class-balanced; evaluation is hash-selected up to 8 pairs per selected query. Exact query-product prompts cannot overlap. Product identity overlap is measured, not excluded.",
+  "demo_selection": "First 8 selected test query groups by seeded hash, chosen before model predictions. Recorded mode exposes all held-out examples; optional local live scoring uses the same two model versions and a frozen catalog.",
+  "limitations": ["JevK5 publisher declares 1186 ESCI training examples already used; this tests additional specialization.", "Pretraining contamination cannot be ruled out.", "English US subset, bounded product text, one training seed and recipe.", "No live prices, inventory, web shopping, checkout, or purchases."]
+}

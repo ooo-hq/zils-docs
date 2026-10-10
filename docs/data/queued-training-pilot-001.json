@@ -1,0 +1,291 @@
+{
+  "experiment": "queued-training-pilot-001",
+  "date": "2026-10-04",
+  "repository_commit": "9b2fda7a605af792114d831ec13fc57a1cad88c3",
+  "scope": "One synthetic live Supabase queue run with real model training and evaluation.",
+  "dataset": {
+    "dataset_seed": 20261004,
+    "generator_sha256": "97b16d50502005d1640be4b630c5ef03260a6336dde4b94c64ab0a969d4c1190",
+    "counts": {
+      "train": 64,
+      "calibration": 32,
+      "test": 64
+    },
+    "files": {
+      "train.jsonl": "f9cc87b3926295a7401b05d7e72538ad00f8147b626bd05194b08cce28318d29",
+      "calibration.jsonl": "6a19d7dc4652ed0962c171087e06bcada2d36c41de6544ff7cf45aca7e9332c1",
+      "test.jsonl": "d69a5fac65c8fde1478fb19db62c4f8332cdc4b45eaf4cabe6655ba14d115fff",
+      "miner-training.jsonl": "4c26914d05e11a1b945b5c06fe1993f8d89aba78c0dde199fd0bd47c1778473c"
+    },
+    "method": "First 16/8/16 clean cases per family ordered by ID from benchmark.generate(20261004). Four families; related groups remain in their source splits."
+  },
+  "model": {
+    "base": "Qwen/Qwen3.5-0.8B-Base",
+    "base_revision": "dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68",
+    "reference_revision": "54f4f8777356cd5bbbb6c6919c657f26e6f2f6d8",
+    "reference_sha256": "3574c638613970f6967e447a4747fb9815a910dfc59d4c2a2af2f09ee848b28a",
+    "submitted_sha256": "b6e7633ef6cc90a16eec9c7bc2ad1127317702d1eef24b96105eb0997f32dfc7"
+  },
+  "training": {
+    "hardware": "Apple M4 Pro, 24 GiB unified memory",
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.15",
+    "torch": "2.8.0",
+    "seed": 765515033,
+    "epochs": 1,
+    "learning_rate": 2e-05,
+    "gradient_accumulation": 4,
+    "augmentation": "Choice option permutation enabled; none/distractor insertion disabled.",
+    "metrics": {
+      "wall_seconds": 27.486997842788696,
+      "records_seen": 64,
+      "requested_records": 64,
+      "truncated_records": 0,
+      "rejected_records": 0,
+      "optimizer_steps": 16,
+      "forward_tokens": 8372,
+      "peak_device_bytes": 3661897472,
+      "device": "mps",
+      "dtype": "fp32",
+      "batch": 1,
+      "peak_rss_bytes": 4881317888
+    }
+  },
+  "evaluation": {
+    "hardware": "Existing shared Linux VM, 4 vCPU, 8 GiB RAM, CPU execution",
+    "os": "Ubuntu 24.04",
+    "memory_note": "Another inference service was active. Temporary 4 GiB swap was required to relieve RAM pressure during this run.",
+    "latency_scope": "Encoding and synchronized per-case inference; excludes model loading, HTTP transport, queue wait and calibration fitting.",
+    "calibration": {
+      "baseline-calibrated": {
+        "raw_checkpoint_sha256": "2287d25cc438655f43bbfaf8d0df852a98bc30364ee70eda9a569358ab41e9f6",
+        "dataset_sha256": "ba6c96a0d8275086e1e9eff75888df946daac32f0a0d321bfd1d2cc7316b3b8f",
+        "benchmark_manifest_sha256": "e457b7b2c6641498b187d019e83b4d8eb427ec43e86fff93ae10f2ecc36171e7",
+        "temperature": 1.6245047927124707,
+        "fit_cases": 32,
+        "fit_split": "calibration",
+        "method": "Kev macro-family NLL; 81 log-spaced temperatures in [0.25, 4]; all calibration variants",
+        "probability_floor": 1e-09,
+        "at_grid_boundary": false,
+        "before": {
+          "brier": 0.44681529030068845,
+          "uniform_brier": 0.6458333333333334,
+          "skill": 0.3081569698569986,
+          "accuracy": 0.65625,
+          "confident_errors": 1,
+          "median_ms": 2457.417935540434,
+          "p95_ms": 2997.12667404674,
+          "cases": 32
+        },
+        "after": {
+          "brier": 0.42140782919531605,
+          "uniform_brier": 0.6458333333333334,
+          "skill": 0.3474975547943494,
+          "accuracy": 0.65625,
+          "confident_errors": 0,
+          "median_ms": 2457.417935540434,
+          "p95_ms": 2997.12667404674,
+          "cases": 32
+        },
+        "checkpoint_sha256": "fc330e14b463b0bf98c6e3d793631b25ae1173c3fd7d3506e51540139eda46d7"
+      },
+      "calibrated-1": {
+        "raw_checkpoint_sha256": "b6e7633ef6cc90a16eec9c7bc2ad1127317702d1eef24b96105eb0997f32dfc7",
+        "dataset_sha256": "ba6c96a0d8275086e1e9eff75888df946daac32f0a0d321bfd1d2cc7316b3b8f",
+        "benchmark_manifest_sha256": "e457b7b2c6641498b187d019e83b4d8eb427ec43e86fff93ae10f2ecc36171e7",
+        "temperature": 0.8122523963562355,
+        "fit_cases": 32,
+        "fit_split": "calibration",
+        "method": "Kev macro-family NLL; 81 log-spaced temperatures in [0.25, 4]; all calibration variants",
+        "probability_floor": 1e-09,
+        "at_grid_boundary": false,
+        "before": {
+          "brier": 0.32145679758154666,
+          "uniform_brier": 0.6458333333333334,
+          "skill": 0.5022604424543794,
+          "accuracy": 0.75,
+          "confident_errors": 0,
+          "median_ms": 2362.2521740035154,
+          "p95_ms": 3024.9636380467564,
+          "cases": 32
+        },
+        "after": {
+          "brier": 0.31849553481081866,
+          "uniform_brier": 0.6458333333333334,
+          "skill": 0.5068456235187324,
+          "accuracy": 0.75,
+          "confident_errors": 0,
+          "median_ms": 2362.2521740035154,
+          "p95_ms": 3024.9636380467564,
+          "cases": 32
+        },
+        "checkpoint_sha256": "37896e40fe6c05a8378fc62b6d7e05b108463b712fdb9c029838e6b9ed69a993"
+      }
+    },
+    "baseline": {
+      "sha256": "fc330e14b463b0bf98c6e3d793631b25ae1173c3fd7d3506e51540139eda46d7",
+      "status": "evaluated",
+      "accuracy": 0.6875,
+      "brier": 0.4082043103570911,
+      "uniform_brier": 0.6458333333333334,
+      "skill": 0.36794171299547185,
+      "confident_errors": 0,
+      "median_ms": 2342.081519542262,
+      "p95_ms": 3011.698507005349,
+      "cases": 64,
+      "runtime": {
+        "torch": "2.8.0+cu128",
+        "kev": "0.1.0",
+        "kev_commit": "30c619b0527501cfdd448cb6eb9887e2af454603",
+        "python": "3.13.15",
+        "backend": "torch",
+        "dtype": "fp32",
+        "temperature": 1.6245047927124707,
+        "model_load_ms": 11835.637341951951
+      },
+      "correct": 44,
+      "families": {
+        "evidence": {
+          "brier": 0.5063032024140806,
+          "uniform_brier": 0.6666666666666667,
+          "skill": 0.24054519637887928,
+          "accuracy": 0.5,
+          "confident_errors": 0,
+          "median_ms": 2892.4663909710944,
+          "p95_ms": 3308.8660239009187,
+          "cases": 16,
+          "correct": 8
+        },
+        "policy": {
+          "brier": 0.42639265007871197,
+          "uniform_brier": 0.5,
+          "skill": 0.14721469984257607,
+          "accuracy": 0.6875,
+          "confident_errors": 0,
+          "median_ms": 2287.8156184451655,
+          "p95_ms": 2474.943609908223,
+          "cases": 16,
+          "correct": 11
+        },
+        "routing": {
+          "brier": 0.3356092461208153,
+          "uniform_brier": 0.75,
+          "skill": 0.5525210051722462,
+          "accuracy": 0.75,
+          "confident_errors": 0,
+          "median_ms": 2217.943371972069,
+          "p95_ms": 2895.4547439934686,
+          "cases": 16,
+          "correct": 12
+        },
+        "severity": {
+          "brier": 0.3645121428147565,
+          "uniform_brier": 0.6666666666666667,
+          "skill": 0.45323178577786527,
+          "accuracy": 0.8125,
+          "confident_errors": 0,
+          "median_ms": 2305.13220053399,
+          "p95_ms": 2596.4324119267985,
+          "cases": 16,
+          "correct": 13
+        }
+      }
+    },
+    "candidate": {
+      "sha256": "37896e40fe6c05a8378fc62b6d7e05b108463b712fdb9c029838e6b9ed69a993",
+      "status": "evaluated",
+      "accuracy": 0.75,
+      "brier": 0.36186276136802487,
+      "uniform_brier": 0.6458333333333334,
+      "skill": 0.43969636949467117,
+      "confident_errors": 4,
+      "median_ms": 2376.0000609909184,
+      "p95_ms": 2815.650503966026,
+      "cases": 64,
+      "runtime": {
+        "torch": "2.8.0+cu128",
+        "kev": "0.1.0",
+        "kev_commit": "30c619b0527501cfdd448cb6eb9887e2af454603",
+        "python": "3.13.15",
+        "backend": "torch",
+        "dtype": "fp32",
+        "temperature": 0.8122523963562355,
+        "model_load_ms": 7137.085785041563
+      },
+      "correct": 48,
+      "families": {
+        "evidence": {
+          "brier": 0.42689662219963537,
+          "uniform_brier": 0.6666666666666667,
+          "skill": 0.35965506670054703,
+          "accuracy": 0.6875,
+          "confident_errors": 2,
+          "median_ms": 2725.382293923758,
+          "p95_ms": 3322.2144920146093,
+          "cases": 16,
+          "correct": 11
+        },
+        "policy": {
+          "brier": 0.35728048841979043,
+          "uniform_brier": 0.5,
+          "skill": 0.28543902316041914,
+          "accuracy": 0.6875,
+          "confident_errors": 0,
+          "median_ms": 2310.757328523323,
+          "p95_ms": 2815.650503966026,
+          "cases": 16,
+          "correct": 11
+        },
+        "routing": {
+          "brier": 0.38384059733055337,
+          "uniform_brier": 0.75,
+          "skill": 0.4882125368925955,
+          "accuracy": 0.75,
+          "confident_errors": 1,
+          "median_ms": 2213.338310481049,
+          "p95_ms": 2612.0281079784036,
+          "cases": 16,
+          "correct": 12
+        },
+        "severity": {
+          "brier": 0.2794333375221203,
+          "uniform_brier": 0.6666666666666667,
+          "skill": 0.5808499937168197,
+          "accuracy": 0.875,
+          "confident_errors": 1,
+          "median_ms": 2266.4249254739843,
+          "p95_ms": 2487.747465958819,
+          "cases": 16,
+          "correct": 14
+        }
+      }
+    }
+  },
+  "delivery": {
+    "status": "no_qualifying_model",
+    "acceptance": {
+      "min_accuracy": 0.8,
+      "min_brier_improvement": 0.01
+    }
+  },
+  "brier_improvement": 0.04634154898906623,
+  "worker_attempts": 1,
+  "verification": {
+    "make_check": "passed: 18 Python tests, Ruff lint/format, website test/build",
+    "make_check_queue_db": "passed on PostgreSQL 16.15",
+    "customer_result_matches_processor": true,
+    "test_metrics_recomputed_from_private_predictions": true,
+    "customer_download_http_status": 409,
+    "customer_download_artifact_count": 0,
+    "disposable_worker_disabled": true,
+    "temporary_swap_removed": true
+  },
+  "limitations": [
+    "Synthetic, related task templates; one candidate and one seed; small clean-only test split.",
+    "No claim of customer-task quality, statistical significance or independent final evaluation.",
+    "CPU timings reflect a shared host with memory pressure and temporary swap; they are not a serving SLA.",
+    "Synthetic account used password authentication; inbox delivery and browser UI upload were not tested.",
+    "No model release publication, hosted customer inference deployment, billing or chain-weight publication.",
+    "Raw predictions, operational identifiers and model artifacts are not distributed with this aggregate report."
+  ]
+}

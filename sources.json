@@ -1,0 +1,9 @@
+{
+  "site": "Existing docs.zils.ai publication, imported 2026-10-10",
+  "repositories": {
+    "ooo-hq/zils": "23d01acca8cf7d87ac7e8b0b440bb5b5945b7100",
+    "ooo-hq/zils-platform": "e52e716a3efa7d9c6afbcbfc8a56861b1d0fab9a",
+    "ooo-hq/zils-sdk": "5742d75caa5384a84d5fea4fd3fa585679737584"
+  },
+  "policy": "Docs are maintained here. Validate commands against these repositories when updating contracts. Historical evidence downloads remain unchanged."
+}

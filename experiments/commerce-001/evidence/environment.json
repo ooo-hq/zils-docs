@@ -1,0 +1,28 @@
+{
+  "python": "3.13.15",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "packages": {
+    "torch": "2.8.0",
+    "transformers": "5.17.0",
+    "peft": "0.21.0",
+    "accelerate": "1.15.0",
+    "huggingface-hub": "1.33.0",
+    "tokenizers": "0.23.2",
+    "safetensors": "0.8.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1"
+  },
+  "torch_cuda": "12.8",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "device_total_memory_bytes": 24146083840,
+  "driver": "595.79",
+  "kernels": "Torch reference gated delta attention; SDPA; no FLA, flash-attn or causal-conv1d",
+  "executed_source_sha256": {
+    "study.py": "e6d300cd13a45e4f40afe5ca26c49c41b6748761fcd992e70191e7f390262b68",
+    "model.py": "7cc233eeb8bcef91bd55a492edee664e03354e48722e57d2a1d96a1dfe0b387e",
+    "prepare.py": "46b48d849c3ffd46b522795955907df2352a14cd402a8cef73f067af0f320e74",
+    "run_experiment.py": "7d1e3bb63e2c9ed44a8f1fedc93d0a410ffeea738b3968cbb816f9078702bed7"
+  }
+}
