@@ -36,7 +36,7 @@ capacity or quality promises. Preserve their datasets, hashes and licenses.
 
 The existing Vercel project serves `docs.zils.ai`. `vercel.json` defines the
 standalone build; publish only `docs-site/.vitepress/dist/`. Pull requests use
-preview deployments; `main` is the production source once Git is connected.
+preview deployments; `main` deploys to production through the connected GitHub repository.
 No environment variables are required for this static build.
 
 ## Repository ownership

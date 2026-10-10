@@ -8,7 +8,7 @@ billing management remain in their existing APIs.
 
 The CLI and JavaScript/TypeScript SDK are distributed as `@zils/cli` and
 `@zils/sdk` on npm. The Python SDK/MCP package is installed from source and is
-not published on PyPI. No model download, GPU, or Nace service account is required.
+not published on PyPI. No model download or GPU is required.
 
 ## Install from npm
 
@@ -63,7 +63,7 @@ It does not create an inference API key. `zils login --api-key` explicitly selec
 the private key prompt described below. See [training sign-in](/training/cli).
 
 Create a customer API key in the Zils dashboard or through the
-[key-management API](https://github.com/ooo-hq/zils-platform/blob/main/docs/decision-api.md#create-a-key-and-call-the-model).
+[key-management API](/api/reference#create-a-key-and-call-the-model).
 `zils login --api-key` validates an existing key and stores it locally; it does not create
 an account or issue a key.
 
