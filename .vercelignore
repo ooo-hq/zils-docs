@@ -1,0 +1,8 @@
+.git
+.private
+.env*
+node_modules
+docs-site/node_modules
+docs-site/.generated
+docs-site/.vitepress/dist
+docs-site/.vitepress/cache
