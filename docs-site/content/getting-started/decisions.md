@@ -33,6 +33,17 @@ The shared API accepts 2–255 Choice outcomes and 2–10 Score levels. A score 
 
 The model reads scores for answer options without generating a prose answer. Large choice sets require multiple passes. Request, token, and execution bounds still apply; see [API capacity](/api/reference#capacity-usage-and-retention). Customer adapters use their [training-compatible serving limits](/operations/customer-models).
 
+## Rank a short list with the SDK
+
+Use experimental [SDK `rank`](/sdks/ranking) when you need the order of 2–10
+options against a criterion. Choice selects one named option; Score rates
+against predefined levels; Rank returns an ordered list with relative strengths.
+
+Rank combines existing Choice comparisons. It is an SDK function, not a fourth
+API question type, and it does not train a new model. A ranking score of 1 means
+strongest in that list, not certainty or absolute quality. Noul, Choice, and Score
+keep their existing behavior.
+
 ## Interpret confidence correctly
 
 Probability, confidence and accuracy describe different things. A probability is the model's estimate for one outcome. API confidence summarizes the distribution using the formulas below. Accuracy measures how often predictions matched correct answers across labeled examples.

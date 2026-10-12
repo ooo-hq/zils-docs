@@ -67,4 +67,8 @@ You have completed the API quickstart when the response contains a resolved `mod
 
 Install the [Zils SDK or CLI](/sdks/overview) for application integration. The [API reference](/api/reference) covers keys, bulk jobs, errors, capacity, and retention. [Prepare a dataset](/training/data) covers task evaluation and optional training.
 
+To order several options instead of selecting one answer, try experimental
+[SDK ranking](/sdks/ranking), available in SDK 0.2.0. The guide includes Python
+and TypeScript examples and explains relative scores and usage limits.
+
 To self-host, use the [API deployment guide](/operations/decision-api#start-from-a-fresh-clone). To run the upstream model directly, follow [local JevK5 inference](/getting-started/local-inference). The upstream runtime and Zils gateway have different request validation and confidence contracts.

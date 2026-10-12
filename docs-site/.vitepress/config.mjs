@@ -35,6 +35,7 @@ export default defineConfig({
     nav: [
       { text: 'Start here', link: '/' },
       { text: 'Developers', link: '/getting-started/quickstart' },
+      { text: 'Changelog', link: '/changelog' },
       { text: 'Research', link: '/research/' },
       { text: 'zils.ai', link: 'https://zils.ai' },
     ],
@@ -56,6 +57,7 @@ export default defineConfig({
       ] },
       { text: 'Build with Zils', items: [
         { text: 'SDKs, CLI and MCP', link: '/sdks/overview' },
+        { text: 'Rank options · SDK', link: '/sdks/ranking' },
         { text: 'Image decisions', link: '/api/images' },
         { text: 'API reference & bulk jobs', link: '/api/reference' },
         { text: 'Run JevK5 locally', link: '/getting-started/local-inference' },
