@@ -41,10 +41,14 @@ You can start with an available model without training anything. An **adapter** 
 
 ## What works today
 
+**New in SDK 0.2.0:** [rank 2–10 options by your criterion](/sdks/ranking).
+Experimental ranking is available in Python and TypeScript; an interactive
+playground demo is not available yet. Read the [release note](/changelog#sdk-0-2-0).
+
 | Start with | Access today |
 | --- | --- |
 | Hosted decisions | A Zils account with API access; use the models listed for your account |
-| SDKs and command-line tools | [JavaScript/TypeScript SDK and CLI](/sdks/overview) on npm; Python and the Model Context Protocol (MCP) server currently require source access |
+| SDKs and command-line tools | [JavaScript/TypeScript SDK and CLI](/sdks/overview) on npm; Python source and release artifacts require SDK repository access |
 | Miner training work | Operator approval and qualification for each model |
 | Validator operation | Operator coordination and protected access; public permissionless onboarding is not available |
 

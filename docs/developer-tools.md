@@ -1,13 +1,17 @@
 # Zils SDKs, CLI, and MCP
 
 Use the same Zils decision API from Python, JavaScript/TypeScript, a terminal, or
-an MCP-compatible agent. This first version lists available models and answers
+an MCP-compatible agent. The clients list available models and answer
 yes/no (`noul`), choice, and ordered-score questions. The CLI also supports [H2O and JevK5 text training](/training/cli) with browser
 account sign-in. Image training, bulk jobs, miner/validator administration, and
 billing management remain in their existing APIs.
 
+SDK 0.2.0 adds experimental [ranking](/sdks/ranking) for ordering 2–10 options by
+your criterion. Python sync/async and TypeScript clients expose `rank`; the CLI
+and MCP do not add a ranking command or tool. See the [release note](/changelog#sdk-0-2-0).
+
 The CLI and JavaScript/TypeScript SDK are distributed as `@zils/cli` and
-`@zils/sdk` on npm. The Python SDK/MCP package is installed from source and is
+`@zils/sdk` on npm. The Python SDK/MCP package is installed from source or release artifacts and is
 not published on PyPI. No model download or GPU is required.
 
 ## Install from npm
@@ -25,11 +29,25 @@ CLI's dependencies from PyPI into a private cache; subsequent starts reuse it.
 No global Python packages are modified. Set `ZILS_PYTHON` to a Python executable
 path if it is not on your PATH. See the [published CLI package](https://www.npmjs.com/package/@zils/cli).
 
-For JavaScript/TypeScript applications, run `npm install @zils/sdk`.
+For JavaScript/TypeScript applications, run `npm install @zils/sdk@^0.2.0`.
+
+## Install Python
+
+Python requires version 3.11 or newer. If you have SDK repository access,
+download `zils_sdk-0.2.0-py3-none-any.whl` from the
+[0.2.0 release](https://github.com/ooo-hq/zils-sdk/releases/tag/v0.2.0) and run:
+
+```sh
+python -m pip install ./zils_sdk-0.2.0-py3-none-any.whl
+```
+
+Python is not published on PyPI. For the MCP extra or development, use the source
+installation below. Public npm packages do not require repository access.
 
 ## Install from a fresh clone
 
-The SDK source currently requires organization access. Public npm installations above do not. The Python SDK and MCP server are source-only; do not use `pip install zils-sdk` as a published-package instruction.
+The SDK source currently requires organization access. Do not use
+`pip install zils-sdk` as a published-package instruction.
 
 Use Python 3.11+ and Node.js 20+. The commands below use a macOS/Linux shell;
 on Windows, activate the environment with `.venv-tools\Scripts\Activate.ps1`.
@@ -52,8 +70,8 @@ npm run build --prefix packages/typescript
 npm pack ./packages/typescript
 ```
 
-This writes `zils-sdk-0.1.0.tgz` in the current directory. Install that tarball
-into your Node application with `npm install /path/to/zils-sdk-0.1.0.tgz`.
+For version 0.2.0 this writes `zils-sdk-0.2.0.tgz` in the current directory. Install that tarball
+into your Node application with `npm install /path/to/zils-sdk-0.2.0.tgz`.
 The installed import is `@zils/sdk`; both `import` and `require` are supported.
 
 ## Credentials and defaults
@@ -191,6 +209,18 @@ include `apiKey`, `baseURL`, `defaultModel`, and `timeout` in **milliseconds**.
 Per-call options support `signal`, timeout, and retry overrides. Typed helpers,
 answers, and error classes come from the compatible TypeSafe client.
 
+## Ranking
+
+Use `client.rank` to order 2–10 JSON items by a criterion in SDK 0.2.0. It uses
+Choice comparisons with the existing model, then returns original indices,
+relative strengths, comparison count, and unchanged usage metadata.
+
+The [ranking guide](/sdks/ranking) includes complete Python and TypeScript
+examples, input limits, error behavior, and score interpretation. Ranking is
+experimental; a relative strength is not a confidence percentage. Ten items
+require 90 judgments in one HTTP request. There is no new API question type,
+CLI command, MCP tool, or interactive playground ranking demo.
+
 ## MCP
 
 After installing the Python MCP extra, run `zils login --api-key` in the same user account
@@ -248,4 +278,6 @@ protocol. Run `make check-integration PLATFORM_DIR=/path/to/zils-platform` in an
 environment with the platform and subnet dependencies installed to run the same
 checks against the real Zils gateway. They do not contact a hosted model
 or spend credit. Python wheel/sdist files appear in `packages/python/dist/`.
-The npm CLI and TypeScript SDK are published at 0.1.0. Python publication remains a separate release step; source changes do not automatically publish new versions.
+The npm CLI and TypeScript SDK are published at 0.2.0. Python 0.2.0 wheel/source
+archives are available in the access-controlled SDK release, not PyPI. Source
+changes do not automatically publish new versions.
