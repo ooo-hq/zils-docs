@@ -99,7 +99,11 @@ const grouped = await client.rank({
 
 ```python
 with ZilsClient() as client:
-    grouped = client.rank(items, "Most urgent customer impact first", group_size=4)
+    grouped = client.rank(
+        items,
+        "Most urgent customer impact first",
+        group_size=4,
+    )
 ```
 
 `AsyncZilsClient.rank` accepts the same `group_size` keyword. Omit the option,
