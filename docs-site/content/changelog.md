@@ -5,6 +5,36 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## SDK 0.3.0
+
+October 13, 2026
+
+**Grouped ranking is now an optional SDK setting.** Add `groupSize: 4` in
+TypeScript or `group_size=4` in Python to compare overlapping groups. Ten items
+use 10 Choice judgments instead of 90. Pairwise ranking remains the default,
+so existing calls keep their behavior.
+
+```sh
+npm install @zils/sdk@^0.3.0
+```
+
+Both methods accept 2–10 JSON items and return original indices, relative
+scores, comparison count, model identity and unchanged token usage. Both send
+one HTTP request. Existing context limits, billing and retry behavior apply.
+
+Grouped ranking is experimental. Fewer judgments can reduce work, but a small
+synthetic live pilot found worse ordering and fallback choices. Test the full
+order on your task; this release does not promise accuracy or proportional
+savings. Scores remain relative strengths, not confidence percentages.
+
+The [ranking guide](/sdks/ranking#optional-grouped-ranking) covers both SDKs,
+group sizes and the tradeoff. JavaScript/TypeScript SDK and CLI 0.3.0 are
+published on npm. The CLI bundles the matching Python SDK without adding a
+ranking command or MCP tool. Python sync/async support is available through
+source and release artifacts with SDK repository access; see
+[Python installation](/sdks/overview#install-python). The playground links to
+the guide and does not yet have an interactive ranking demo.
+
 ## SDK 0.2.0
 
 October 12, 2026

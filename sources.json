@@ -3,7 +3,7 @@
   "repositories": {
     "ooo-hq/zils": "23d01acca8cf7d87ac7e8b0b440bb5b5945b7100",
     "ooo-hq/zils-platform": "e52e716a3efa7d9c6afbcbfc8a56861b1d0fab9a",
-    "ooo-hq/zils-sdk": "022216a5156572744adcbedf7dee39548fc1a5ca"
+    "ooo-hq/zils-sdk": "4fc6af4b61e2c95f26b0b5f63beb4d579f06ba63"
   },
   "policy": "Docs are maintained here. Validate commands against these repositories when updating contracts. Historical evidence downloads remain unchanged."
 }
