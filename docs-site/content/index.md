@@ -41,9 +41,10 @@ You can start with an available model without training anything. An **adapter** 
 
 ## What works today
 
-**New in SDK 0.2.0:** [rank 2–10 options by your criterion](/sdks/ranking).
-Experimental ranking is available in Python and TypeScript; an interactive
-playground demo is not available yet. Read the [release note](/changelog#sdk-0-2-0).
+**New in SDK 0.3.0:** [optional grouped ranking](/sdks/ranking#optional-grouped-ranking)
+can use fewer comparisons for lists of 2–10 options. Pairwise remains the default;
+grouped ranking can reduce ordering quality and needs evaluation on your task.
+Python and TypeScript are supported. Read the [release note](/changelog#sdk-0-3-0).
 
 | Start with | Access today |
 | --- | --- |

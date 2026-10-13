@@ -44,6 +44,11 @@ API question type, and it does not train a new model. A ranking score of 1 means
 strongest in that list, not certainty or absolute quality. Noul, Choice, and Score
 keep their existing behavior.
 
+SDK 0.3.0 keeps pairwise ranking as the default and adds
+[optional grouped comparisons](/sdks/ranking#optional-grouped-ranking). Grouped
+mode uses fewer judgments but can produce worse ordering, especially for later
+choices. Evaluate it on your task before changing your application's setting.
+
 ## Interpret confidence correctly
 
 Probability, confidence and accuracy describe different things. A probability is the model's estimate for one outcome. API confidence summarizes the distribution using the formulas below. Accuracy measures how often predictions matched correct answers across labeled examples.

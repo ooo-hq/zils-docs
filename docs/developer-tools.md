@@ -6,9 +6,11 @@ yes/no (`noul`), choice, and ordered-score questions. The CLI also supports [H2O
 account sign-in. Image training, bulk jobs, miner/validator administration, and
 billing management remain in their existing APIs.
 
-SDK 0.2.0 adds experimental [ranking](/sdks/ranking) for ordering 2–10 options by
-your criterion. Python sync/async and TypeScript clients expose `rank`; the CLI
-and MCP do not add a ranking command or tool. See the [release note](/changelog#sdk-0-2-0).
+SDK 0.3.0 adds optional [grouped ranking](/sdks/ranking#optional-grouped-ranking)
+for ordering 2–10 options by your criterion with fewer comparisons. Pairwise
+remains the default. Python sync/async and TypeScript clients expose `rank`;
+the CLI and MCP do not add a ranking command or tool. See the
+[release note](/changelog#sdk-0-3-0).
 
 The CLI and JavaScript/TypeScript SDK are distributed as `@zils/cli` and
 `@zils/sdk` on npm. The Python SDK/MCP package is installed from source or release artifacts and is
@@ -29,16 +31,16 @@ CLI's dependencies from PyPI into a private cache; subsequent starts reuse it.
 No global Python packages are modified. Set `ZILS_PYTHON` to a Python executable
 path if it is not on your PATH. See the [published CLI package](https://www.npmjs.com/package/@zils/cli).
 
-For JavaScript/TypeScript applications, run `npm install @zils/sdk@^0.2.0`.
+For JavaScript/TypeScript applications, run `npm install @zils/sdk@^0.3.0`.
 
 ## Install Python
 
 Python requires version 3.11 or newer. If you have SDK repository access,
-download `zils_sdk-0.2.0-py3-none-any.whl` from the
-[0.2.0 release](https://github.com/ooo-hq/zils-sdk/releases/tag/v0.2.0) and run:
+download `zils_sdk-0.3.0-py3-none-any.whl` from the
+[0.3.0 release](https://github.com/ooo-hq/zils-sdk/releases/tag/v0.3.0) and run:
 
 ```sh
-python -m pip install ./zils_sdk-0.2.0-py3-none-any.whl
+python -m pip install ./zils_sdk-0.3.0-py3-none-any.whl
 ```
 
 Python is not published on PyPI. For the MCP extra or development, use the source
@@ -70,8 +72,8 @@ npm run build --prefix packages/typescript
 npm pack ./packages/typescript
 ```
 
-For version 0.2.0 this writes `zils-sdk-0.2.0.tgz` in the current directory. Install that tarball
-into your Node application with `npm install /path/to/zils-sdk-0.2.0.tgz`.
+For version 0.3.0 this writes `zils-sdk-0.3.0.tgz` in the current directory. Install that tarball
+into your Node application with `npm install /path/to/zils-sdk-0.3.0.tgz`.
 The installed import is `@zils/sdk`; both `import` and `require` are supported.
 
 ## Credentials and defaults
@@ -211,15 +213,17 @@ answers, and error classes come from the compatible TypeSafe client.
 
 ## Ranking
 
-Use `client.rank` to order 2–10 JSON items by a criterion in SDK 0.2.0. It uses
+Use `client.rank` to order 2–10 JSON items by a criterion in SDK 0.3.0. It uses
 Choice comparisons with the existing model, then returns original indices,
 relative strengths, comparison count, and unchanged usage metadata.
 
 The [ranking guide](/sdks/ranking) includes complete Python and TypeScript
 examples, input limits, error behavior, and score interpretation. Ranking is
 experimental; a relative strength is not a confidence percentage. Ten items
-require 90 judgments in one HTTP request. There is no new API question type,
-CLI command, MCP tool, or interactive playground ranking demo.
+require 90 judgments by default, or 10 with explicit `groupSize: 4` in TypeScript
+or `group_size=4` in Python. Both use one HTTP request. Grouped mode can worsen
+the full ordering, so evaluate later choices as well as the first. There is no
+new API question type, CLI command, MCP tool, or interactive playground ranking demo.
 
 ## MCP
 
@@ -278,6 +282,6 @@ protocol. Run `make check-integration PLATFORM_DIR=/path/to/zils-platform` in an
 environment with the platform and subnet dependencies installed to run the same
 checks against the real Zils gateway. They do not contact a hosted model
 or spend credit. Python wheel/sdist files appear in `packages/python/dist/`.
-The npm CLI and TypeScript SDK are published at 0.2.0. Python 0.2.0 wheel/source
+The npm CLI and TypeScript SDK are published at 0.3.0. Python 0.3.0 wheel/source
 archives are available in the access-controlled SDK release, not PyPI. Source
 changes do not automatically publish new versions.
