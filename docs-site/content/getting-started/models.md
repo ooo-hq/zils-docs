@@ -7,13 +7,14 @@ description: Choose the pinned text, multimodal or image profile and distinguish
 
 Zils supports three current profiles. **H2O Lightning 4B is the default base for new text
 adapter jobs. Imajev 4B handles image-and-text decisions and image adapters. d3-mini is merged
-and available to qualified miners and validators, but it is not the default for new jobs.**
+and available to qualified miners and validators, but it is not the default for new jobs and is
+not promoted: it did not pass the base tier's confirmation draw on October 17, 2026.**
 Each job, candidate and accepted release keeps its own immutable model identity.
 
 | Profile | Use | Input limits |
 | --- | --- | --- |
 | `h2o-lightning-4b-v1.2.3` | Text adapters: choice, true/false and score | 2,048 full prompt tokens; up to 255 outcomes in the training contract |
-| `d3-mini-4.5b-v1` | Text, up to four images and one video; yes/no, choice and score questions | 4,096 input tokens; up to 255 outcomes. Available to qualified miners and validators; not the default for new jobs |
+| `d3-mini-4.5b-v1` | Text, up to four images and one video; yes/no, choice and score questions | 4,096 input tokens; up to 255 outcomes. Available to qualified miners and validators; not the default for new jobs and not promoted |
 | `imajev-4b-v1` | One image plus text; one choice question | Up to 4,096 actual tokens and 400,000 processor pixels; 2–16 outcomes |
 | `jevk5-4b-v0.3` | Existing text jobs and compatible releases | Keep the original job's limits and reference |
 
@@ -42,8 +43,10 @@ no rollback. `latest` advances when a candidate is confirmed and passes the regr
 (`"stable"` or `"latest"`). `GET https://training.zils.ai/v1/config` reports the default
 `model` and a `channels` object. When no latest base is configured, `channels.latest` is the same
 as `channels.stable`; when one is configured, for example d3-mini, it appears under
-`channels.latest`. As of 17 October 2026 the channel is a platform configuration value, not yet a
-registry alias, and automatic upgrades that follow `stable` are not implemented.
+`channels.latest`. As of 17 October 2026 no latest base is configured, so `channels.latest` equals
+`channels.stable` (H2O Lightning 4B v1.2.3); d3-mini did not pass the confirmation draw and has not
+been placed on `latest`. The channel is a platform configuration value, not yet a registry alias,
+and automatic upgrades that follow `stable` are not implemented.
 
 ## Execution on miners
 
