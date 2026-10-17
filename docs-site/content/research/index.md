@@ -39,6 +39,8 @@ The merged d3 code ran end to end on a GPU for the first time (qualification par
 
 These are one card on one night. Nothing above 4,096 input tokens was tested, and the holdouts are teacher-authored, not customer data. As of October 17, 2026 `latest` is not set; `stable` and the default for new jobs remain H2O Lightning 4B v1.2.3, and H2O remains the base-tier incumbent. d3-mini is a merged, available profile but is not the default and is not promoted.
 
+**Decision, October 17, 2026.** Zils is adopting d3-mini as its base anyway, by the owner's decision and recorded as an override of the promotion rule rather than a win under it. The grounds are capability: adapters trained on d3-mini beat adapters trained on H2O on the reference job and on ABCD, and d3-mini takes images and video, which H2O does not serve. `latest` moves to d3-mini once a permanent d3 fleet is running (a qualified d3 miner, a processor with the d3 reference, an always-warm d3 adapter runtime behind the gateway, and gateway and workflow on code that knows the profile), and `stable` follows after one real customer job has trained and served on it. Existing H2O jobs and releases keep their frozen profile and move only through `base_change` upgrade jobs. From the moment `latest` moves, stock d3-mini is the base-tier incumbent that future candidates must beat under the unchanged rule.
+
 ## Repository experiments
 
 | Study | What was observed | Read the record |
