@@ -6,7 +6,7 @@ description: Install the pinned model and run one local training and evaluation 
 # Run your first local round
 
 ::: warning Legacy Kev 0.8B workflow
-These commands and artifacts belong to the original training system. Start with the [API quickstart](/getting-started/quickstart) for the current model; use the [JevK5 miner guide](/operations/miners) for the hosted queue.
+These commands and artifacts belong to the original training system. Start with the [API quickstart](/getting-started/quickstart) for the current model; use the [queue miner guide](/operations/miners) for the hosted queue.
 :::
 
 Start with synthetic data to verify the training workflow on your own hardware. This creates local experimental candidates; it does not publish a model or write to Bittensor.

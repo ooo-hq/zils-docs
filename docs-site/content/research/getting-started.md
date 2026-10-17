@@ -39,7 +39,7 @@ The [research record](/research/) includes gains, regressions and rejected candi
 
 For a speed comparison, match hardware, runtime, input lengths and measurement conditions. H2O's older 4090 speed ratio does not guarantee performance on the updated runtime. Training and adapter reload checks establish compatibility, not accuracy on your task.
 
-Use [H2O and Imajev profiles](/getting-started/models) when studying current model compatibility. Legacy Kev and JevK5 experiments retain their recorded model identities; they are not instructions to change the current default.
+Use the [d3-mini and Imajev profiles](/getting-started/models) when studying current model compatibility. Legacy Kev and JevK5 experiments retain their recorded model identities; they are not instructions to change the current default.
 
 ## Reproduce or contribute
 

@@ -35,13 +35,17 @@ For image candidates, use the [Imajev training and runtime guide](/training/imaj
 
 The operational goal is a verified evaluation and recorded acceptance decision. A rejected candidate is a valid result; a running processor alone does not prove that evaluation or serving works.
 
-## JevK5 queue validator
+## JevK5 queue validator (historical)
 
-This section is for existing JevK5 jobs. New H2O deployments use the path above. Run service commands from the zils-platform checkout after completing [source installation](/operations/platform-setup#source-installation), unless a section says to use the subnet checkout.
+::: warning Retired profile
+JevK5 was [retired on 17 October 2026](/training/jevk5). The steps in this section are kept as a record of the original processor deployment; current source no longer creates a JevK5 reference or trains JevK5 jobs.
+:::
+
+This section described existing JevK5 jobs. H2O deployments use the path above. Run service commands from the zils-platform checkout after completing [source installation](/operations/platform-setup#source-installation), unless a section says to use the subnet checkout.
 
 ### 1. Prepare the model host
 
-Complete [Install and create the reference](/training/jevk5#install-and-create-the-reference)
+Complete the (retired) [JevK5 reference setup](/training/jevk5)
 from a fresh clone. Use Linux or WSL 2, Python 3.13, a BF16-capable NVIDIA GPU,
 and at least 25 GB free disk for the base model and packages, plus space for job
 data and candidates. The checked GPU is an RTX 4090; input lengths affect memory.
@@ -71,7 +75,7 @@ the hosted URL alone does not authorize a validator.
 
 Keep service credentials, calibration/test data, and processor state away from
 miner accounts. On shared hardware, use separate operating-system identities
-and the [shared compute lock](/training/jevk5#configure-the-services).
+and the shared `ZILS_COMPUTE_LOCK` path described in [queued miners](/operations/miners#_3-configure-your-worker).
 
 ### 3. Start the processor
 
@@ -125,9 +129,8 @@ job status to bypass ownership or acceptance. Inspect failed-job logs before
 creating a replacement job.
 
 If pending jobs use Kev, retain its verified reference and add
-`--additional-reference models/reference`. Follow the
-[model transition procedure](/training/jevk5#existing-jobs-and-rollback) rather
-than rewriting an existing job's model identity.
+`--additional-reference models/reference`. Never rewrite an existing
+job's model identity to match a new model setting.
 
 ## Bittensor testnet validator
 

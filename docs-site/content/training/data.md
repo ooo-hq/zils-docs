@@ -42,4 +42,4 @@ Approved miner operators can read and retain exported training data. The export-
 
 Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. The [automatic workflow](/training/automatic) can assign an approved miner when capacity is available and activate only accepted, verified customer models.
 
-For terminal uploads, use the [training CLI](/training/cli). Image jobs use the separate [Imajev workflow](/training/imajev); the text CLI rejects image cases. Existing JevK5 jobs keep their original 16-outcome limit and model identity.
+For terminal uploads, use the [training CLI](/training/cli). Image jobs use the separate [Imajev workflow](/training/imajev); the text CLI rejects image cases. Retired JevK5 job records keep their original 16-outcome limit and model identity.

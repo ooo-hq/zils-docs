@@ -28,7 +28,7 @@ API confidence is not simply the largest probability. [How decisions work](/gett
 
 First versions compare with the calibrated pinned base. Upgrades compare with the previous accepted version's exact serving weights and temperature on the new test set. Candidates are calibrated on the new calibration split. See [version selection](/training/versions).
 
-Accepted H2O and JevK5 artifacts contain `adapter_config.json`, `adapter_model.safetensors`, `model.json`, and `release.json`. Imajev artifacts additionally preserve the separately validated decision head and image configuration. Legacy Kev downloads retain their original format. Preserve the report, data split identifiers, model revision, and calibration record with each artifact.
+Accepted H2O and d3-mini artifacts contain `adapter_config.json`, `adapter_model.safetensors`, `model.json`, and `release.json`. Imajev artifacts additionally preserve the separately validated decision head and image configuration. Legacy Kev downloads retain their original format. Preserve the report, data split identifiers, model revision, and calibration record with each artifact.
 
 ## Distinguish acceptance from API readiness
 

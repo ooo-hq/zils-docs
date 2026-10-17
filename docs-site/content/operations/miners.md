@@ -39,9 +39,7 @@ Use Linux or WSL 2 with Git, Python 3.13, `uv`, a BF16-capable NVIDIA GPU and it
 CUDA driver. Allow at least 25 GB of free disk for models and dependencies,
 plus space for assigned data and candidates. The runtime was checked on an
 RTX 4090; memory needs depend on input length. H2O uses the isolated CUDA runtime
-below. Apple silicon miners retain the
-[JevK5 installation guide](/operations/mac-miners) for explicitly assigned legacy jobs.
-H2O CPU and Apple MPS training are unsupported.
+below. CPU and Apple MPS training are unsupported; the retired JevK5 Mac path no longer exists.
 
 The operator assigns a local queue UID. On-chain registration is not required
 for this queue, and a Bittensor UID alone does not authorize job access.
@@ -69,7 +67,7 @@ send no chain transactions. The reference command downloads and verifies the
 pinned base weights and writes `models/h2o-reference/model.json`.
 See the [H2O model contract](/training/h2o) for the immutable revision, runtime,
 and cache override. The operator must explicitly qualify this hotkey for H2O;
-an existing JevK5 approval does not qualify it for H2O.
+an approval for another profile does not qualify it for H2O.
 
 If your operator also qualifies you for d3-mini (`d3-mini-4.5b-v1`), build its separate runtime with `uv venv --python 3.12 .venv-d3`, `uv pip install --python .venv-d3/bin/python --torch-backend=cu130 -r requirements/d3.txt` and `export ZILS_D3_RUNTIME_PYTHON="$PWD/.venv-d3/bin/python"`, then write its 9.1 GB reference with `.venv-d3/bin/python -m zils.d3 reference --out models/d3-reference` and add `--reference models/d3-reference` in step 4.
 
@@ -106,9 +104,10 @@ chmod 600 .private/queue-miner.json
 
 Use a dedicated miner operating-system account. Never load the validator's
 `.private/training.env` or Supabase service-role key into it. If training and
-evaluation share a GPU, have the operator configure the same
-[compute lock and capacity settings](/training/jevk5#configure-the-services)
-for both services before starting.
+evaluation share a GPU, have the operator set the same `ZILS_COMPUTE_LOCK` path for
+both services before starting: an administrator-owned directory with group
+read/write access whose parent miners cannot replace. Without it, locking is per
+user and device.
 
 ## 4. Start the miner
 

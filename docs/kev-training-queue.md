@@ -15,13 +15,13 @@ A deployed Supabase smoke test also verified authentication, customer isolation,
 private signed uploads, processor validation, and cancellation using synthetic
 accounts and two-row dataset splits. A [live synthetic pilot](queued-training-pilot-001.md) also completed training
 and evaluation on the earlier Kev model. The hosted service now supports
-[JevK5 training](jevk5-queue.md). The queue does not publish chain weights,
+[H2O training](h2o-queue.md). The queue does not publish chain weights,
 calculate cross-job emissions, or establish customer-model quality. The separate
 [workflow service](automatic-training.md) handles verified adapter activation.
 The original local/testnet fleet commands remain supported.
 
-For the JevK5 4B hosted base, use the [JevK5 queue setup](jevk5-queue.md), including
-its CUDA requirement, model reference and artifact format. The commands below
+For the current hosted text profiles, use the [model guide](/getting-started/models) and
+[H2O contract](h2o-queue.md); JevK5 is [retired](jevk5-queue.md). The commands below
 describe the legacy Kev runtime; use `ZILS_TRAINING_MODEL=kev-0.8b-v1` with those
 commands. Existing jobs retain their pinned model when the active base changes.
 
