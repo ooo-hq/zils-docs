@@ -71,6 +71,8 @@ See the [H2O model contract](/training/h2o) for the immutable revision, runtime,
 and cache override. The operator must explicitly qualify this hotkey for H2O;
 an existing JevK5 approval does not qualify it for H2O.
 
+If your operator also qualifies you for d3-mini (`d3-mini-4.5b-v1`), build its separate runtime with `uv venv --python 3.12 .venv-d3`, `uv pip install --python .venv-d3/bin/python --torch-backend=cu130 -r requirements/d3.txt` and `export ZILS_D3_RUNTIME_PYTHON="$PWD/.venv-d3/bin/python"`, then write its 9.1 GB reference with `.venv-d3/bin/python -m zils.d3 reference --out models/d3-reference` and add `--reference models/d3-reference` in step 4.
+
 ## 3. Configure your worker
 
 From the repository root, create a private state directory:
