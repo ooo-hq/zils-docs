@@ -60,4 +60,4 @@ Reports identify relevant hardware, frozen source revisions, aggregate measureme
 
 ## Reproduce a workflow
 
-Start with the [API quickstart](/getting-started/quickstart) for hosted decisions, or [local JevK5 inference](/getting-started/local-inference) on your own GPU. The [legacy synthetic benchmark](/evaluation/benchmarks) generates data for the Kev fleet. The [commerce reproduction status](/research/commerce-reproduction) explains which evidence is available and which scripts still need publication. Public aggregate JSON downloads are linked from each report.
+Start with the [API quickstart](/getting-started/quickstart) for hosted decisions, or the historical [local JevK5 inference](/getting-started/local-inference) guide for the retired upstream runtime. The [legacy synthetic benchmark](/evaluation/benchmarks) generates data for the Kev fleet. The [commerce reproduction status](/research/commerce-reproduction) explains which evidence is available and which scripts still need publication. Public aggregate JSON downloads are linked from each report.

@@ -111,8 +111,8 @@ no model meets the delivery criteria. Scores from different customer jobs must
 not be pooled as if they measured the same task. Repeated rounds reuse test data;
 acceptance is a measured threshold on that set, not a guarantee of generalization
 or statistical significance. Reserve independent final evaluation data for real
-deployment decisions. The separate [Zils decision API](decision-api.md) serves approved shared JevK5
-weights through the hosted service. JevK5 queue jobs can use the separate
+deployment decisions. The separate [Zils decision API](decision-api.md) serves approved shared
+weights through the hosted service. Queue jobs can use the separate
 [automatic workflow](automatic-training.md) for accepted-model activation and
 [version selection](version-selection.md) for guarded upgrades. This legacy local
 fleet does not perform those steps. Billing and cross-job rewards remain future work.

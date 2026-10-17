@@ -6,7 +6,7 @@ This guide joins an existing subnet; a miner does not create a subnet.
 Zils currently connects its **Kev 0.8B closed fleet** to Bittensor testnet.
 The [verified round on subnet 579](testnet-round-001.md) is a historical result,
 not an invitation to register on that subnet today. The fleet rejects mainnet.
-The current [JevK5 queue](jevk5-queue.md) uses approved hotkeys and local queue
+The current [hosted queue](/operations/miners) uses approved hotkeys and local queue
 UIDs; it does not require on-chain registration or publish chain weights.
 
 Registration gives a hotkey a chain UID. To receive work in the closed fleet,

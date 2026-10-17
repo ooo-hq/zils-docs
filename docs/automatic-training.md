@@ -51,7 +51,7 @@ The text configuration and shared-base example below describe existing JevK5
 serving. Do not use `--shared-model-dir` for H2O.
 
 
-Complete the [JevK5 training setup](/training/jevk5) and
+Complete the [H2O rollout](/operations/h2o) and
 [decision API setup](/operations/decision-api) first. Use Linux or WSL 2, systemd for the
 optional service-health checks, Python 3.13, and a BF16-capable NVIDIA GPU. Install
 the pinned training and API dependencies described in those guides. Configure a

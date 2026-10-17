@@ -23,8 +23,7 @@ weights, calculate cross-job emissions, or establish model-quality improvements.
 The original local/testnet fleet commands remain supported.
 
 For new H2O text jobs, follow the [H2O rollout](/operations/h2o).
-For existing JevK5 4B jobs, use the [JevK5 queue setup](/training/jevk5), including
-its CUDA or Apple MPS miner setup, model reference and artifact format. The commands below
+JevK5 4B jobs are [retired](/training/jevk5). The commands below
 describe the legacy Kev runtime; use `ZILS_TRAINING_MODEL=kev-0.8b-v1` with those
 commands. Existing jobs retain their pinned model when the active base changes.
 

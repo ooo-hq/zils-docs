@@ -1,11 +1,15 @@
 ---
-title: Run JevK5 locally
-description: Run a pinned JevK5 4B checkpoint locally and request typed decisions.
+title: Run JevK5 locally (historical)
+description: Historical guide to running the retired JevK5 4B checkpoint locally with its upstream runtime.
 ---
 
-# Run JevK5 4B
+# Run JevK5 4B (historical)
 
-Use the upstream JevK5 runtime to turn context and a typed question into probabilities. JevK5 4B powers the shared Zils decision API. This guide runs it on your own GPU. To call the hosted Zils service, use the [API quickstart](/getting-started/quickstart).
+::: warning Retired model
+JevK5 4B no longer powers the shared Zils decision API: it was [retired on 17 October 2026](/training/jevk5) in favour of [d3-mini](/getting-started/models). This guide stays as the record of the upstream runtime used by the [product-matching experiment](/research/commerce); it is not a current Zils workflow.
+:::
+
+Use the upstream JevK5 runtime to turn context and a typed question into probabilities. This guide runs it on your own GPU. To call the hosted Zils service, use the [API quickstart](/getting-started/quickstart).
 
 ## Before you start
 
