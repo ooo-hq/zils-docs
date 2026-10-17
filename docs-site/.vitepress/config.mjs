@@ -63,7 +63,7 @@ export default defineConfig({
         { text: 'Run JevK5 locally', link: '/getting-started/local-inference' },
       ] },
       { text: 'Models & source', collapsed: true, items: [
-        { text: 'H2O and Imajev', link: '/getting-started/models' },
+        { text: 'H2O, d3-mini and Imajev', link: '/getting-started/models' },
         { text: 'Repositories & contributions', link: '/getting-started/repositories' },
       ] },
       { text: 'Work with your data', items: [
@@ -83,6 +83,7 @@ export default defineConfig({
         { text: 'Local and testnet fleets', link: '/operations/fleet-miners' },
         { text: 'Apple silicon (JevK5)', link: '/operations/mac-miners' },
         { text: 'Register on Bittensor', link: '/operations/bittensor-registration' },
+        { text: 'Base-model competition', link: '/operations/base-tier' },
       ] },
       { text: 'Platform operations', collapsed: true, items: [
         { text: 'Platform source setup', link: '/operations/platform-setup' },

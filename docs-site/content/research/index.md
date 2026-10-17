@@ -27,6 +27,12 @@ These are B300 measurements, not a new hosted Jev comparison or a guarantee for 
 
 The [flight-risk study](https://zils.ai/model#flight-study) and earlier experiments remain available with their original baselines and limitations.
 
+## d3-mini: a multimodal base candidate
+
+On October 16, 2026, one rented B300 compared d3-mini (`d3-mini-4.5b-v1`) with the stock H2O incumbent on the round-one sealed holdout of the [base tier](/operations/base-tier), through the validator's decision rule. Stock d3-mini scored Brier 0.142 and accuracy 89.8% against 0.184 and 87.7%, which makes it eligible and a pending winner. A d3 adapter trained with the frozen production recipe tied the H2O adapter on the 500-case ABCD test cohort (83.4% vs 83.0%, interval includes zero) and beat it on the historical cohort (86.6% vs 83.6%, interval +0.6 to +5.4); this reproduced across two seeds. A feature probe answered yes/no, score, multi-question, JSON state, one, two and four images and a short video correctly.
+
+These are one card on one day. Nothing above 4,096 input tokens was tested, and the holdout is teacher-authored, not customer data. As of October 17, 2026 the promotion is pending: the first draw cleared, and the confirmation draw and regression suite have not completed. d3-mini is not the default for new jobs.
+
 ## Repository experiments
 
 | Study | What was observed | Read the record |
