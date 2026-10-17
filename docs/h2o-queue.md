@@ -13,7 +13,7 @@ New text training jobs default to `h2o-lightning-4b-v1.2.3`:
 
 The [miner setup](/operations/miners) creates the isolated runtime. The coordinator
 and queue client retain Python 3.13. Set `ZILS_H2O_RUNTIME_PYTHON` for both miners
-and validators; neither silently substitutes the older JevK5 runtime.
+and validators; neither silently substitutes another runtime.
 Use an NVIDIA driver compatible with CUDA 13.0. The runtime rejects missing fast
 kernels and different pinned package versions before loading a model.
 
@@ -58,12 +58,13 @@ and each worker's capacity still require independent evaluation and qualificatio
 
 ## Existing jobs
 
-JevK5 and Kev identities, references and artifact formats remain supported.
-Keep their references installed while their jobs finish. A worker may supply
-multiple `--reference` arguments; it claims only the profiles separately approved
-by the operator. Never rewrite a JevK5 job or adapter as H2O.
+d3 and Kev identities, references and artifact formats remain supported. Keep
+their references installed while their jobs finish. A worker may supply multiple
+`--reference` arguments; it claims only the profiles separately approved by the
+operator. Never rewrite a job or adapter from one profile as another. JevK5 is
+[retired](/training/jevk5): its checkpoints stay readable, nothing trains them.
 
-H2O requires fresh worker qualification and runtime hashes. Existing JevK5
+H2O requires fresh worker qualification and runtime hashes. Another profile's
 capacity/quality reports do not transfer. Hosted migration, release-serving
 isolation and rollback are described in
 [the platform rollout guide](https://github.com/ooo-hq/zils-platform/blob/main/docs/h2o-rollout.md).

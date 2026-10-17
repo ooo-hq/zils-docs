@@ -2,8 +2,9 @@
 
 ## Available workflows
 
-New text adapter jobs use [H2O Lightning 4B](/training/h2o). [Imajev](/training/imajev)
-remains the image-and-text profile; existing JevK5 and Kev jobs retain their pins.
+New text adapter jobs use [d3-mini](/getting-started/models). [Imajev](/training/imajev)
+remains the image-and-text profile; existing H2O and Kev jobs retain their pins and
+JevK5 is [retired](/training/jevk5).
 The [model guide](/getting-started/models) separates training defaults from
 inference aliases and describes model-specific runtime qualification.
 
