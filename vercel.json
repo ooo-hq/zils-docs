@@ -4,5 +4,12 @@
   "installCommand": "npm --prefix docs-site ci",
   "buildCommand": "npm --prefix docs-site run check",
   "outputDirectory": "docs-site/.vitepress/dist",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/legacy/kev-miners",
+      "destination": "/operations/fleet-miners",
+      "permanent": true
+    }
+  ]
 }

@@ -37,7 +37,7 @@ Read [how Zils fits into your application](/getting-started/ecosystem) for the c
 
 Developers integrate decisions and supply examples when they want to improve a task. Miners execute model workloads. Validators independently evaluate trained candidates before acceptance. The platform coordinates accounts, jobs and access to accepted models.
 
-You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text adapters use **H2O**; **Imajev** handles image-and-text tasks. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
+You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text and image adapters use **d3-mini**, the only served base since 17 October 2026. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
 
 ## What works today
 
@@ -51,6 +51,7 @@ Python and TypeScript are supported. Read the [release note](/changelog#sdk-0-3-
 | Hosted decisions | A Zils account with API access; use the models listed for your account |
 | SDKs and command-line tools | [JavaScript/TypeScript SDK and CLI](/sdks/overview) on npm; Python source and release artifacts require SDK repository access |
 | Miner training work | Operator approval and qualification for each model |
+| [Base-model competition](/operations/base-tier) | A hotkey registered on Bittensor testnet subnet 579, a public Hugging Face repo and `zils.miner commit-candidate` |
 | Validator operation | Operator coordination and protected access; public permissionless onboarding is not available |
 
 Miners are the model execution architecture. Development GPUs are used for bootstrapping and testing. The current approved-worker queue does not establish an open network that discovers and routes inference to arbitrary public miners. Read [capabilities and remaining work](/getting-started/roadmap) for the boundary between available workflows and planned network capabilities.

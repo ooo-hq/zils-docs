@@ -12,7 +12,7 @@ for a complete curl example.
 
 The current hosted API base is `https://training.zils.ai/decision`. Sign in at
 [zils.ai/train](https://zils.ai/train) to manage account API keys. Use the
-`zils-shared` alias or a model ID available to your account. The H2O training default does not repoint the shared alias; see [model profiles](/getting-started/models).
+`zils-shared` alias or a model ID available to your account. Training defaults do not repoint the shared alias; see [model profiles](/getting-started/models).
 Training uses `https://training.zils.ai`; predictions use its `/decision` route.
 Use the hosted endpoint with your API key. Operators running their own service
 can follow [Deploy the decision API](decision-api-deployment.md).

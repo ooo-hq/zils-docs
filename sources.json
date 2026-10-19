@@ -1,9 +1,9 @@
 {
-  "site": "Existing docs.zils.ai publication, imported 2026-10-10",
+  "site": "Existing docs.zils.ai publication, imported 2026-10-10; technical guides re-synced from the owning repositories 2026-10-19",
   "repositories": {
-    "ooo-hq/zils": "23d01acca8cf7d87ac7e8b0b440bb5b5945b7100",
-    "ooo-hq/zils-platform": "e52e716a3efa7d9c6afbcbfc8a56861b1d0fab9a",
-    "ooo-hq/zils-sdk": "4fc6af4b61e2c95f26b0b5f63beb4d579f06ba63"
+    "ooo-hq/zils": "9c474b82ecb0fb2add9d590f75977878b6027063",
+    "ooo-hq/zils-platform": "c203d5eaab1943d0d2b83873b523f65a77b9a46a",
+    "ooo-hq/zils-sdk": "ac2b0e3dccaf42ae1b3c3f97bf11fdd14f9ed9ba"
   },
   "policy": "Docs are maintained here. Validate commands against these repositories when updating contracts. Historical evidence downloads remain unchanged."
 }

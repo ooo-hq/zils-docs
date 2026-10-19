@@ -26,7 +26,7 @@ curl --fail-with-body 'https://training.zils.ai/decision/v1/models' \
 
 The following text example uses the shared alias `zils-shared`. Confirm it is available in your model list before continuing. The response identifies the release that actually answered; use an immutable ID from the catalog when you need to pin that release. For an image task, use the separate [image request guide](/api/images).
 
-H2O is the default for new text training jobs. Training profiles are different from callable model IDs; the [model guide](/getting-started/models) explains how to select an accepted adapter later.
+d3-mini is the base for new training jobs. Training profiles are different from callable model IDs; the [model guide](/getting-started/models) explains how to select an accepted adapter later.
 
 ## 3. Ask a typed question
 

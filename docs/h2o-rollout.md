@@ -1,8 +1,13 @@
-# H2O as the default miner adapter base
+# H2O as the default miner adapter base (10–17 October 2026, retiring)
 
-New text jobs pin `h2o-lightning-4b-v1.2.3`. Existing jobs retain their frozen
-profiles. This is a training-base change; the shared Jev inference endpoint and
-ImaJev image profile retain their identities.
+This guide describes the H2O rollout of 10 October 2026. Since 17 October new
+text jobs pin `d3-mini-4.5b-v1` ([d3 rollout](d3-rollout.md)); the owner's served
+H2O adapter was re-released on d3 through a `base_change` upgrade and the one
+remaining internal test task was dropped on 17 October. H2O serving is off: its
+registry entries are removed and the H2O adapter runtime and tunnel are disabled.
+Existing H2O jobs retain their frozen profiles and remain evaluable. H2O is
+retiring: keep this runtime only while frozen H2O jobs still need it. The shared
+JevK5 endpoint and the ImaJev image profile were also retired on 17 October 2026.
 
 ## Install and qualify
 
@@ -87,8 +92,8 @@ Only verified accepted releases are exposed through the runtime health catalog.
 
 ## Rollback
 
-Restore `ZILS_TRAINING_MODEL=jevk5-4b-v0.3` to change subsequent jobs. Keep H2O
-references, workers and serving processes available for H2O jobs and releases
-already created. Do not delete the additive migration or mutate frozen profiles.
+JevK5 was retired on 17 October 2026 and is no longer a rollback target. To
+roll d3 back, see the [d3 rollout](d3-rollout.md#rollback). While frozen H2O jobs
+remain, keep H2O references and workers available for them. Do not delete the additive migration or mutate frozen profiles.
 Retain the previous code/runtime installations until the replacement passes its
 hardware checks. Source changes alone do not update a running service.

@@ -1,57 +1,50 @@
-# Image training and rollout
+# Image training
 
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
+Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.
 
-The approved profile is `imajev-4b-v1`. Every job freezes its model profile, task,
+Image training jobs freeze the `d3-mini-4.5b-v1` profile (since 17 October 2026). The
+earlier Imajev profile is retired: it takes no new jobs, has no runtime in this repository
+and no registered release; its historical evidence stays in
+[image rollout evidence](image-rollout.md). Every job freezes its model profile, task,
 answer order, canonical image hashes, item groups, split membership and acceptance
 policy. A worker may train only profiles explicitly qualified by an operator.
 Self-reported hardware or a worker's list of supported profiles is not authorization.
 
-## Pinned runtime and recipe
+## d3 image jobs
 
-| Component | Immutable revision |
-| --- | --- |
-| Base | `Qwen/Qwen3.5-4B`, `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
-| Published adapter/head | `mohit67890/imajev-4b`, `f8d8234cebc6c99065c07731e59716dc0a6e27ab` |
-| Upstream runtime | `ccf586d43d2a580319b6535c893668904d909eb9` |
-| Preprocessor / prompt | `zils-image-rgb-png/v1` / `imajev-readout/v1` |
+An image job is a d3 profile job with frozen `image_intake`: `POST /v1/jobs` with
+`model: d3-mini-4.5b-v1`, the text acceptance policy (`min_accuracy`, `min_brier_improvement`,
+optionally `previous_job_id`), `allow_training_data_export` and `image_intake`. Photos are
+uploaded through `POST /v1/image-assets` with `purpose: training` and finalized with
+`/complete`; `GET /v1/jobs/{id}/image-assets` lists them while the draft is open. Each
+example is one canonical PNG and one choice question of up to 255 declared outcomes; the
+processed prompt (photo tokens included) must fit 4,096 tokens. `GET /v1/image-models`
+reports this profile and its limits under `training_profile`.
 
-`../zils/requirements/imajev.txt` pins the Python runtime dependencies. `../zils/zils/imajev-pins.json`
-records every required upstream file hash; `../zils/zils/imajev-schema.json` records config
-and tensor names/shapes/dtypes for CPU publication validation. Include both JSON files
-when packaging the application.
-
-In a new isolated Python environment, install the pinned requirements and application
-requirements. Run the download command from the subnet checkout:
-`python -m scripts.download_imajev --out PRIVATE_NEW_DIRECTORY`.
-Install the source packages without replacing the image environment’s pinned dependencies:
-`python -m pip install --no-deps -e ../zils -e ../zils-platform`.
-It downloads only pinned files and writes a verified `release.json`. Offline runtime
-loads verify hashes and imported upstream module location. Create a fresh training
-reference with `zils.imajev.create_reference(release, destination)`; never initialize
-new training from a prior experiment or a client's adapter. The fresh-download path
-requires a separate clean-host installation check before deployment; rehearsals use
-existing verified caches.
-
-The recipe uses a BF16 frozen base/vision tower, FP32 language LoRA of rank 64, and an
-FP32 decision head: **122,552,320 trainable parameters**. It runs one epoch, batch 1,
-accumulation 4 (including correctly scaled partial batches), AdamW at `2e-5`, zero
-weight decay and gradient norm clipping at 1. Reload validation checks saved LoRA and
-head together. Candidates contain both safetensors files, both JSON configurations,
-and `model.json`; an accepted download also includes `release.json`.
+```text
+POST /v1/jobs {model: d3, image_intake, text acceptance}   → zils_create_image_job
+POST /v1/image-assets purpose=training, …/complete          → canonical RGB PNG in the asset store
+POST /v1/jobs/{id}/submit             reads the splits, binds every asset → zils_submit_image_job
+processor validating                  zils.image_jobs.build: manifest.model = d3, asset catalog,
+                                      training export of {asset_id, sha256} references
+workflow (d3 section)                 legacy approval: a qualified d3 worker, no graded workload
+d3 worker                             /v1/workers/image-downloads → images/<sha256>.png → zils.d3 train
+processor evaluating                  verified photo cache beside the benchmark → d3 runner with paths
+accepted                              text adapter release, served by the d3 adapter server
+```
 
 Up to 1,024 training, 256 calibration and 512 test photos may be submitted, with a
 1 GiB canonical-image total. Workers receive training-only image grants bound to the
-current lease/profile. Calibration and test labels/images remain validator-only.
-The validator fits one temperature on calibration logits over the full distribution,
-then freezes it for test scoring. It checks accuracy, positive skill and required
-Brier improvement. Binary tasks additionally require an explicit positive class,
-minimum recall and maximum false-alarm rate; multiclass tasks may require per-class
-recall. Missing denominators cannot satisfy a quality gate. Incumbents are compared
-without re-training or re-calibrating them. A late upgrade cannot replace a newer
-accepted version.
+current lease; calibration and test labels and photos remain validator-only. The validator
+fits one temperature on calibration predictions, then freezes it for test scoring, and
+checks accuracy, positive skill and the required Brier improvement, exactly as for a text
+job. Incumbents are compared without re-training or re-calibrating them. A late upgrade
+cannot replace a newer accepted version. A `previous_job_id` must name another d3 job.
+
+An accepted candidate activates on the d3 adapter server, which takes up to four `images`
+per request when started with `--image-store-origin` ([image decisions](image-decisions.md)).
 
 ## Accounts and credit
 
@@ -68,91 +61,40 @@ Repeated submissions and settlement events do not create another charge.
 
 ## Worker and service setup
 
-1. Apply migrations through `202610080007_image_finalize_recovery.sql` in order,
-   before deploying the updated gateway. The five image migrations
-   use versions `202610080003` through `202610080007`; prepaid billing and usage
-   reporting keep versions `202610080001` and `202610080002`. Install
-   `requirements/api.txt` on the gateway and
-   `../zils/requirements/imajev.txt` in the separate image runtime. Verify private bucket RLS,
-   server-only RPCs and retention cleanup in staging. No migration was applied to
-   production by this implementation.
-2. Qualify each image worker against the exact `models.profile_identity(IMAJEV)`
-   hashes. Store an operator-owned `zils_worker_profiles` record with `verified_by`,
-   measured `min_free_mib` and evidence: at least four examples, configured maximum
-   400,000 processor pixels and 4,096 input tokens, decoder/reload/finite-gradient
-   checks, peak reserved bytes, probe/trainer SHA-256 and a 1–3,600 second deadline.
-   Memory admission must be at least 12,288 MiB and peak reserved memory + 512 MiB.
-   A small-image probe is not maximum-context qualification.
-   Training saves activations in CPU memory to reduce GPU usage. Account for host
-   RAM in capacity checks. If sharing a GPU, set `ZILS_IMAGE_GPU_MEMORY_FRACTION`
-   to the tested CUDA allocator fraction (greater than 0 and at most 1), for example
-   `0.55` in the recorded 24 GB rehearsal. This caps one process's PyTorch allocator;
-   it does not reserve memory or replace the free-memory check and compute lock.
-   The existing worker-registration command automatically grants only the two
-   existing text profiles, including workers registered after migration. Image
-   qualification still requires the operator's measured evidence.
-3. Supply workers with the pinned reference using repeatable `miner.queue --reference`
-   arguments and set `ZILS_IMAGE_RUNTIME_PYTHON` and `ZILS_IMAGE_REFERENCE`. Use one
-   shared compute lock across training/evaluation services. Image subprocesses inherit
-   only runtime paths, cache, locale and GPU settings; account/signing credentials
-   are excluded. The processor's `--additional-reference` enables image validation
-   alongside the unchanged primary text profile.
-4. Run a separate `python -m zils_platform.image_server --reference PRIVATE_RELEASE --releases
-   PRIVATE_CLIENT_RELEASE_ROOT --image-store-origin https://YOUR_STORAGE_ORIGIN --port
-   8931`. Keep it private. Configure gateway entries and the workflow's `image` block
-   with its separate endpoint/token/release root. Accepted activation verifies the
-   exact fingerprint before atomically registering an owner-only model and task alias.
-   One GPU slot serially replaces adapter, decision head and temperature. Returning
-   to stock reloads the published LoRA and head; it never disables LoRA as a shortcut.
-5. Enable `ZILS_IMAGES_ENABLED=1` only after owned stock prediction works. Enable
-   `ZILS_IMAGE_TRAINING_ENABLED=1` only after qualified workers, maximum-size admission,
-   evaluation and activation are verified. Keep `python -m zils_platform.image_cleanup` running.
+1. Apply the image migrations in order: `202610080003` through `202610080007` (asset
+   store, image jobs, worker profiles, processing, finalize recovery), then
+   `202610170002_d3_image_assets.sql` and `202610170003_d3_image_submit.sql`, which let
+   d3 jobs take and submit photos. Install `requirements/api.txt` on the gateway and
+   `requirements/images.txt` (Pillow) wherever assets are canonicalized.
+2. Qualify each d3 worker as for text ([d3 rollout](d3-rollout.md)); image jobs add no
+   separate qualification. The d3 input cap of 4,096 tokens includes photo tokens.
+3. The processor needs its d3 reference and runtime only; it downloads the frozen photos
+   it evaluates. Keep `python -m zils_platform.image_cleanup` running: it retires expired
+   drafts and prediction uploads and never touches a submitted job's photos.
+4. Start the d3 adapter server with `--image-store-origin` so accepted releases answer
+   image requests; without it image requests return 503 while text requests work.
+5. Enable `ZILS_IMAGES_ENABLED=1` for image decisions and `ZILS_IMAGE_TRAINING_ENABLED=1`
+   for training uploads. Creating a d3 job with `image_intake` is not gated by these flags;
+   uploading training photos is.
 
-[Placeholder environment](https://github.com/ooo-hq/zils-platform/blob/main/examples/image-vertical/service.env.example) and
-[workflow configuration](https://github.com/ooo-hq/zils-platform/blob/main/examples/image-vertical/workflow.json) keep credentials
-out of checked-in files. The existing text routing and API keys remain in place.
+## Evidence
 
-## Rehearsal and evidence
-
-`python -m scripts.rehearse_image_vertical --config PRIVATE_CONFIG --dataset
-PRIVATE_DATASET --out NEW_PRIVATE_OUTPUT` requires two authorized owners, explicit
-isolated endpoints, expected runtime fingerprints, environment references for secrets,
-and a frozen policy. Dataset files are `train.jsonl`, `calibration.jsonl`, `test.jsonl`
-and `fresh.jsonl`; rows contain `id`, `group_id`, `family`, `state`, `question`, `label`
-and a relative `image` path. The driver snapshots and hashes source bytes/policy
-before creating a job, refuses an existing output directory, records each phase and
-retains redacted failures. It never cleans up unrelated assets/jobs or controls live
-services. Its own private evidence remains for inspection and normal retention.
-Reads and photo finalization retry temporary failures at most twice within the run's
-deadline; billable predictions and creation are never automatically replayed.
-Finalization uses a request-owned lease token. On a storage or database error, the
-gateway releases only that token so a retry can verify existing immutable bytes.
-Completed images and successor leases are preserved. If cleanup is also unavailable,
-the existing 20-minute lease expiry remains the fallback.
-
-The integration harness in `tests/image_vertical_fixture.py` uses the production
-coordinator, signed worker protocol, validator, publisher, image runtime and gateway
-against isolated HTTP account/storage doubles. Actual queue transitions and owner
-policies are additionally exercised in disposable PostgreSQL. Fixture model scores
-prove contracts, not accuracy. The real-mode harness executes pinned CUDA training
-and evaluation and explicitly labels its storage doubles in the output.
-
-The measured release evidence and operational limits are recorded in
-[image rollout evidence](https://github.com/ooo-hq/zils-platform/blob/main/docs/image-rollout.md). The existing 24 GB host may run sequential
-private GPU phases while its text runtime stays available. This is not proof that
-persistent image serving, text serving and adapter training fit simultaneously.
+The fixture HTTP flow in `tests/image_flow_fixture.py` runs the production coordinator,
+signed worker protocol, validator and publisher against isolated account and storage
+doubles with a d3 runtime stand-in: create, upload photos, submit, prepare (frozen d3
+manifest), approve, miner training on cached photos, evaluation with absolute photo paths,
+delivery and download, for an accepted and a rejected candidate. Disposable PostgreSQL
+checks (`make check-queue-db`) cover the asset store, quotas, d3 and legacy submits and
+retention. Fixture scores prove contracts, not accuracy; the first real d3 image training
+is the owner's run.
 
 ## Deployment and rollback
 
-Keep both image flags off until maximum-context worker qualification and GPU allocation
-are resolved. Stage the migrations, application packages, separate image runtime,
-cleanup service and private registry configuration. Check text PID/health/fingerprint
-before and after image stock prediction, one client training job, another-account
-denial and an accepted activation. Confirm queue deferral when memory is insufficient.
-Only then approve production admission and any additional GPU spending.
+Deploy the gateway, processor and workflow together with the website's image intake
+(it must send the d3 profile). Rollback is a redeploy of the previous packages; the two
+d3 image migrations only widen profile literals and need no SQL reversal.
 
 To stop new image work, disable the image training flag and then the image prediction
 flag as needed. Preserve artifacts, private records, ongoing lease recovery and cleanup;
 leave all text entries and services running. Do not roll back by dropping shared tables
-or replacing text model identities. Registry rollback preserves immutable releases and
-changes a task alias only through the existing owner/version checks.
+or replacing text model identities.

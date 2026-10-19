@@ -6,7 +6,10 @@ quality claim cannot set its grade or bypass acceptance thresholds.
 
 The shared policy is implemented in `zils/miner_grading.py`. It checks comparable
 model/trainer/rubric/benchmark contexts, expires stale evidence, and separates
-qualification from customer work. The signed presence client is in
+qualification from customer work. Routing contexts are keyed by model and token
+band (`context_key`, for example `d3-mini-4.5b-v1/tokens-4096`); a context whose
+band exceeds its model's input cap is invalid, so H2O evidence cannot grade a
+4,096-token d3 workload and d3 evidence cannot grade H2O. The signed presence client is in
 `zils/miner_presence.py`; the queue miner can opt into reporting readiness.
 
 Qualification, assignment, and model acceptance are different decisions. A
@@ -20,4 +23,4 @@ assignment, admission, database migrations, resource binding and qualification
 administration moved to the
 [zils-platform operator guide](https://github.com/ooo-hq/zils-platform/blob/main/docs/miner-grading.md).
 The closed Bittensor fleet's weight publication remains documented in
-[testnet operation](/operations/testnet).
+[testnet operation](testnet.md).

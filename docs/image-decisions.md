@@ -1,12 +1,15 @@
 # Image decisions
 
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
+Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.
 
-The optional Imajev vertical classifies one photo using a saved set of answers. Text
-requests continue to use JevK5. It does not generate images, transcribe audio, accept
-video, draw boxes, or compare reference pairs. Both image flags default to off.
+Image decisions run on d3-mini: a d3 release takes up to four photos per request with any
+question type through the text adapter server, and image training jobs freeze the d3
+profile ([image training](image-training.md#d3-image-jobs)). The Imajev profile is retired
+(17 October 2026): no Imajev release is registered or served. The service does not
+generate images, transcribe audio, accept video, draw boxes, or compare reference pairs.
+Both image flags default to off.
 
 ## Client flow
 
@@ -51,6 +54,9 @@ With an API key, send a standard decision request to `POST /v1/systemone`:
   "images": [{"asset_id": "FINALIZED_ASSET_UUID"}]
 }
 ```
+
+A d3 model listed with `capabilities` also takes up to four `images` on
+`POST /v1/systemone`, with any question type, and answers with the text response shape.
 
 For a trained model, use its exact `task.question` and `task.outcome_order` from the
 owned listing. JSON object order must follow the declared outcome order for ties.
@@ -97,4 +103,4 @@ is too large. 422 means invalid image/question or a mismatch with the saved task
 429 means account/upload limits; 503 means unavailable runtime or capacity. No image
 bulk endpoint is supported.
 
-See [image training and rollout](/training/imajev) for installation and evidence.
+See [image training and rollout](image-training.md) for installation and evidence.

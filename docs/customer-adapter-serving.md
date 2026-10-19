@@ -1,18 +1,19 @@
 # Customer adapters behind the existing API
 
-This operator guide retains the JevK5 publication and serving path. For H2O, use [H2O adapter serving](/operations/h2o#serving-accepted-adapters); for Imajev, use [image training and serving](/training/imajev). Keep separate base models, runtimes and release directories. Customers use an API model ID only after activation reports `ready`.
-
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
+Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.
 
-An accepted JevK5 training result can become a private model in the existing
-[decision API](/api/reference). The publisher reads the completed training job
+An accepted training result can become a private model in the existing
+[decision API](decision-api.md). The publisher reads the completed training job
 and its immutable storage objects, verifies acceptance and provenance, and builds
-a local release plus a compatible API registry entry. The adapter runtime loads
-one shared JevK5 base and switches customer LoRA weights serially.
+a local release plus a compatible API registry entry. Each adapter runtime loads
+one pinned base and switches customer LoRA weights serially. Since 17 October
+2026 new jobs train on d3-mini, the only served base; start its runtime as in the
+[d3 rollout](d3-rollout.md#serving-accepted-adapters). The runtime setup and GPU
+check below show the original JevK5 path (JevK5 retired 17 October 2026).
 
-For new task versions, [version selection](/training/versions) pins the exact
+For new task versions, [version selection](version-selection.md) pins the exact
 comparison model and guards the stable task alias against stale upgrades. The
 standalone publisher and automatic workflow both enforce that check when writing
 the registry. Versioned releases use their generated task alias; `--alias` remains
@@ -25,7 +26,7 @@ server-side service-role credential is privileged; **read-only describes this
 program's operations, not that credential's permissions**. The inference process
 needs no Supabase credential.
 
-The [automatic workflow](/training/automatic) connects assignment, capacity,
+The [automatic workflow](automatic-training.md) connects assignment, capacity,
 publication, verified serving, and registry reloads. The standalone publication
 command below only prepares files; it does not itself make a model live.
 The updated gateway, bulk worker, and adapter runtime discover verified catalog
@@ -87,8 +88,8 @@ chmod 700 .private/adapters
 Use the already-configured training project's `SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY` in the publisher's protected environment. Never pass
 these credentials to customers, model miners, or the private inference process.
-The existing [training setup](/operations/training-service) must already contain a
-completed, accepted JevK5 job and its accepted release objects.
+The existing [training setup](supabase-training.md) must already contain a
+completed, accepted job and its accepted release objects.
 
 Copy the current API registry to a preparation file. Replace the placeholder
 path with the existing registry's location:
@@ -124,7 +125,8 @@ the registry records only its environment-variable name.
 
 ## Start the separate adapter runtime
 
-On the GPU host, check out the same revision and prepare the model environment:
+This section is the legacy JevK5 runtime. For d3-mini, use the
+[d3 rollout](d3-rollout.md#serving-accepted-adapters) instead. On the GPU host, check out the same revision and prepare the model environment:
 
 ```sh
 python3.13 -m venv .venv-adapters
@@ -167,8 +169,17 @@ that these match the prepared registry before routing customer traffic.
 
 The runtime preserves the training prompt, answer-letter order, fixed LoRA
 architecture, and each release's calibrated temperature. It supports Choice,
-Noul and Score with at most 16 outcomes, 2,048 prompt tokens per question, and
-65,536 tokens per request by default. Score retains the API's 2–10 level limit.
+Noul and Score within these limits (`zils_platform/adapter_server.py`, reported in
+each response's `limits`):
+
+| Base | Outcomes per question | Tokens per question | Tokens per request (default) | Images per request |
+| --- | ---: | ---: | ---: | --- |
+| d3-mini | 255 | 4,096 | 65,536 | 1–4, only with `--image-store-origin` |
+| H2O (retiring) | 255 | 2,048 | 65,536 | none |
+| JevK5 (retired) | 16 | 2,048 | 65,536 | none |
+
+Score retains the API's 2–10 level limit. Each d3 image is a verified canonical
+PNG of at most 10 MiB; without an image origin, image requests return 503.
 Instructions must be text; absent/null instructions use the training fallback
 from `state.decision`. Inputs are never silently truncated. A load failure
 returns an error; it cannot use another customer's previously active adapter.
@@ -194,6 +205,9 @@ weight reloads and integrity checks.
 5. To roll back the default selection, move its alias to a previously verified
    release in an atomically installed registry.
    Preserve newer immutable entries while bulk work still references them.
+
+Idle shutdown and warm-serving trade-offs on the bootstrap host are in
+[warm serving](warm-serving.md).
 
 Restarting can interrupt requests; use normal service draining and deployment
 controls for the initial rollout. Hot catalog reloads and automatic activation are
