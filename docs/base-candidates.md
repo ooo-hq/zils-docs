@@ -13,8 +13,8 @@ evaluation, the regression suite, chain-derived admission, the merge recipe,
 promoted-profile support in the runtime and the dry-run promotion script are
 merged; the full loop was rehearsed end to end on 17/18 October (a synthetic-only
 candidate tied stock d3 on the sealed exams and passed the adapter suite; nothing
-was promoted). A public validator with the intake runs on testnet subnet 579
-since 18 October (chain admission, no weights published yet). Candidates enter the
+was promoted). Any validator running this code on subnet 579 collects and scores
+candidates. Candidates enter the
 standard Bittensor way: the miner uploads the candidate to its own Hugging Face
 repo and commits repo, revision and checkpoint hash on chain with
 `zils.miner commit-candidate`; every validator reads the commitments and pulls
@@ -103,17 +103,21 @@ validator reads each registered hotkey's commitment at its round's preflight
 block, freezes it in that round's chain snapshot and pulls the revision itself.
 No validator URL, open port or long-running process is needed.
 
-`zils.miner doctor` checks each prerequisite in order (requirements, hotkey file,
-registration, candidate, Hugging Face repo at the revision, the commitment on
-chain) and prints the first fix or, when all pass, the block your commitment
-landed in. `zils.miner commit-candidate` does the work:
+Install with `scripts/install.sh` ([miner setup](mining.md)); `zils setup` saves
+the wallet, candidate and repo that the commands below default to.
+`zils doctor` checks each prerequisite in order (requirements, d3 training
+runtime, hotkey file, registration, candidate, Hugging Face login and repo at the
+revision, the commitment on chain) and prints the first fix or, when all pass,
+the block your commitment landed in. `zils commit-candidate` does the work:
 
 ```bash
 hf auth login   # once, with a write token for your account
-.venv-kev/bin/python -m zils.miner commit-candidate \
-  --wallet-name WALLET_NAME --wallet-hotkey MINER_KEY_NAME --wallet-path /absolute/wallets \
-  --candidate candidate --repo YOUR_HF_USER/d3-candidate
+zils commit-candidate   # flags such as --candidate or --repo override the saved values
 ```
+
+From a checkout without the installer, `.venv-kev/bin/python -m zils.miner` takes
+the same subcommands with `--wallet-name`, `--wallet-hotkey`, `--candidate` and
+`--repo`.
 
 It checks the directory with the validator's own `validate_candidate` (it needs
 the pinned parent on disk, as the merge recipe does), hashes it, reads your uid
