@@ -5,6 +5,60 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## King-of-the-hill payout and d3 CLI support
+
+October 19, 2026
+
+**The base tier now pays kings only, in source.** The base-tier share is split
+equally over the last five distinct registered kings: the miners of promoted
+bases. A challenger earns nothing until it is crowned. With no king, the share
+burns at `base_tier.burn_uid`. This replaces the 18 October rule where the exam
+winner took the share. It is merged in the subnet repository and **not deployed**.
+See [who is paid](/operations/base-tier#who-is-paid).
+
+**The adapter track can pay from hosted-queue work.** A testnet validator can pay
+its adapter share from signed evidence of delivered queue jobs. It is merged, off
+by default and **not deployed**.
+
+**The CLI trains d3-mini, unreleased.** The SDK source now submits d3-mini text
+training jobs. No npm release includes it yet; the published CLI is 0.3.0. See
+[train from the CLI](/training/cli).
+
+## Base tier on testnet
+
+October 18, 2026
+
+**Submit a base candidate from outside.** Register a hotkey on Bittensor testnet
+subnet 579, upload your candidate to a public Hugging Face repo, and commit it on
+chain with `python -m zils.miner commit-candidate`. Validators pull it
+themselves. `python -m zils.miner doctor` checks each setup step. See the
+[base candidates guide](/operations/base-candidates).
+
+**A public validator runs on testnet.** A Zils base-tier validator has run on
+subnet 579 since 18 October. It is temporary and does not publish weights yet.
+
+**Miner terms and admission are published.** Outside miners may train customer
+jobs under the [miner terms](/operations/miner-terms). The hosted queue's chain
+admission is merged, off by default and not deployed; see
+[miner admission](/operations/miner-admission).
+
+**Playground.** Signed-in users can run their own trained models with their API
+key (since 17 October). A question picker now adds questions by type and saves
+them per model.
+
+## d3-mini is the only base
+
+October 17, 2026
+
+**d3-mini (`d3-mini-4.5b-v1`) is the only served base**, for text and image
+jobs, on both the `stable` and `latest` channels. The owner adopted it on
+capability grounds; its confirmation draw tied, so this overrides the promotion
+rule rather than winning under it. See [d3-mini](/getting-started/models).
+
+**H2O, JevK5 and Imajev are retired.** H2O serving is off and H2O is retiring;
+existing H2O jobs keep their frozen profile. [JevK5](/training/jevk5) and Imajev
+are retired; image jobs run on d3-mini.
+
 ## SDK 0.3.0
 
 October 13, 2026

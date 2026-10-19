@@ -1,6 +1,6 @@
 # Deploy the decision API
 
-Hosted code lives in `zils-platform`; see [platform installation](/operations/platform-setup#source-installation). This guide retains shared JevK5 serving. Use the separate [H2O](/operations/h2o#serving-accepted-adapters) and [Imajev](/training/imajev) runtime guides for those profiles.
+Hosted code lives in `zils-platform`; see [platform installation](/operations/platform-setup#source-installation). This guide records the original shared JevK5 serving path, which remains in source for existing registry entries; JevK5 was retired on 17 October 2026. d3-mini, the only served base, uses the [d3 adapter runtime](/operations/d3#serving-accepted-adapters).
 
 This guide is for operators running their own Zils decision API. It covers the
 database, model runtime, gateway, bulk processor, and operational checks.

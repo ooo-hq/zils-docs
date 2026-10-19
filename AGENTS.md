@@ -6,9 +6,9 @@ hosted services, application code and SDK implementations in their owning repos.
 - Verify commands, package availability and model pins against current source.
 - Distinguish training profiles from inference aliases, implementation from live
   availability, and historical measurements from current guarantees.
-- d3-mini is the base for new text adapters (`stable` and `latest` since 17 October
-  2026); existing H2O jobs keep their frozen profile; JevK5 is retired; Imajev
-  remains the image profile until its own retirement.
+- d3-mini is the only served base, for text and image jobs (`stable` and `latest`
+  since 17 October 2026); existing H2O jobs keep their frozen profile and H2O is
+  retiring; JevK5 and Imajev are retired.
   Miners execute model workloads. Development hardware is only for bootstrapping
   and testing, not the permanent execution architecture.
 - Preserve existing public URLs, evidence bytes and third-party license notices.

@@ -34,6 +34,16 @@ with the UUID of an accepted, API-ready job owned by the signed-in customer:
 }
 ```
 
+To move a task to another base (for example from H2O to d3-mini), also set
+`"base_change": true` in `acceptance` beside `previous_job_id`, and create the job
+on the new base (for example with `"base_channel": "latest"`). Without the flag a
+predecessor on a different base is refused; with it on the same base the request
+is refused too. The frozen previous release is scored on its own base while the
+candidates are scored on the new one. The processor fails such a job with
+"previous release runtime unavailable" when it has no reference checkpoint or
+runtime interpreter for the previous release's base. The check runs at validation,
+before any worker trains, and again before evaluation.
+
 Use the same training-service authentication and upload/submit endpoints as an
 initial run. No new credentials or database migration are required. The caller
 must identify the predecessor explicitly: names, upload order, and the most
@@ -59,31 +69,23 @@ was trained or calibrated on. The existing split audit checks the current job;
 operators remain responsible for semantic overlap and repeated use of evaluation
 data across jobs. Acceptance measures this dataset, not guaranteed future quality.
 
-### Changing the base profile
+## Base channels
 
-A task stays on its base profile unless the request says otherwise. To move a
-task from one profile to another, for example from H2O to d3-mini, set
-`"base_change": true` in the acceptance policy next to `previous_job_id`:
-
-```json
-{
-  "name": "flight-v3",
-  "acceptance": {
-    "min_accuracy": 0.80,
-    "min_brier_improvement": 0.01,
-    "previous_job_id": "REPLACE_WITH_PRIOR_READY_JOB_UUID",
-    "base_change": true
-  }
-}
-```
-
-The validator scores the frozen previous release with its own base and runtime,
-then scores the new candidate on the same test data. The usual upgrade
-requirements apply. Without `base_change`, a profile change is refused. After
-acceptance, the task alias follows the new release as it does for any other
-version; earlier immutable IDs remain callable. As of 17 October 2026 d3-mini is
-not the default for new jobs and is not promoted (it did not pass the base
-tier's confirmation draw); its platform migrations are applied.
+New text jobs train on one of two enabled base profiles. `stable` is the default
+and is the profile named by `ZILS_TRAINING_MODEL`; `latest` is the profile named
+by `ZILS_TRAINING_MODEL_LATEST` and defaults to the same profile when unset. A
+job chooses with `"base_channel": "latest"` in the `POST /v1/jobs` body; an
+explicit `model` must be the base of the chosen channel. `GET /v1/config`
+publishes both under `channels`. Setting only `ZILS_TRAINING_MODEL_LATEST` offers
+a profile to jobs that opt in while `stable` keeps its own. Since 17 October 2026
+the hosted platform names `d3-mini-4.5b-v1` on both channels (owner decision, see the
+subnet roadmap); H2O jobs created before then keep their frozen profile. A job's `model_profile` records the exact
+profile it trained on, so later channel moves never change existing jobs or
+releases. Moving a channel is a configuration change on the training API and
+processor followed by a restart, as in the [H2O rollout](h2o-rollout.md); the
+base-tier competition promotes winners to `latest`, and `stable` follows only
+after a full window there. Automatic "follow stable" upgrades are not
+implemented; use an explicit upgrade with `previous_job_id`.
 
 ## Activation and API names
 

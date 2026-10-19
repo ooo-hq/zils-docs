@@ -1,12 +1,12 @@
 # Supabase training workflow
 
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
+Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.
 
 The training service connects a customer dashboard to a shared pool of approved
 miners. Supabase provides Auth and Postgres job state. Private file storage defaults
-to Supabase; the optional [DigitalOcean Spaces provider](https://github.com/ooo-hq/zils-platform/blob/main/docs/spaces-storage.md) keeps
+to Supabase; the optional [DigitalOcean Spaces provider](spaces-storage.md) keeps
 the same logical files and supports verified migration with legacy reads.
 The Python coordinator handles authorization and issues storage URLs; dataset
 and checkpoint bytes transfer directly to Storage. A separate processor validates
@@ -22,15 +22,19 @@ yet been validated. It does not deploy an inference endpoint, publish chain
 weights, calculate cross-job emissions, or establish model-quality improvements.
 The original local/testnet fleet commands remain supported.
 
-For new H2O text jobs, follow the [H2O rollout](/operations/h2o).
-JevK5 4B jobs are [retired](/training/jevk5). The commands below
+New text and image jobs pin `d3-mini-4.5b-v1`, the only served base since
+17 October 2026 (both channels); follow the [d3 rollout](d3-rollout.md).
+H2O jobs created before then keep their frozen profile; see the
+[H2O rollout](h2o-rollout.md) (retiring, serving off). JevK5 was retired on
+17 October 2026; the [JevK5 queue setup](jevk5-queue.md) remains only as a record
+for jobs already pinned to it. The commands below
 describe the legacy Kev runtime; use `ZILS_TRAINING_MODEL=kev-0.8b-v1` with those
 commands. Existing jobs retain their pinned model when the active base changes.
 
 ## Prerequisites and isolated project resources
 
 Use macOS, Linux, or WSL 2, Python 3.13, and the
-[source installation](/operations/platform-setup#source-installation). For the legacy Kev
+[source installation](../README.md#source-installation). For the legacy Kev
 processor, prepare its environment from the platform checkout:
 
 ```sh
@@ -189,6 +193,54 @@ and uploads only the three checkpoint files. Saved candidates survive miner
 restarts. The same running miner can subsequently claim another customer's job;
 no new fleet bundle is required.
 
+## Public network endpoints
+
+`GET /v1/network/miners` needs no credential and is cacheable for 60 seconds
+(`zils_platform/network.py`). It lists every worker row by UID with its hotkey,
+status (`online` when seen within 45 seconds, `stale` within an hour, then
+`offline`; `unseen` or `disabled`), `last_seen`, enabled `models`, and training
+counts (`assigned`, `submitted`, `evaluated`, `selected`, `median_skill`) in total
+and per `text`/`image` track over the latest 1,000 jobs, plus summary counts and
+completed jobs per track. It never names a job, customer, dataset or model alias.
+
+`GET /v1/network/adapter-evidence` is a signed export for the subnet's adapter
+track; it returns 404 unless configured. See
+[chain evidence export](miner-grading.md#chain-evidence-export-off-by-default).
+
+## Per-job question schema
+
+Migration `202610190001_job_question_schema.sql` adds
+`fez_training_jobs.question_schema` (existing owner-only row-level security
+applies). When the processor freezes a text job it records the first question of
+each task family in the test split, keyed by the normalized family name, with
+only `type`, `instructions` and `criteria`: no inputs or labels, and at most
+eight entries (the decision API's per-request limit). Customer job responses
+include `question_schema`; it is `null` for image jobs and for jobs frozen before
+the column existed. The zils.ai playground uses it to start from the questions a
+model learned.
+
+## Chain admission (off by default)
+
+With `ZILS_CHAIN_ADMISSION=on` on the coordinator, a hotkey registered on
+testnet subnet `ZILS_CHAIN_NETUID` (default 579) admits itself on its first signed
+`POST /v1/workers/admit`, sending the miner-terms hash it accepted and its own
+qualification report. It gets a worker row and a profile row for the model that
+report names (12,288 MiB free-memory floor) and, when `ZILS_INTERNAL_OWNER_ID` and
+`ZILS_QUALIFICATION_SOURCE_JOB` are both set, one graded qualification job per
+30 days under the internal account, cloned from that validated benchmark job.
+Customer work stays gated by graded qualification reports, as for operator-added
+workers. The chain snapshot is cached for five minutes; a failed chain read keeps
+the last snapshot and never admits a new hotkey. While on, `GET /v1/config`
+adds `admission` (`mode`, `netuid`, `terms_sha256`, `qualification_days`).
+`ZILS_MINER_TERMS_SHA256` overrides the built-in terms hash only when the terms
+change.
+
+It needs migration `202610180001_chain_admission.sql` and the subnet's
+`requirements/testnet.txt` on the API host for the chain read. The default `off`
+keeps operator-inserted worker rows only. Chain admission has not been deployed.
+The policy is the subnet's
+[miner admission](https://github.com/ooo-hq/zils/blob/main/docs/miner-admission.md).
+
 ## Completion, failures, and limits
 
 Jobs transition through `uploading → validating → awaiting_approval → queued →
@@ -202,7 +254,7 @@ more jobs or signing repeated requests.
 
 The processor compares candidates against the calibrated starting checkpoint,
 using the [existing acceptance gate](https://github.com/ooo-hq/zils/blob/main/docs/customer-jobs.md#inspect-the-result).
-For an explicit [version upgrade](/training/versions), the comparison instead
+For an explicit [version upgrade](version-selection.md), the comparison instead
 uses the pinned previous customer model and its existing serving temperature on
 the new test data. No qualifying candidate leaves the current API version intact.
 It uploads accepted artifacts and a release manifest to private Storage. The
@@ -224,7 +276,7 @@ Training data is readable by approved miners, who may retain it. Signed URLs
 limit access, not the use of downloaded bytes. Files and raw local runs are
 retained until operator cleanup; automatic retention/deletion, billing, resumable
 multipart uploads, confidential compute, and automatic serving of training artifacts are not implemented.
-The separate [Zils decision API](/api/reference) provides shared-model inference
+The separate [Zils decision API](decision-api.md) provides shared-model inference
 and bulk processing with its own credentials, queue, and retention controls. The
 initial upload path uses direct PUT; retry restarts a failed file transfer.
 

@@ -80,4 +80,4 @@ Read the round's `report.json` to inspect candidate evaluations and proposed wei
 
 ## Next step
 
-Follow [Prepare a dataset](/legacy/kev-data) to define a customer task, or [Run a legacy miner](/legacy/kev-miners) to distribute miners across a trusted private network.
+Follow [Prepare a dataset](/legacy/kev-data) to define a customer task, or [Run a fleet miner](/operations/fleet-miners) to distribute miners across a trusted private network.

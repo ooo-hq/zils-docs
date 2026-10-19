@@ -1,9 +1,14 @@
 # Train from the Zils CLI
 
 Install `@zils/cli` from npm using the
-[developer-tools setup](/sdks/overview#install-from-npm). The CLI
-supports H2O and JevK5 text datasets. The platform coordinates training on qualified miners;
+[developer-tools setup](developer-tools.md#install-from-npm). The CLI
+trains the d3-mini text profile (`d3-mini-4.5b-v1`). H2O and JevK5 are retired for new
+jobs; the CLI only downloads their older accepted results. Training execution remains in the hosted platform;
 no GPU or model installation is needed on your laptop.
+
+::: info Unreleased
+d3-mini support is merged in the SDK source after 0.3.0 and is not yet in a published npm release. The published `@zils/cli` 0.3.0 predates it.
+:::
 
 ## Sign in
 
@@ -53,7 +58,7 @@ curl --fail-with-body -o test.jsonl https://docs.zils.ai/downloads/examples/trai
 ```
 
 Review the files and acceptance criteria before submitting. New text jobs use
-the service's pinned H2O profile; existing JevK5 jobs retain their original profile.
+the service's pinned d3-mini profile; older H2O and JevK5 jobs retain their original profile.
 This is a format example, not a useful quality benchmark.
 
 ```sh
@@ -78,7 +83,7 @@ JSON results remain on stdout.
 Each UTF-8 JSONL case requires `id`, `group_id`, `family`, `state`, `question`, and
 `label`. Labels are strings: `"false"`/`"true"` for `noul`, a criterion key for
 `choice`, or a zero-based index string for `score`. Questions support at most
-255 outcomes. The server enforces the pinned model limits (JevK5 allows 16); the CLI never truncates data.
+255 outcomes. The server enforces the pinned model limits (d3-mini allows 4,096 input tokens); the CLI never truncates data.
 
 IDs must be globally unique. Related source groups and identical state/question
 pairs must stay in one split. Calibration and test families must match and occur
@@ -131,7 +136,7 @@ zils train cancel JOB_ID
 zils train cancel JOB_ID --yes --json
 ```
 
-Downloads require an accepted H2O or JevK5 result. The CLI verifies provider/job/file
+Downloads require an accepted d3-mini result, or an older accepted H2O or JevK5 result. The CLI verifies provider/job/file
 paths, release identity, model metadata and the backend-compatible checkpoint
 SHA-256 before publishing four files to a **new** directory. Existing paths are
 never overwritten. The filesystem must support hard links within the destination's

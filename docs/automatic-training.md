@@ -1,17 +1,20 @@
 # Automatic customer training
 
-Before running service commands, complete the [source installation](/operations/platform-setup#source-installation).
+Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.
 
 The workflow service connects the existing private upload queue, approved training
 miner, held-out evaluation, and customer model registry. Customer API keys, Auth,
 and database schemas are unchanged. The operator explicitly configures the miner
-that may receive training data. Assignment requires a validated job with its exact model profile,
+that may receive training data. Assignment requires a validated job with
 recorded miner-export consent, an enabled miner, and available GPU capacity.
+d3-mini jobs use the configuration's `d3` section, frozen H2O jobs the optional
+`h2o` section, and legacy-profile jobs the top-level fields; a missing section
+leaves its jobs waiting.
 
 For an approved pool selected by measured quality, reliability and turnaround,
-see [graded miner routing](/operations/miner-qualification). It is opt-in; the fixed-worker
+see [graded miner routing](miner-grading.md). It is opt-in; the fixed-worker
 configuration below remains the default.
 
 ## Job lifecycle
@@ -28,7 +31,7 @@ configuration below remains the default.
 5. The customer uses the resulting model ID with an existing API key. Other
    accounts cannot list or call the private model.
 
-[Version selection](/training/versions) compares first versions with the base
+[Version selection](version-selection.md) compares first versions with the base
 and explicit upgrades with the customer's previous accepted version. Versioned
 releases also expose a stable task alias. Its target changes only if the named
 predecessor is still active; a stale run requires review instead of overwriting
@@ -42,17 +45,9 @@ Completed evaluation results and their completion timestamp remain immutable.
 
 ## Deployment requirements
 
-For the default H2O profile, complete [H2O rollout](/operations/h2o), including
-its separate `h2o` workflow block, reference, runtime and release directory.
-For Imajev, configure the separate `image` block described in
-[image training](/training/imajev#worker-and-service-setup). Each block selects
-an explicitly qualified worker; legacy worker registration alone is insufficient.
-The text configuration and shared-base example below describe existing JevK5
-serving. Do not use `--shared-model-dir` for H2O.
-
-
-Complete the [H2O rollout](/operations/h2o) and
-[decision API setup](/operations/decision-api) first. Use Linux or WSL 2, systemd for the
+Complete the [d3 rollout](d3-rollout.md) (the retired [JevK5 setup](jevk5-queue.md)
+applies only to legacy jobs) and
+[decision API setup](decision-api.md) first. Use Linux or WSL 2, systemd for the
 optional service-health checks, Python 3.13, and a BF16-capable NVIDIA GPU. Install
 the pinned training and API dependencies described in those guides. Configure a
 single workflow service per approved miner.
@@ -120,6 +115,13 @@ Create `.private/workflow.json` with operator-provided values:
   "registry": "/path/to/api/models.json"
 }
 ```
+
+New text jobs train on the d3-mini profile since 17 October 2026 (see
+[the d3 rollout guide](d3-rollout.md)); the separate `h2o` section described in
+[the H2O rollout guide](h2o-rollout.md) is optional. Without it the workflow starts
+and any frozen H2O job waits for a worker rather than moving to another runtime,
+the same as a missing `d3` section. H2O serving is retired; drop the section once
+no H2O job needs activating.
 
 The example paths, miner address, service names, and group are placeholders.
 Create the directory and group explicitly, grant the workflow write access and
