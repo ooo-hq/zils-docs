@@ -245,20 +245,22 @@ You do not need a bundle, an operator or an invitation to enter the base tier:
 registration on subnet 579 is the admission. About an afternoon end to end, most
 of it the training run.
 
-The Zils base-tier validator on testnet subnet 579 (18 October 2026). You do not
-need its address or hotkey to compete: candidates are chain commitments that
-every validator reads itself. The address only serves its signed round results
-(`GET /results/<round>`, step 6):
+You do not need any validator's address or hotkey to compete: candidates are
+chain commitments that every validator reads itself. Validators are run by
+whoever operates them; find them on the metagraph
+(`btcli subnets metagraph --netuid 579 --network test`).
 
-| | |
-| --- | --- |
-| URL | `http://165.245.195.21:8900` |
-| Validator hotkey | `5HTAVUuHxV81VbYoX7DYFzebdyA1SRk3zazdZiiBN7zCcpxy` (uid 0 on subnet 579) |
+Start with the installer on the mining host. It clones Zils into `~/.zils/zils`,
+builds the miner runtime and, on Linux x86_64 with an NVIDIA GPU, the d3 training
+runtime, links `zils` into `~/.local/bin` and starts `zils setup`, which asks for
+your wallet, candidate folder and Hugging Face repo, saves them to
+`~/.zils/miner.json` and runs the doctor. Rerun it to update.
 
-Plain HTTP; every reply is signed by that hotkey. Rounds run hourly. Both values
-are for the testnet only: the host is temporary, and on mainnet the validator gets
-a new hotkey and a new URL.
-Use the values this table shows for the network you mine on.
+```bash
+curl -fsSL https://zils.ai/install.sh | sh
+```
+
+From then on `zils doctor` names the next step and prints its command; the steps are:
 
 1. **Register a hotkey on testnet subnet 579** following the
    [registration guide](bittensor-registration.md); keep the hotkey file on the
@@ -272,29 +274,29 @@ Use the values this table shows for the network you mine on.
    passes the candidate contract; the exam is realistic decisions in families you
    have not seen, so what you train on decides everything.
 4. **Upload and commit.** Log in to Hugging Face once (`hf auth login`, a write
-   token), then let `zils.miner commit-candidate` upload the candidate files to
+   token), then let `zils commit-candidate` upload the candidate files to
    your public model repo and commit `zils1:<hash>:<revision>:<repo>` on chain
    with your hotkey (details in [base candidates: commit](base-candidates.md#commit)):
 
    ```bash
-   .venv-kev/bin/python -m zils.miner commit-candidate \
-     --wallet-name WALLET_NAME --wallet-hotkey MINER_KEY_NAME --wallet-path /absolute/wallets \
-     --candidate candidate --repo YOUR_HF_USER/d3-candidate
+   zils commit-candidate
    ```
+
+   It reads the wallet, candidate and repo saved by `zils setup`; flags such as
+   `--candidate` or `--repo` override them for one run.
 
    Without `--yes` it is a dry run that prints the commitment; with `--yes` it
    uploads, checks the public repo at the new commit, writes the commitment and
    reads it back. No validator URL, no open port, nothing left running: every
    validator reads the commitments at the start of its round and pulls the
    revision from Hugging Face, once per distinct hash.
-5. **Let the doctor check.** It runs the checks in order (requirements, hotkey
-   file, registration, candidate, Hugging Face repo at the revision, commitment on
-   chain) and stops at the first failing one with the exact command that fixes it:
+5. **Let the doctor check.** It runs the checks in order (requirements, d3
+   training runtime and GPU, hotkey file, registration, candidate, Hugging Face
+   login and repo at the revision, commitment on chain) and stops at the first
+   failing one with the exact command that fixes it:
 
    ```bash
-   .venv-kev/bin/python -m zils.miner doctor \
-     --wallet-name WALLET_NAME --wallet-hotkey MINER_KEY_NAME --wallet-path /absolute/wallets \
-     --candidate candidate --repo YOUR_HF_USER/d3-candidate --revision COMMIT_SHA
+   zils doctor
    ```
 
    You can run it before step 1 (it tells you to create the wallet), before
@@ -304,8 +306,7 @@ Use the values this table shows for the network you mine on.
    incentive (`btcli subnets metagraph --netuid 579 --network test`). The
    aggregate row per round (Brier and accuracy against the incumbent, eligibility,
    the pending and confirmed winner) is in each validator's signed round result on
-   its own API (for the Zils validator, the address in the table above), not on
-   chain. Per-case results are never returned. An ineligible or
+   its own API (`GET /results/<round>`), not on chain. Per-case results are never returned. An ineligible or
    rejected candidate earns nothing; fix it, merge again and commit the new hash.
    Leave an unchanged commitment alone: it stays in every round at no cost, and
    committing it again moves your block later, which can hand the hash to a copier

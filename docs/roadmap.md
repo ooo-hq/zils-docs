@@ -61,13 +61,12 @@ Status of the work for an open competition, as of 19 October 2026 (merged on
    `latest` both name d3-mini by owner decision. A registry alias and automatic
    follow-stable upgrades remain.
 5. Payment: base and adapter tracks pay from one weight vector (#49). King of
-   the hill (#60, merged 19 October 2026, not deployed): the last five distinct registered kings split the base share,
+   the hill (#60): the last five distinct registered kings split the base share,
    and an empty track burns at `base_tier.burn_uid`. The adapter track can pay
    from delivered hosted-queue customer jobs (`adapter_evidence`, #61, off by
-   default, not deployed).
-6. Public health, chain reporting and a public leaderboard: remaining. A Zils
-   base-tier validator has run on testnet 579 since 18 October 2026 (#54, #58);
-   it is temporary and its uptime is not guaranteed. Mainnet is not implemented.
+   default).
+6. Public health, chain reporting and a public leaderboard: remaining. Mainnet
+   is not implemented.
 
 ### Base tier
 
@@ -76,7 +75,7 @@ profile. [Base candidates](base-candidates.md) describes the submission
 contract, scoring, the confirmation draw, the regression suite and the `latest`
 and `stable` channels. Candidate loading, round decisions, sandboxed evaluation,
 the regression suite, chain-derived admission and the dry-run promotion script
-are merged. Under the king-of-the-hill rule (merged, not deployed), a testnet fleet pays the last five kings, the promoted bases'
+are merged. Under the king-of-the-hill rule, a testnet fleet pays the last five kings, the promoted bases'
 miners, from the base tier's share of the one weight vector (challengers earn
 nothing until promoted; an unpaid share is burned), blended with adapter rounds
 ([two-track payment](mining.md#two-tracks-on-the-testnet-the-base-tier-pays-first)).

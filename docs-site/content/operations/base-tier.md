@@ -7,7 +7,7 @@ description: How miners submit a replacement base, how validators score it, how 
 
 The base tier lets miners compete to replace the pinned text base. A miner submits a full-weight replacement; validators score it against the current base and, if it wins, retrain a fixed set of reference adapters on both before it is promoted. Customer adapters are trained on whichever base is pinned for their job.
 
-**Status, 19 October 2026:** d3-mini (`d3-mini-4.5b-v1`) is the base and the incumbent. The loop is merged and runs on Bittensor testnet subnet 579. No outside candidate has been promoted, so there is no king yet. The king-of-the-hill payout is merged and **not deployed**. See [current status](#current-status).
+**Status, 19 October 2026:** d3-mini (`d3-mini-4.5b-v1`) is the base and the incumbent. The loop is merged and runs on Bittensor testnet subnet 579. No outside candidate has been promoted, so there is no king yet. See [current status](#current-status).
 
 ## Submit a candidate
 
@@ -29,7 +29,7 @@ Miners never receive per-case results. A round's cases are published after it cl
 
 ## Who is paid
 
-King of the hill, following Teutonic (owner decision, 19 October 2026; merged in zils#60, **not deployed**):
+King of the hill, following Teutonic (owner decision, 19 October 2026; zils#60):
 
 - Only kings are paid. A king is the miner of a promoted base.
 - The base-tier share of each weight publication is split equally over the last five distinct registered kings.
@@ -52,9 +52,9 @@ Both channels name d3-mini since 17 October 2026. The channel is a platform conf
 As of 19 October 2026:
 
 - **d3-mini is the base.** The owner adopted it on 17 October 2026 on capability grounds. Its confirmation draw against H2O tied (Brier 0.1790 against 0.1794), so this is an override of the promotion rule, not a win under it. Stock d3-mini is the incumbent that candidates must beat. See the [d3-mini results](/research/#d3-mini-a-multimodal-base-candidate).
-- **Public testnet validator.** A Zils base-tier validator has run on subnet 579 since 18 October 2026. It is temporary, its uptime is not guaranteed, and it does not publish weights yet. Its published URL and hotkey are for testnet only. See the [validator runbook](/operations/validators#runbook-a-public-validator-for-the-base-tier).
+- **Validators.** Anyone can run a validator; which ones are active is on the subnet 579 metagraph. See the [validator runbook](/operations/validators#runbook-a-public-validator-for-the-base-tier).
 - **Rehearsal.** The full loop was rehearsed on 17–18 October. The candidate tied stock d3 on the sealed exams and passed the suite; nothing was promoted.
-- **Payout.** King of the hill is merged, not deployed. No king exists yet.
+- **Payout.** King of the hill. No king exists yet.
 - **Mainnet** is not implemented.
 
 The submission format, fixed files and validator procedure are in the [base candidates guide](/operations/base-candidates). Open admission and miner terms are in [miner admission](/operations/miner-admission) and [miner terms](/operations/miner-terms).

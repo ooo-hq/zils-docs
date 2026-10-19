@@ -13,12 +13,12 @@ October 19, 2026
 equally over the last five distinct registered kings: the miners of promoted
 bases. A challenger earns nothing until it is crowned. With no king, the share
 burns at `base_tier.burn_uid`. This replaces the 18 October rule where the exam
-winner took the share. It is merged in the subnet repository and **not deployed**.
+winner took the share.
 See [who is paid](/operations/base-tier#who-is-paid).
 
 **The adapter track can pay from hosted-queue work.** A testnet validator can pay
-its adapter share from signed evidence of delivered queue jobs. It is merged, off
-by default and **not deployed**.
+its adapter share from signed evidence of delivered queue jobs. It is off by
+default in the validator config.
 
 **The CLI trains d3-mini, unreleased.** The SDK source now submits d3-mini text
 training jobs. No npm release includes it yet; the published CLI is 0.3.0. See
@@ -34,12 +34,9 @@ chain with `python -m zils.miner commit-candidate`. Validators pull it
 themselves. `python -m zils.miner doctor` checks each setup step. See the
 [base candidates guide](/operations/base-candidates).
 
-**A public validator runs on testnet.** A Zils base-tier validator has run on
-subnet 579 since 18 October. It is temporary and does not publish weights yet.
-
 **Miner terms and admission are published.** Outside miners may train customer
 jobs under the [miner terms](/operations/miner-terms). The hosted queue's chain
-admission is merged, off by default and not deployed; see
+admission is off by default; see
 [miner admission](/operations/miner-admission).
 
 **Playground.** Signed-in users can run their own trained models with their API
