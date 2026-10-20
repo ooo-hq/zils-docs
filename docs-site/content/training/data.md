@@ -2,9 +2,13 @@
 title: Prepare a dataset
 ---
 
-# Prepare data for d3-mini training
+# Prepare data for d3 training
 
-Start with one decision and labeled examples you are authorized to use. The [Zils dashboard](https://zils.ai/train) guides data preparation and upload; the hosted queue trains d3-mini candidates and evaluates them against a frozen comparison model.
+Start with one decision and labeled examples you are authorized to use. The [Zils dashboard](https://zils.ai/train) guides data preparation and upload; the hosted queue trains candidates on the selected immutable d3 profile and evaluates them against a frozen comparison model.
+
+Select an available pool and channel before creating the run. Omitting selection
+keeps the mini stable default. Every new run stores the resolved profile; recovery
+keeps the original profile even when the channel changes. See [model pools](/getting-started/models).
 
 ## Define the task
 
@@ -16,7 +20,7 @@ Record the context available at decision time, allowed outcomes, and correct lab
 
 Each line is one complete record. `label` identifies an outcome; `group_id` keeps related source records together; `family` identifies the task group for evaluation. The training format differs from the prediction API's `model`, `state`, and `questions` request.
 
-d3-mini training supports at most 255 outcomes and 4,096 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [d3-mini](/getting-started/models). Frozen H2O jobs keep their 2,048-token [contract](/training/h2o#training-and-scoring).
+The initial d3 profiles support at most 255 outcomes and 4,096 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [d3-mini](/getting-started/models). Frozen H2O jobs keep their 2,048-token [contract](/training/h2o#training-and-scoring).
 
 ## Separate the data
 
@@ -42,4 +46,4 @@ Approved miner operators can read and retain exported training data. The export-
 
 Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. The [automatic workflow](/training/automatic) can assign an approved miner when capacity is available and activate only accepted, verified customer models.
 
-For terminal uploads, use the [training CLI](/training/cli). Image jobs are d3-mini jobs with a frozen image intake; see [image training](/training/imajev). Retired JevK5 job records keep their original 16-outcome limit and model identity.
+For terminal uploads, use the [training CLI](/training/cli). Image jobs require image qualification for the selected profile and keep a frozen image intake; see [image training](/training/imajev). Retired JevK5 job records keep their original 16-outcome limit and model identity.
