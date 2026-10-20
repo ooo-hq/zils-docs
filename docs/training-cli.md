@@ -2,13 +2,12 @@
 
 Install `@zils/cli` from npm using the
 [developer-tools setup](developer-tools.md#install-from-npm). The CLI
-trains the d3-mini text profile (`d3-mini-4.5b-v1`). H2O and JevK5 are retired for new
+defaults to the d3-mini stable text profile. Optional `--pool d3-lite`,
+`--base-channel latest`, or `--model EXACT_PROFILE_ID` selects a qualified profile
+advertised by the service. Pool choices are d3-lite, d3-nano, d3-mini, d3-flash and d3;
+catalog membership alone does not mean a pool is available. H2O and JevK5 are retired for new
 jobs; the CLI only downloads their older accepted results. Training execution remains in the hosted platform;
 no GPU or model installation is needed on your laptop.
-
-::: info Unreleased
-d3-mini support is merged in the SDK source after 0.3.0 and is not yet in a published npm release. The published `@zils/cli` 0.3.0 predates it.
-:::
 
 ## Sign in
 
@@ -47,25 +46,13 @@ It does not revoke remote sessions/keys, delete jobs, or unset environment keys.
 
 ## Submit three reviewed splits
 
-Download the three synthetic example files into a new example directory. No repository access is needed:
-
-```sh
-mkdir -p zils-training-example
-cd zils-training-example
-curl --fail-with-body -o train.jsonl https://docs.zils.ai/downloads/examples/training/train.jsonl
-curl --fail-with-body -o calibration.jsonl https://docs.zils.ai/downloads/examples/training/calibration.jsonl
-curl --fail-with-body -o test.jsonl https://docs.zils.ai/downloads/examples/training/test.jsonl
-```
-
-Review the files and acceptance criteria before submitting. New text jobs use
-the service's pinned d3-mini profile; older H2O and JevK5 jobs retain their original profile.
-This is a format example, not a useful quality benchmark.
+From the repository root, this synthetic example demonstrates the input format:
 
 ```sh
 zils train submit --name ticket-routing \
-  --train train.jsonl \
-  --calibration calibration.jsonl \
-  --test test.jsonl \
+  --train examples/training/train.jsonl \
+  --calibration examples/training/calibration.jsonl \
+  --test examples/training/test.jsonl \
   --min-accuracy 0.8 --min-brier-improvement 0.01 \
   --allow-training-data-export --json
 ```
@@ -76,7 +63,7 @@ model quality; local tests do not spend credits or train on a live GPU.
 The export flag explicitly permits training data to be copied to approved workers.
 Both quality thresholds are required; acceptance may produce no qualifying model.
 Before creation, the CLI prints the active training account, service, files,
-thresholds and export consent to stderr. Submission uses that account's training
+selected immutable model, thresholds and export consent to stderr. Submission uses that account's training
 allowance/credit under the service's rules; the CLI does not estimate a price.
 JSON results remain on stdout.
 
@@ -90,6 +77,13 @@ pairs must stay in one split. Calibration and test families must match and occur
 in training. Limits are 128 MiB per split and 128 KiB per case. Image cases,
 invalid JSON, duplicate keys, and non-finite numbers are rejected before creating
 a job. Private snapshots ensure uploaded bytes match the validated file hashes.
+
+Selection is checked against fresh discovery before one create request. When
+combined, pool, channel and exact profile must agree. The exact profile is frozen
+in the local receipt and checked on creation, upload and resume; channel changes
+do not change an existing job. Without pool discovery, the mini stable default
+continues to work. These flags require this source version of the CLI; a source
+change does not publish an npm release or enable a hosted pool.
 
 ## Follow and recover a run
 
@@ -110,9 +104,9 @@ If uploads stop, resume the **same** job with the unchanged source files:
 
 ```sh
 zils train resume JOB_ID \
-  --train train.jsonl \
-  --calibration calibration.jsonl \
-  --test test.jsonl --json
+  --train examples/training/train.jsonl \
+  --calibration examples/training/calibration.jsonl \
+  --test examples/training/test.jsonl --json
 ```
 
 Receipts under the private configuration directory's `training/` folder bind the
@@ -136,7 +130,7 @@ zils train cancel JOB_ID
 zils train cancel JOB_ID --yes --json
 ```
 
-Downloads require an accepted d3-mini result, or an older accepted H2O or JevK5 result. The CLI verifies provider/job/file
+Downloads require an accepted supported d3 result, or an older accepted H2O or JevK5 result. The CLI verifies provider/job/file
 paths, release identity, model metadata and the backend-compatible checkpoint
 SHA-256 before publishing four files to a **new** directory. Existing paths are
 never overwritten. The filesystem must support hard links within the destination's

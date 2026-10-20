@@ -1,14 +1,29 @@
 ---
-title: d3-mini
-description: The one served base for text and image decisions, and how training profiles differ from inference names.
+title: d3 model pools
+description: Independent d3 model pools, staged qualification, and immutable customer model selection.
 ---
 
-# d3-mini
+# d3 model pools
 
-**d3-mini 4.5B (`d3-mini-4.5b-v1`) is the only served base since 17 October 2026.** It handles
-text and image adapter jobs and decisions. Both the `stable` and `latest` channels name it, by the
-owner's decision, recorded as an override of the base tier's promotion rule (its confirmation
-draw tied). Each job, candidate and accepted release keeps its own immutable model identity.
+d3-mini remains the default lineage for new training jobs. The model-pool
+implementation adds a suite of general decision models, each with its own base
+competition, incumbent, channels and qualification. A smaller model improves
+against its own incumbent; it does not have to beat a larger pool.
+
+| Pool | Approximate parameters | Initial immutable profile |
+| --- | ---: | --- |
+| `d3-lite` | 0.85B | `d3-lite-0.8b-v1` |
+| `d3-nano` | 2.21B | `d3-nano-2.2b-v1` |
+| `d3-mini` | 4.54B | `d3-mini-4.5b-v1` |
+| `d3-flash` | 8.39B | `d3-flash-8.4b-v1` |
+| `d3` | 26.09B | `d3-26b-v1` |
+
+**Additional pools are staged.** Source registration, published weights and a
+catalog entry do not establish hosted availability. Every enabled profile needs
+its own qualification at its advertised context limit and input type. Training
+and serving availability are separate; mini qualification cannot cover another
+pool. The initial reference builds use BF16 and a 4,096-token ceiling. These are
+profile contracts, not a claim that any particular GPU is qualified.
 
 | Job or request | Input limits |
 | --- | --- |
@@ -32,7 +47,7 @@ Oversized inputs are rejected; the runtime does not silently truncate examples.
 ## Training defaults and inference names
 
 `GET https://training.zils.ai/v1/config` identifies the default for **new training
-jobs**. It reports d3-mini. Changing that default does not convert existing
+jobs**. Its top-level `model` and `channels` retain mini defaults. Changing a default does not convert existing
 adapters or replace their base weights. Use the authenticated [model listing](/getting-started/quickstart#_2-list-available-models)
 to find inference models available to your account.
 
@@ -42,16 +57,32 @@ accepted adapter can be registered for inference.
 
 ## Base channels
 
-A text base can advance through two channels. `stable` is the default for new training jobs
-and advances only after a promoted base survives a full window on `latest`. `latest` advances when a
-candidate is confirmed, passes the regression suite and is promoted in the
-[base tier](/operations/base-tier). `latest` is opt-in per job: send `base_channel` on job creation
-(`"stable"` or `"latest"`). `GET https://training.zils.ai/v1/config` reports the default
-`model` and a `channels` object. When no latest base is configured, `channels.latest` is the same
-as `channels.stable`. Since the afternoon of 17 October 2026 both channels name d3-mini
-(`d3-mini-4.5b-v1`): the confirmation draw tied, so this is an owner override of the promotion
-rule rather than a win under it. The channel is a platform configuration value, not yet a registry alias,
-and automatic upgrades that follow `stable` are not implemented.
+Each pool has independent `stable` and `latest` channels. A promotion advances
+only its own lineage. `latest` is opt-in; `stable` remains the default. Both resolve
+to an immutable profile when a job is created. Later channel updates do not change
+that job or its accepted adapter. Existing mini IDs, releases and king history
+remain unchanged, including the registered `d3-mini-4.5b-zils-r5` profile.
+
+When configured, `GET /v1/config` adds a `pools` object. Each entry contains channel
+profiles, token limits and availability for training, serving, text and images.
+The website shows unavailable choices but prevents new submissions to them. A
+service without the pool catalog retains the existing single-model experience.
+
+To select through `POST /v1/jobs`, add these fields to the normal job request:
+
+```json
+{"pool":"d3-lite","base_channel":"stable","model":"d3-lite-0.8b-v1"}
+```
+
+The optional exact `model` prevents a channel change between discovery and job
+creation from silently selecting a different base. All supplied fields must
+agree. Unknown, disabled and unqualified choices are rejected. An accepted
+training profile ID is not an inference alias; use the model ID returned after
+activation reaches `ready`.
+
+The matching [CLI source](/training/cli) accepts `--pool`, `--base-channel` and
+`--model`. A source change does not publish a package or activate a hosted pool.
+Automatic upgrades following a channel are not implemented.
 
 ## Execution on miners
 
@@ -61,7 +92,7 @@ evaluate candidates. Customers call the API without downloading weights.
 Bootstrap and test GPUs provide qualification evidence, not the permanent
 serving architecture or a guarantee of fleet availability.
 
-A queue miner installs d3-mini, which covers text and image jobs (H2O only if the operator still routes frozen H2O jobs). It advertises only profiles that
+A queue miner installs the exact profiles it is qualified to run (H2O only if the operator still routes frozen H2O jobs). It advertises only profiles that
 are individually approved and have enough free memory. One worker processes
 training jobs serially; separate qualified workers can run workloads in parallel.
 Each model uses its own pinned runtime and release directory. The current queue
