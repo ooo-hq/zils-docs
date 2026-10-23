@@ -37,7 +37,7 @@ Read [how Zils fits into your application](/getting-started/ecosystem) for the c
 
 Developers integrate decisions and supply examples when they want to improve a task. Miners execute model workloads. Validators independently evaluate trained candidates before acceptance. The platform coordinates accounts, jobs and access to accepted models.
 
-You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text and image adapters use **d3-mini**, the only served base since 17 October 2026. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
+You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text and image adapters use **z3-mini**, whose founding baseline is the unchanged d3-mini checkpoint adopted on 17 October 2026. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
 
 ## What works today
 

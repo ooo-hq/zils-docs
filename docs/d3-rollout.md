@@ -1,5 +1,9 @@
 # d3-mini rollout
 
+The public release name is **z3-mini v1**, the founding baseline using unchanged
+d3-mini weights. This technical guide retains the original artifact IDs, runtime
+names and commands. See the [z3 model guide](https://docs.zils.ai/getting-started/models).
+
 Since 17 October 2026 d3-mini (`d3-mini-4.5b-v1`) is the only served base: the
 hosted platform names it on both [base channels](version-selection.md#base-channels)
 (`ZILS_TRAINING_MODEL` and `ZILS_TRAINING_MODEL_LATEST`), and image training and

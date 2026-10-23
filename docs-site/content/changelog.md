@@ -5,6 +5,16 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## z3 model line
+
+Zils' decision models now use the **z3** public name. **z3-mini v1** is the
+founding baseline, using unchanged upstream d3-mini weights. Other sizes remain
+planned until separately released and qualified. Subsequent approved
+miner-trained winners receive their own versioned releases.
+
+Existing API IDs, pool keys, downloads and release fingerprints remain valid.
+See the [z3 model guide](/getting-started/models) for names and provenance.
+
 ## King-of-the-hill payout and d3 CLI support
 
 October 19, 2026

@@ -27,9 +27,9 @@ commands from the sibling `zils` checkout. Keep private environment files, model
 caches and job state outside version control. Miners do not receive backend
 service-role credentials.
 
-d3-mini requires its own GPU runtime, which also serves image jobs. Installing the
+z3-mini requires its own GPU runtime, which also serves image jobs. Installing the
 Python 3.13 control environment does not install or qualify it. Follow the
-[d3-mini rollout](/operations/d3). Keep the [H2O runtime](/operations/h2o) only
+[z3-mini rollout](/operations/d3). Keep the [H2O runtime](/operations/h2o) only
 while frozen H2O jobs remain.
 
 ## Existing deployments

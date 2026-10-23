@@ -13,6 +13,11 @@ incumbent, draws, regression evidence, promotion history and allocation. d3-mini
 keeps its existing state. The four new competitions start disabled with zero
 allocation; no new pool is open merely because its profile is registered.
 
+The public model line is **z3**. These operational pool keys keep their original
+`d3` names. The z3-mini v1 founding baseline uses unchanged upstream weights;
+only subsequent approved winners are elected releases. See the
+[z3 model guide](/getting-started/models#public-names-and-artifact-identities).
+
 ## Submit a candidate
 
 1. **Train and merge.** Produce a full-weight replacement for the exact incumbent of one enabled pool. The reference recipe trains the production LoRA and merges it into the base. The [base candidates guide](/operations/base-candidates) lists the fixed files and the artifact format.

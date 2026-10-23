@@ -63,14 +63,14 @@ export default defineConfig({
         { text: 'Run JevK5 locally (historical)', link: '/getting-started/local-inference' },
       ] },
       { text: 'Models & source', collapsed: true, items: [
-        { text: 'd3-mini', link: '/getting-started/models' },
+        { text: 'z3 model line', link: '/getting-started/models' },
         { text: 'Repositories & contributions', link: '/getting-started/repositories' },
       ] },
       { text: 'Work with your data', items: [
         { text: 'Prepare a dataset', link: '/training/data' },
         { text: 'Understand the result', link: '/training/results' },
         { text: 'Train from the CLI', link: '/training/cli' },
-        { text: 'Image training on d3', link: '/training/imajev' },
+        { text: 'Image training on z3-mini', link: '/training/imajev' },
         { text: 'H2O text adapters (retiring)', link: '/training/h2o' },
         { text: 'JevK5 (retired)', link: '/training/jevk5' },
         { text: 'Training workflow', link: '/training/shared-queue' },
@@ -92,7 +92,7 @@ export default defineConfig({
       ] },
       { text: 'Platform operations', collapsed: true, items: [
         { text: 'Platform source setup', link: '/operations/platform-setup' },
-        { text: 'Deploy d3-mini adapters', link: '/operations/d3' },
+        { text: 'Deploy z3-mini adapters', link: '/operations/d3' },
         { text: 'Deploy H2O adapters (retiring)', link: '/operations/h2o' },
         { text: 'Deploy the decision API', link: '/operations/decision-api' },
         { text: 'Deploy customer models', link: '/operations/customer-models' },

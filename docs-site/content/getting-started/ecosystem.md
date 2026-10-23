@@ -37,7 +37,7 @@ Use the [API quickstart](/getting-started/quickstart) to make this request. [How
 
 Compare an available model with your current rules, model or manual process on the same examples. Set aside evaluation data before changing prompts or training. Measure decision quality, review workload, latency and cost for your application; a benchmark from another task cannot establish these for you.
 
-If the base model misses patterns your labeled data can teach, consider an **adapter**: trained changes that specialize the base model. d3-mini is the base for new text and image adapters. [Prepare a dataset](/training/data) before starting a training job.
+If the base model misses patterns your labeled data can teach, consider an **adapter**: trained changes that specialize the base model. z3-mini is the base for new text and image adapters. [Prepare a dataset](/training/data) before starting a training job.
 
 Training does not guarantee improvement. Independent evaluation can reject a candidate, and only an accepted model that reaches `ready` is available for inference. The [model guide](/getting-started/models) explains why a training profile and a callable model ID are different.
 
