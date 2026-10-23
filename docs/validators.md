@@ -6,6 +6,21 @@ A testnet fleet validator publishes weights only after explicit configuration
 and review (`--publish-weights`). Base-tier miners join by registering on testnet
 subnet 579; mainnet is not implemented.
 
+## Current base-election setup
+
+**Checked 23 October 2026:** z3-mini decision-quality election is live on testnet
+579. Use `base_pools` and `base_pool_rounds`, with a qualified per-pool exam,
+fixed +3-point policy, calibration protection and a pinned adapter suite. The
+[current election guide](/operations/base-tier) describes qualification, the
+50% base / 20% feature / 30% adapter allocation, king rewards and channel review.
+Use the [operator runbook](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md)
+for staging and verified release windows.
+
+The single-track `base_tier` examples below are **historical configuration**,
+not instructions for the current election. Do not install their 0.01 Brier
+policy, 70% allocation or old promotion command, and do not combine `base_tier`
+with `base_pools`. Customer queue evaluation remains a separate workflow.
+
 ## Queue validator
 
 The model evaluation and acceptance code lives in this repository. The hosted
@@ -15,7 +30,8 @@ its setup moved to
 Only approved operators should receive its service credentials. Miners need no
 platform installation or database credential.
 
-d3-mini serves both text and image jobs, so one d3 reference covers both. The
+z3-mini v1 serves both text and image jobs through its unchanged d3 profile,
+so one d3 reference covers both. The
 Imajev image profile is retired; a processor that still evaluates frozen Imajev
 jobs keeps its isolated runtime, [image qualification](https://github.com/ooo-hq/zils-platform/blob/main/docs/image-training.md#worker-and-service-setup)
 and `--additional-reference models/imajev-starting-checkpoint`, which selects the
@@ -66,6 +82,8 @@ itself (section 6 below). So, in order:
 3. **Runbook below.**
 
 ### Runbook: a public validator for the base tier
+
+> Historical single-track setup. For the current pooled election, use [Current base-election setup](#current-base-election-setup).
 
 Host: a GPU node of node-1's class (RTX 4000 Ada 20 GB; scoring needs about
 10 GB; about $0.76/h on DigitalOcean), provisioned with
@@ -220,6 +238,8 @@ recovery; deleting the attempt marker and retrying can duplicate a submission.
 See [testnet outcomes](testnet.md#read-the-outcome) for restart behavior.
 
 ### 6. Pay the base tier from the same vector
+
+> Historical single-track configuration and promotion flow. Do not use this block for the live pooled election; see [Current base-election setup](#current-base-election-setup).
 
 A testnet validator config may carry a `base_tier` track. Each publication then
 blends base-tier skill with the round's adapter skill into the one weight vector

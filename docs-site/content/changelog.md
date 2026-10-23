@@ -5,6 +5,18 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Decision-quality election guide
+
+October 23, 2026
+
+The [public election guide](/operations/base-tier) now documents the live mini
+testnet rule: +3 decision-score points, a positive paired confidence bound and
+calibration protection. It separates qualification, release-window review and
+king payouts, and records the verified 50% base / 20% feature / 30% adapter
+allocation. Linked candidate and miner guides are aligned; single-track
+validator examples are explicitly historical. This documentation update does
+not change validator configuration, elect a model or enable mainnet.
+
 ## z3 model line
 
 Zils' decision models now use the **z3** public name. **z3-mini v1** is the
