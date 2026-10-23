@@ -31,7 +31,7 @@ does not introduce new `z3-*` API aliases. Training profile IDs are also distinc
 from callable inference model IDs.
 
 The founding weights are available in the pinned
-[Hugging Face repository](https://huggingface.co/zils-ai/d3-mini-4.5b-v1/tree/b54402a963373cc44713f18c9596c580e31cc68b).
+[Hugging Face repository](https://huggingface.co/zils-ai/z3-mini-v1/tree/c9b7515250c0444192767fc00975402f12421413).
 Its original filename and repository names preserve provenance. Future elected
 releases must publish their exact checkpoint revision, parent, evaluation
 evidence and version. Candidate submissions are not official z3 releases.
