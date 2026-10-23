@@ -68,7 +68,7 @@ missing. Owner-reviewed promotion remains required.
 
 The 17 October adoption of stock d3-mini was an owner override after its
 confirmation draw against H2O tied. Earlier rehearsals and experiments remain
-historical evidence; they do not certify every d3 pool. See [d3 model pools](/getting-started/models)
+historical evidence; they do not certify every d3 pool. See [z3 model pools](/getting-started/models)
 and the [base candidates guide](/operations/base-candidates).
 
 Operator configuration and staging commands live with their owners:
