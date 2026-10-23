@@ -1,9 +1,9 @@
 # Run a text or image fleet miner
 
-Local and Bittensor testnet fleets support **d3-mini 4.5B** text jobs
+Local and Bittensor testnet fleets support **z3-mini v1** text jobs
 (`d3-mini-4.5b-v1`, the base since 17 October 2026). H2O Lightning 4B and the
 ImaJev image profile are retired; existing bundles for them keep working, and new
-bundles should pin d3. Existing Kev 0.8B bundles remain supported; JevK5 4B bundles
+bundles should pin its unchanged d3 profile. Existing Kev 0.8B bundles remain supported; JevK5 4B bundles
 are retired. For workers that claim different customer jobs,
 use the [queue miner guide](https://github.com/ooo-hq/zils/blob/main/docs/queue-miners.md).
 Queue and fleet miners use the same trainers but different credentials and startup commands.
@@ -176,56 +176,36 @@ wallets and explicit publication; follow the [testnet guide](testnet.md).
 
 ## Two tracks on the testnet: the base tier pays first
 
-On a testnet fleet whose validator config carries a `base_tier` track, miners
-earn on two tracks, paid from one weight vector on the configured subnet:
+This heading is retained for existing links. The live configuration now has
+**three tracks**, checked 23 October 2026: **50% base models, 20% feature tracks,
+and 30% customer adapters**. The old 70/30 split is historical. See the
+[current election and payout guide](/operations/base-tier#who-is-paid).
 
-- **Base tier (primary, continuous).** Submit a full-weight candidate for the
-  pinned base, `d3-mini-4.5b-v1`, under the
-  [base candidate contract](base-candidates.md). The validator's base-tier
-  scorer calibrates it on the sealed calibration split and scores the sealed
-  test split; you are eligible when your skill is positive, your accuracy is
-  not below the incumbent's, your Brier improvement is at least 0.01 and the
-  paired bootstrap 95% lower bound is above zero. King of the hill (owner
-  decisions, 19 October 2026, following Teutonic): only kings are paid.
-  Winning the exam makes you a challenger and pays nothing. You are crowned
-  only after you also pass the confirmation draw and the adapter regression
-  suite and the owner's promotion PR makes your candidate the incumbent and
-  your hotkey the newest entry in the track's king history. The base share of
-  every publication is split equally over the last five distinct kings still
-  registered, so a dethroned king keeps earning until five newer kings have
-  reigned; deregister and your slice goes to the others. The vendor base has no
-  owner, so until the first promotion the base share is burned; a resubmitted
-  stock base or a copy of the king is never eligible.
-- **Adapter rounds (alongside).** The frozen customer job rounds above continue
-  unchanged; each round's calibrated test-split skill is the adapter weight.
-  A validator may instead take the adapter track from real customer work in the
-  [hosted queue](queue-miners.md) (`adapter_evidence`, off by default; see
-  [validators §7](validators.md#7-pay-the-adapter-track-from-hosted-queue-work)).
-  Then you earn for customer jobs the queue routed to your hotkey and delivered
-  to the customer, weighted by training tokens × held-out skill × your
-  reliability over the window. Qualification runs and operator-owned jobs earn
-  nothing, and your queue hotkey must be registered on the subnet.
+- **Base models:** z3-mini candidates must improve the decision score by at least
+  **+3 points**, have a strictly positive paired lower 95% bound, and increase
+  calibrated Brier by no more than **0.005** on each of two independent draws.
+  Confirmation starts at least 12 hours after both candidate and incumbent finish
+  their first evidence. All eligible candidates can qualify. The pinned adapter
+  suite and a fresh release-window comparison precede reviewed promotion.
+  Only crowned kings earn; exam success alone pays nothing.
+- **Feature tracks:** mini box and lite box receive 16% and 4% of the whole vector,
+  respectively. Their separate competitions do not enable another base pool.
+- **Customer adapters:** the live validator uses eligible
+  [hosted-queue evidence](queue-miners.md). Customer-job acceptance remains
+  separate from base election. Qualification and operator-owned jobs do not earn.
 
-Split: the base tier takes `base_tier.share` of the vector (currently **0.7**;
-the validator records the share in every chain attempt and receipt), adapters
-the rest. Each track is normalized over its own earners first, so a miner with
-no eligible base candidate still earns its adapter share and a miner that trains
-no customer adapter still earns its base share. A track nobody earned on is
-not handed to the other track: its share goes to `base_tier.burn_uid` (default
-0), as Teutonic burns to the subnet owner's uid. For example, with no king the
-vector is 0.7 to the burn uid and 0.3 to adapter earners in their own
-proportions. If nobody earned on either track, the whole vector goes to the
-burn uid, so the validator keeps setting weights. Subtensor burns incentive
-paid to the subnet owner's hotkey and keeps the owner's own self-weight, so
-the validator refuses to publish a burn slice unless `burn_uid` is the subnet
-owner hotkey's uid at that block.
+Each pool's five most recent distinct king hotkeys are selected before filtering
+for current registration; the remaining kings split that pool's allocation.
+Empty tracks burn their share rather than giving it to another track. These are
+configured weights, not guaranteed token earnings. The founding baseline has no
+miner owner and its king history was empty at this check.
 
 Anti-gaming: one adapter submission per hotkey per round and one base candidate
 commitment per hotkey on chain; a claim cannot change within a round; a candidate
 hash another hotkey committed at an earlier block is refused; every
 sealed split is audited against its manifest before scoring, and payment goes
 only to registered roster UIDs. You receive aggregate metrics, never per-case
-outcomes; a round's cases are published after it closes and are not reused.
+outcomes. Private exams are not automatically published after a round; disclosed cases are retired from future inference.
 
 What a base-tier miner needs: the 20–24 GB cards in today's fleet cannot
 full-fine-tune the 4.5B backbone, but a d3 LoRA trains in about 10.5 GB of

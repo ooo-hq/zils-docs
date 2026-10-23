@@ -1,78 +1,91 @@
 ---
 title: Base-model competition
-description: How miners submit a replacement base, how validators score it, how kings are paid, and what is running today.
+description: The live testnet decision-quality election, king payouts, and reviewed z3 release process.
 ---
 
 # Base-model competition
 
-The base tier lets miners compete to replace the pinned text base. A miner submits a full-weight replacement; validators score it against the current base and, if it wins, retrain a fixed set of reference adapters on both before it is promoted. Customer adapters are trained on whichever base is pinned for their job.
+Miners compete to improve **z3** by submitting a full-weight replacement for a pool's pinned base. Validators measure decision quality on private exams. Passing an exam does not earn a reward or publish a model: a candidate must qualify, survive a release-window comparison, and receive reviewed promotion.
 
-The model-pool implementation stages five independent competitions:
-`d3-lite`, `d3-nano`, `d3-mini`, `d3-flash` and `d3`. Each has its own immutable
-incumbent, draws, regression evidence, promotion history and allocation. d3-mini
-keeps its existing state. The four new competitions start disabled with zero
-allocation; no new pool is open merely because its profile is registered.
+**Live status, checked 23 October 2026:** the decision-quality election is running for z3-mini on testnet subnet **579**. The incumbent is **z3-mini v1**, the founding baseline using unchanged upstream d3-mini weights. Its king history is empty; no elected successor or completed release window was present at this check. Mainnet incentives are not live.
 
-The public model line is **z3**. These operational pool keys keep their original
-`d3` names. The z3-mini v1 founding baseline uses unchanged upstream weights;
-only subsequent approved winners are elected releases. See the
-[z3 model guide](/getting-started/models#public-names-and-artifact-identities).
+The five public lineages are z3-lite, z3-nano, z3-mini, z3-flash and z3. Their operational pool keys remain `d3-lite`, `d3-nano`, `d3-mini`, `d3-flash` and `d3`. Only the mini base competition is enabled in this verified configuration; each other base pool is disabled with zero allocation. A registered profile alone does not open a competition. See [public names and artifact identities](/getting-started/models#public-names-and-artifact-identities).
 
 ## Submit a candidate
 
-1. **Train and merge.** Produce a full-weight replacement for the exact incumbent of one enabled pool. The reference recipe trains the production LoRA and merges it into the base. The [base candidates guide](/operations/base-candidates) lists the fixed files and the artifact format.
-2. **Upload.** Put the artifact in your own public Hugging Face model repo, pinned by commit.
-3. **Commit on chain.** Run `python -m zils.miner commit-candidate` with a hotkey registered on subnet 579. It writes `zils1:<sha256>:<revision>:<owner/repo>` as your chain commitment. Without `--yes` it is a dry run.
-4. **Check.** `python -m zils.miner doctor` checks each step in order and prints the first fix.
+1. **Train and merge.** Produce a full-weight replacement for the exact incumbent of an enabled pool. The [base candidates guide](/operations/base-candidates) describes the recipe and frozen artifact contract.
+2. **Upload.** Put the artifact in your public Hugging Face model repository, pinned by commit.
+3. **Commit on chain.** Run `python -m zils.miner commit-candidate` with a hotkey registered on testnet subnet 579. The commitment is `zils1:<sha256>:<revision>:<owner/repo>`. Without `--yes`, this is a dry run.
+4. **Check.** Run `python -m zils.miner doctor` to check the submission setup.
 
-One hotkey has one active candidate commitment. Its pinned parent metadata routes it to one pool; disabled pools and stale or wrong-lineage parents are rejected before GPU evaluation. Validators read the commitments and pull the candidate themselves. No open port or validator URL is needed. The earlier push command, `announce-candidate`, is removed. See [compete from outside](/operations/fleet-miners#compete-in-the-base-tier-from-outside).
+One hotkey has one active candidate commitment. The pinned parent routes it to a pool. Disabled pools, wrong-lineage parents and copied earlier commitments are rejected. Validators discover commitments on chain and download candidates; miners need no inbound port or validator URL.
 
 ## What a round decides
 
-1. **Score.** Validators score the candidate on a sealed holdout against the incumbent. It is eligible when its skill is positive, its accuracy is not below the incumbent's, and its Brier improvement is at least 0.01 with a paired-bootstrap 95% lower bound above zero. The best eligible candidate is the pending winner.
-2. **Confirm.** The pending winner is scored again on a second, disjoint sealed draw at least 12 hours later and must stay eligible.
-3. **Check adapters.** Reference adapter jobs are retrained on the incumbent and the candidate with the production recipe. The candidate passes only if no job is worse by more than 0.005 Brier and at least one is better.
-4. **Promote.** A candidate that passes all three is promoted in an owner-reviewed pull request. That crowns its miner as the newest king.
+The election uses a **0–100 decision score**, with separate metrics for each question type:
 
-Miners never receive per-case results. A round's cases are published after it closes and are never reused.
+| Question type | Family metric | Trivial baseline |
+| --- | --- | --- |
+| Choice | Exact accuracy | Strongest of uniform guessing, fixed option ID and fixed original position |
+| Yes/no (`noul`) | Balanced accuracy | 0.5; both classes required |
+| Score | Expected numeric outcome's normalized mean absolute error | Best constant target-median prediction |
+
+Each family becomes skill relative to its baseline, clipped to [0, 1]. Families are averaged equally within each category and known/new block; those blocks weigh 60%/40%. Category weights are reasoning 25.85%, language 25.85%, retrieval 20.02%, tools 18.28%, and arts 10%. Every category covers all three question types.
+
+A candidate must pass **all three gates on each qualifying draw**:
+
+| Gate | Requirement |
+| --- | --- |
+| Decision improvement | At least **+3.0 points** over the incumbent |
+| Uncertainty | Paired bootstrap **lower 95% bound strictly above zero**, using 2,000 resamples |
+| Calibration protection | Calibrated full-vector Brier increases by **no more than 0.005** |
+
+Temperature is fitted only on the sealed calibration split; the decision is measured on the sealed test split. These are base-election rules. Customer adapter acceptance rules and feature-track metrics are separate.
+
+Every eligible candidate can qualify, including a runner-up. A second independent draw must start at least **12 hours after both the candidate and incumbent finish their first-draw evidence**. The same checkpoint must pass again. Reusing a cached result does not create a second independent draw or reset its completion time.
+
+Public results expose aggregate metrics and evidence hashes. Private predictions and per-case outcomes are not returned to miners. Disclosing exam cases retires them from future inference; finishing a round does not automatically publish the private exam.
+
+## From qualification to a release
+
+1. **Pass both draws.** Bind the candidate, incumbent, policy and chain ownership to the verified evidence.
+2. **Pass the adapter regression suite.** Use every pinned reference job under seeds **553, 771 and 991**. For each job, mean accuracy may fall by at most **0.01** (one percentage point) and mean Brier may rise by at most **0.005**. Flat results pass; missing jobs or seeds fail. Save a verified readiness receipt.
+3. **Close a scheduled release window.** The implemented contract requires a declared **14–28 day** schedule. Freeze all active ready candidates before scoring them and the incumbent on one fresh, common, independent closing draw. The highest-scoring survivor wins; ties prefer the earlier commitment, then checkpoint hash. Later entrants wait for a later window. No survivor means no new king. This schedule requirement does not announce a currently scheduled release date.
+4. **Review and install promotion.** Stage the verified winner as a new versioned z3 release with provenance and evidence. Upload is opt-in. Staging alone does not install validator configuration, publish chain weights or change hosted channels. Approved promotion updates the incumbent and king history.
+
+Readiness and window receipts are bootstrap-validator attestations; they do not establish multi-validator consensus. The [operator election runbook](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md#qualify-candidates-and-close-a-release-window) documents the verified commands and required receipts.
 
 ## Who is paid
 
-King of the hill, following Teutonic (owner decision, 19 October 2026; zils#60):
+**Only crowned kings receive base-model rewards.** Passing one or both exams, producing a readiness receipt, or winning a closing comparison does not itself start payment.
 
-- Only kings are paid. A king is the miner of a promoted base.
-- Each pool's allocation is split equally over its last five distinct registered king hotkeys.
-- A challenger earns nothing until it is crowned. To dethrone the king it must clear the same 0.01 margin, the confirmation draw and the adapter suite.
-- With no eligible king, or with a disabled pool, its allocation burns at the configured burn UID. Other pools are not renormalized. A hotkey in multiple pool histories receives the sum of its earned allocations.
+For each pool, take the five most recent distinct king hotkeys, then keep those still registered. They split that pool's allocation equally. A deregistered king drops out of that set and the remaining members share its slice. A hotkey in multiple pool histories receives the sum of its allocations. A pool with no eligible king, or a disabled pool, sends its allocation to the configured burn UID; other pools do not inherit it.
 
-Fixed configurable pool fractions sum to one inside the existing base budget. Staging preserves the 70/30 base/adapter split: mini starts with the full base allocation and the new pools with zero. No new percentages are implied. Base and adapter rounds pay from one weight vector. The 18 October rule, where the exam winner took the share, is gone. See [two-track payment](/operations/fleet-miners#two-tracks-on-the-testnet-the-base-tier-pays-first).
+The installed testnet allocation, checked **23 October 2026**, is:
+
+| Track | Share of the configured reward vector | Allocation within the track |
+| --- | --- | --- |
+| Base models | **50%** | All assigned to mini; other base pools receive zero |
+| Feature tracks | **20%** | 80% mini box / 20% lite box (16% / 4% of the whole vector) |
+| Customer adapters | **30%** | Eligible hosted-queue work |
+
+These are configured weight allocations, not guaranteed token earnings. Feature tracks have their own metrics and king histories; enabling the lite box track does not enable the lite base election. Each track is normalized over its own earners. An unearned allocation goes to the subnet-owner burn UID rather than increasing another track's share. With no mini king, the base allocation burns. The older 70/30 base/adapter split is historical.
 
 ## Channels
 
-| Channel | Advances | Used by |
+| Channel | Required review | Used by |
 | --- | --- | --- |
-| `latest` | When a candidate is promoted | Jobs that opt in with `base_channel` on creation |
-| `stable` | After a promoted base survives a full window on `latest` | New customer jobs by default |
+| `latest` | Verified window winner, exact-profile registration, platform training/serving qualification, and explicit channel proposal review | New jobs opting in with `base_channel` |
+| `stable` | Prior latest passes legacy regression and every-job/every-seed migration checks, with no unresolved recorded problems | New customer jobs by default |
 
-Each pool has separate channel configuration; inspect current discovery for exact profile IDs. The channel is a platform configuration value, not an inference alias. Automatic upgrades that follow `stable` are not implemented.
+A newly elected latest cannot become stable in the same window. A window with no new king can still advance the prior latest if its checks pass. The proposal binds the actual channels at window opening; installation is a separate reviewed action.
+
+Each pool has separate channels. Existing jobs and adapters keep their exact base until their own migration is accepted. Automatic upgrades that follow stable are not implemented. A channel is a platform configuration value, not an inference alias.
 
 ## Activation and evidence
 
-Local fixture and database tests verify routing, frozen profiles, replay and
-reward composition. They do not qualify GPU hardware or establish live capacity.
-Before activation, operators must register the pinned profile, measure its own
-runtime/recipe at the full context cap and advertised modalities, qualify training
-and serving separately, configure the pool's channels and capacity, and review
-its allocation. Published catalogs fail closed when qualification or capacity is
-missing. Owner-reviewed promotion remains required.
+Each base pool needs its own qualified exam, frozen policy and blueprint, immutable model/runtime identities, and adapter-suite manifest before intake is enabled. Software tests alone do not qualify GPU hardware, a model or a private exam. Hosted availability additionally requires training and serving qualification, capacity and profile registration.
 
-The 17 October adoption of stock d3-mini was an owner override after its
-confirmation draw against H2O tied. Earlier rehearsals and experiments remain
-historical evidence; they do not certify every d3 pool. See [z3 model pools](/getting-started/models)
-and the [base candidates guide](/operations/base-candidates).
+The 17 October adoption of stock d3-mini was an owner override after its confirmation draw against H2O tied. That historical result and the z3-mini v1 founding release are not wins under the current election. No candidate promotion is implied by the z3 naming update.
 
-Operator configuration and staging commands live with their owners:
-[subnet pools](https://github.com/ooo-hq/zils/blob/main/docs/model-pools.md) and
-[platform qualification](https://github.com/ooo-hq/zils-platform/blob/main/docs/model-pools.md).
-Do not configure legacy `base_tier` and new `base_pools` simultaneously. The staging
-script preserves mini's incumbent and history; review its output before installing it.
+The current contract lives in the [decision-quality election runbook](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md); see also [model pools](https://github.com/ooo-hq/zils/blob/main/docs/model-pools.md) and [platform qualification](https://github.com/ooo-hq/zils-platform/blob/main/docs/model-pools.md). Current validators use `base_pools` and `base_pool_rounds`. Do not deploy the legacy `base_tier` examples alongside them.

@@ -5,28 +5,24 @@ A base candidate is a full-weight replacement for the pinned text base,
 owner decision after it tied the H2O incumbent on the confirmation draw; see
 [d3-mini](roadmap.md#d3-mini)). H2O Lightning 4B v1.2.3 is retired: no longer
 served, no new jobs; its candidate contract is kept below for the record.
-Everything below describes d3 unless it says H2O. Miners may train a candidate
-however they like; validators score it on a sealed holdout against the current
-base and, for a pending winner, retrain a fixed suite of reference adapters on
-both. Status, 18 October 2026: candidate loading, round decisions, sandboxed
-evaluation, the regression suite, chain-derived admission, the merge recipe,
-promoted-profile support in the runtime and the dry-run promotion script are
-merged; the full loop was rehearsed end to end on 17/18 October (a synthetic-only
-candidate tied stock d3 on the sealed exams and passed the adapter suite; nothing
-was promoted). Any validator running this code on subnet 579 collects and scores
-candidates. Candidates enter the
-standard Bittensor way: the miner uploads the candidate to its own Hugging Face
-repo and commits repo, revision and checkpoint hash on chain with
-`zils.miner commit-candidate`; every validator reads the commitments and pulls
-(below; replaces the 18 October push announcement). The channel setting on the platform
+The public release line is **z3**; the artifact/profile identifiers below remain
+unchanged. Miners may train a compatible candidate using permitted development
+data. The live mini competition uses the
+[decision-quality election](/operations/base-tier), checked 23 October 2026.
+The 17/18 October rehearsal used an earlier rule and remains historical evidence.
+Candidates enter through an immutable public Hugging Face revision and chain
+commitment; validators discover and score those artifacts.
+The channel setting on the platform
 is a configuration value (`ZILS_TRAINING_MODEL_LATEST`), not yet a registry
 alias; automatic "follow stable" upgrades are not implemented.
 
 ## Promoted profiles
 
-A confirmed d3 winner becomes a new profile, not a new revision of `d3-mini-4.5b-v1`:
-`scripts/promote_base.py --model d3-mini-4.5b-v1 --round N` stages the candidate's
-files with a Zils `NOTICE` and `README.md`, uploads them to `zils-ai/d3-mini-4.5b-zils-rN`,
+An approved z3 winner receives a new versioned release and profile; it does not
+replace the frozen `d3-mini-4.5b-v1` identity. The
+[verified-window promotion command](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md#qualify-candidates-and-close-a-release-window)
+stages the candidate's files with a Zils `NOTICE` and `README.md`. Upload is opt-in.
+The helper uses compatibility artifact names such as `d3-mini-4.5b-zils-rN`
 and prints the `SPECS` entry (`parent` names the profile it was trained from), the
 pins file `d3-mini-4.5b-zils-rN-pins.json` (the parent's runtime pins over the
 published files) and the registration the runtime needs: the new id joins
@@ -204,75 +200,40 @@ format perfectly and still tied stock d3 on the sealed draws.
 
 ## How it is scored
 
-1. The validator fits one temperature for your candidate on the round's
-   sealed calibration split, then scores the sealed test split by
-   equal-family Brier loss, exactly as it scores the incumbent.
-2. You are **eligible** when your skill is positive, your accuracy is not
-   below the incumbent's, your Brier improvement is at least 0.01, and the
-   paired bootstrap 95% lower bound of that improvement is above zero. The
-   best eligible candidate (lowest Brier) is the round's **pending winner**: a
-   challenger, recorded for promotion, paid nothing. Eligible runners-up are
-   not challengers.
-3. The pending winner is re-scored on a second, disjoint draw at
-   least 12 hours later and must stay eligible (the confirmed winner, still
-   unpaid).
-4. Before promotion, reference adapter jobs are retrained on the incumbent and
-   on your candidate with the production recipe. Your candidate passes only if
-   its adapters are no worse than the incumbent's on every job (0.005 Brier
-   tolerance) and better on at least one.
-5. A candidate that passes all three gates is promoted in an owner-reviewed
-   pull request, which also **crowns** it: the validator track's
-   `incumbent_sha256` becomes the candidate's hash and its miner's hotkey is
-   prepended to `kings` (`scripts/promote_base.py --king-hotkey … --previous-kings …`
-   prints both as `proposed_base_tier`).
-   It becomes the `latest` base, and `stable`, the default for new customer
-   jobs, after surviving a full window on `latest`.
+Use the [current election guide](/operations/base-tier#what-a-round-decides):
+**+3 decision-score points**, a strictly positive paired lower 95% bound, and
+no more than **0.005 calibrated Brier regression**, on each of two independent
+draws. The second starts at least 12 hours after the candidate and incumbent
+finish their first-draw evidence. Eligible runners-up can qualify.
 
-**King of the hill** (owner decisions, 19 October 2026, following Teutonic):
-only kings are paid. The king is the promoted base the network actually runs;
-the track keeps a history of kings, newest first. The base-tier share of every
-publication is split equally over the last five distinct kings (by hotkey),
-whether or not anyone challenges; with fewer than five, the ones there are
-share it. A king whose hotkey is no longer registered drops out and the others
-share its slice. A challenger earns nothing until it is crowned, and then it
-is the newest king; to dethrone the current king a challenger must beat it by
-the same 0.01 margin on the exam and pass the confirmation draw and the suite.
-A copy of the king is never eligible. The stock `d3-mini-4.5b-v1` has no owner,
-so until the first promotion the history is empty and the base share is
-burned (below), not paid to anyone.
+Every pinned adapter job must pass under seeds 553, 771 and 991: mean accuracy
+may fall by at most 0.01 and mean Brier rise by at most 0.005 per job. Flat results
+pass. A readiness receipt admits the candidate to a scheduled release window;
+all ready candidates face the same fresh closing draw before reviewed promotion.
 
-Per-case results are never returned; you learn aggregate metrics only. The
-round's questions are published after the round closes and are not reused.
+Only crowned kings earn the base allocation. The five most recent distinct king
+hotkeys are selected, then those still registered split the pool's allocation.
+The founding baseline has no miner owner. Empty allocations burn. See
+[the current payout allocation](/operations/base-tier#who-is-paid).
 
-On a testnet fleet with a `base_tier` track, the kings are paid at every
-publication from the base tier's share of the one weight vector, blended with
-the adapter round's weights; a share with no recipient goes to the burn uid; see
-[the two-track rule](mining.md#two-tracks-on-the-testnet-the-base-tier-pays-first).
+Public reports contain aggregates and evidence hashes, not private predictions
+or per-case outcomes. Exam cases are not automatically published after a round;
+disclosed cases are retired from future inference.
 
 ## Validator and publisher tooling
 
-The reference-adapter suite and the publication helper take the profile with
-`--model` (`d3-mini-4.5b-v1`, the base; `h2o-lightning-4b-v1.2.3` only for the
-retired profile's records and still the code default):
+Use the [operator election runbook](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md#qualify-candidates-and-close-a-release-window)
+for `zils.regression_suite --election`, `zils.base_release qualify`, `freeze`,
+`close`, and `scripts/promote_base.py --window-report`. Promotion requires a
+verified closed-window report and the active pool configuration. An old
+`--decision` file alone cannot authorize a current release.
 
-```bash
-python -m zils.regression_suite --model d3-mini-4.5b-v1 --suite SUITE \
-  --incumbent models/d3-reference --candidate CANDIDATE --out OUT
-
-python scripts/promote_base.py --model d3-mini-4.5b-v1 --candidate CANDIDATE \
-  --decision decision.json --round N --staging STAGING
-```
-
-Each run uses that profile's trainer, interpreter (`ZILS_H2O_RUNTIME_PYTHON` or
-`ZILS_D3_RUNTIME_PYTHON`) and candidate override (`ZILS_H2O_CANDIDATE_BASE` or
-`ZILS_D3_CANDIDATE_BASE`). To compare a base on a different profile from the
-incumbent, give `--incumbent-model`, `--incumbent`, `--candidate-model` and
-`--candidate` (a reference directory of the candidate profile) instead of
-`--model`; each side then trains every suite job with its own profile and
-`--candidate-runtime-python` selects the candidate profile's interpreter. The
-verdict rule is the same. `promote_base.py` proposes ids
-`h2o-lightning-4b-zils-r<N>` or `d3-mini-4.5b-zils-r<N>` and the matching
-`zils-ai/` repository.
+Staging does not install configuration, publish chain weights or move hosted
+channels. Upload requires `--upload`; exact-profile registration and platform
+training/serving qualification precede a reviewed latest-channel change.
+Stable has separate regression and migration gates; the newly elected latest
+cannot become stable in the same window. Existing adapters retain their pinned
+base until their own migration is accepted.
 
 ## Starting points
 
@@ -283,7 +244,7 @@ verdict rule is the same. `promote_base.py` proposes ids
   lost to the LoRA every time Zils tried it: lr 2e-5 diverges, 5e-6 trails the
   production adapter at equal data. Treat it as a research direction, not the
   recipe.
-- A local scorer with the same Brier, calibration and family weighting is
+- A local scorer with the decision-quality metrics, calibration and family weighting is
   `zils.base_round`; run it against a previously published round to estimate
   where you stand before submitting.
 
@@ -291,5 +252,5 @@ verdict rule is the same. `promote_base.py` proposes ids
 
 The incumbent can win. Challengers are never paid, only kings: if no candidate
 is promoted, the base does not change, the existing kings keep their share and,
-with no king yet, the base share is burned at `base_tier.burn_uid`. A candidate that clears the exam but makes adapters
-worse is rejected regardless of its exam score.
+with no king yet, the base share is burned at `base_pools.burn_uid`. A candidate that clears the exam but exceeds the adapter regression tolerances
+is rejected regardless of its exam score.
