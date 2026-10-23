@@ -72,7 +72,7 @@ for (const [source, route, title, owner] of guides) {
   let markdown = original.replace(/\[([^\]]*)\]\(([^\s)]+)\)/g,
     (_, label, href) => `[${label}](${rewriteLink(href, source, owner)})`);
   if (legacyGuides.has(source)) {
-    markdown = markdown.replace(/^(# .+)$/m, '$1\n\n::: warning Legacy Kev 0.8B workflow\nThis historical guide uses the Kev 0.8B checkpoint contract. For the current base, see [d3-mini](/getting-started/models) and the [queue miner guide](/operations/miners). Use the recorded source revision when reproducing this older workflow.\n:::');
+    markdown = markdown.replace(/^(# .+)$/m, '$1\n\n::: warning Legacy Kev 0.8B workflow\nThis historical guide uses the Kev 0.8B checkpoint contract. For the current base, see [z3-mini](/getting-started/models) and the [queue miner guide](/operations/miners). Use the recorded source revision when reproducing this older workflow.\n:::');
   }
   const target = path.join(output, `${route}.md`);
   await mkdir(path.dirname(target), { recursive: true });

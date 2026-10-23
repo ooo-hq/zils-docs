@@ -1,22 +1,42 @@
 ---
-title: d3 model pools
-description: Independent d3 model pools, staged qualification, and immutable customer model selection.
+title: z3 model line
+description: The z3 decision-model line, founding baselines, elected releases, and compatible model selection.
 ---
 
-# d3 model pools
+# z3 model line
 
-d3-mini remains the default lineage for new training jobs. The model-pool
-implementation adds a suite of general decision models, each with its own base
-competition, incumbent, channels and qualification. A smaller model improves
-against its own incumbent; it does not have to beat a larger pool.
+**z3** is the Zils decision-model line. The first release, **z3-mini v1**,
+is a founding baseline using unchanged upstream d3-mini weights. Zils selected
+this starting checkpoint; it is not a miner-trained election winner.
 
-| Pool | Approximate parameters | Initial immutable profile |
-| --- | ---: | --- |
-| `d3-lite` | 0.85B | `d3-lite-0.8b-v1` |
-| `d3-nano` | 2.21B | `d3-nano-2.2b-v1` |
-| `d3-mini` | 4.54B | `d3-mini-4.5b-v1` |
-| `d3-flash` | 8.39B | `d3-flash-8.4b-v1` |
-| `d3` | 26.09B | `d3-26b-v1` |
+Under the z3 release policy, miners train candidates for an enabled lineage.
+Validators compare them with its incumbent, and approved winners become new
+versioned releases after the required qualification and review. Each size has
+its own competition, channels and evidence.
+
+| Model line | Approximate parameters | Release status | Existing immutable profile |
+| --- | ---: | --- | --- |
+| z3-lite | 0.85B | Planned | `d3-lite-0.8b-v1` |
+| z3-nano | 2.21B | Planned | `d3-nano-2.2b-v1` |
+| z3-mini | 4.54B | v1 founding baseline | `d3-mini-4.5b-v1` |
+| z3-flash | 8.39B | Planned | `d3-flash-8.4b-v1` |
+| z3 | 26.09B | Planned | `d3-26b-v1` |
+
+## Public names and artifact identities
+
+The website uses z3 names. Existing API profile IDs, pool keys, downloaded
+artifacts and signed release records retain their original `d3` identities.
+Use the exact values returned by the service in requests; the display rename
+does not introduce new `z3-*` API aliases. Training profile IDs are also distinct
+from callable inference model IDs.
+
+The founding weights are available in the pinned
+[Hugging Face repository](https://huggingface.co/zils-ai/z3-mini-v1/tree/c9b7515250c0444192767fc00975402f12421413).
+Its original filename and repository names preserve provenance. Future elected
+releases must publish their exact checkpoint revision, parent, evaluation
+evidence and version. Candidate submissions are not official z3 releases.
+
+## Availability
 
 **Additional pools are staged.** Source registration, published weights and a
 catalog entry do not establish hosted availability. Every enabled profile needs
@@ -34,8 +54,8 @@ Retired and retiring profiles:
 
 - **H2O Lightning 4B** (`h2o-lightning-4b-v1.2.3`) is retiring. Its serving ended on 17 October 2026.
   Existing jobs and releases keep their frozen profile and the [H2O contract](/training/h2o)
-  (2,048 prompt tokens). An H2O task moves to d3-mini only through a `base_change` upgrade job.
-- **Imajev 4B** (`imajev-4b-v1`) was retired on 17 October 2026. Image jobs now run on d3-mini;
+  (2,048 prompt tokens). An H2O task moves to z3-mini only through a `base_change` upgrade job.
+- **Imajev 4B** (`imajev-4b-v1`) was retired on 17 October 2026. Image jobs now run on z3-mini;
   no Imajev release is registered or served. See [image training](/training/imajev).
 - **JevK5 4B** was [retired](/training/jevk5) on 17 October 2026. Its frozen records stay readable;
   nothing creates, trains or serves it.
@@ -61,7 +81,7 @@ Each pool has independent `stable` and `latest` channels. A promotion advances
 only its own lineage. `latest` is opt-in; `stable` remains the default. Both resolve
 to an immutable profile when a job is created. Later channel updates do not change
 that job or its accepted adapter. Existing mini IDs, releases and king history
-remain unchanged, including the registered `d3-mini-4.5b-zils-r5` profile.
+remain unchanged. Withdrawn candidates stay historical and are not z3 releases.
 
 When configured, `GET /v1/config` adds a `pools` object. Each entry contains channel
 profiles, token limits and availability for training, serving, text and images.
@@ -100,6 +120,8 @@ does not by itself implement open, permissionless miner discovery or inference
 routing to arbitrary public miners.
 
 ## Runtime qualification
+
+The z3-mini founding baseline retains the original d3 runtime and pins.
 
 The d3-mini runtime uses Python 3.12, PyTorch 2.10 / CUDA 13.0 and FLA 0.5.2 plus
 torchvision, pillow and opencv, selected by `ZILS_D3_RUNTIME_PYTHON`; its base is the

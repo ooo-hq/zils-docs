@@ -1,5 +1,9 @@
 # Image training
 
+The public release name is **z3-mini v1**, the founding baseline using unchanged
+d3-mini weights. This technical guide retains the original artifact IDs, runtime
+names and commands. See the [z3 model guide](https://docs.zils.ai/getting-started/models).
+
 Before running service commands, complete the [source installation](../README.md#source-installation).
 Run from the zils-platform checkout with the pinned sibling zils checkout available,
 unless a section explicitly says to use the subnet checkout.

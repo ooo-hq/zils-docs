@@ -3,8 +3,8 @@
 export const guides = [
   ['docs/h2o-queue.md', 'training/h2o', 'Pinned H2O text adapters (retiring)', 'zils'],
   ['docs/h2o-rollout.md', 'operations/h2o', 'Deploy H2O adapters (retiring)', 'zils-platform'],
-  ['docs/d3-rollout.md', 'operations/d3', 'Deploy d3-mini adapters', 'zils-platform'],
-  ['docs/image-training.md', 'training/imajev', 'Image training on d3 (Imajev retired)', 'zils-platform'],
+  ['docs/d3-rollout.md', 'operations/d3', 'Deploy z3-mini adapters', 'zils-platform'],
+  ['docs/image-training.md', 'training/imajev', 'Image training on z3-mini (Imajev retired)', 'zils-platform'],
   ['docs/image-decisions.md', 'api/images', 'Image decisions', 'zils-platform'],
   ['docs/developer-tools.md', 'sdks/overview', 'SDKs, CLI and MCP', 'zils-sdk'],
   ['docs/training-cli.md', 'training/cli', 'Train from the CLI', 'zils-sdk'],
