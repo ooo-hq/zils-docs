@@ -5,5 +5,13 @@
     "ooo-hq/zils-platform": "c203d5eaab1943d0d2b83873b523f65a77b9a46a",
     "ooo-hq/zils-sdk": "ac2b0e3dccaf42ae1b3c3f97bf11fdd14f9ed9ba"
   },
+  "guide_verifications": {
+    "docs/miner-tuning.md": {
+      "repository": "ooo-hq/zils",
+      "revision": "05f7f6130c0e26b91e9ed199563d295d58ecd864",
+      "date": "2026-10-23",
+      "scope": "Training and merge command flags, fixed recipe, candidate contract and election policy checked against source; GPU smoke not executed."
+    }
+  },
   "policy": "Docs are maintained here. Validate commands against these repositories when updating contracts. Historical evidence downloads remain unchanged."
 }

@@ -13,6 +13,9 @@ The five public lineages are z3-lite, z3-nano, z3-mini, z3-flash and z3. Their o
 
 ## Submit a candidate
 
+Start with [Tune a base miner](/operations/miner-tuning) for a smoke attempt,
+training settings, code entry points and a controlled comparison workflow.
+
 1. **Train and merge.** Produce a full-weight replacement for the exact incumbent of an enabled pool. The [base candidates guide](/operations/base-candidates) describes the recipe and frozen artifact contract.
 2. **Upload.** Put the artifact in your public Hugging Face model repository, pinned by commit.
 3. **Commit on chain.** Run `python -m zils.miner commit-candidate` with a hotkey registered on testnet subnet 579. The commitment is `zils1:<sha256>:<revision>:<owner/repo>`. Without `--yes`, this is a dry run.
