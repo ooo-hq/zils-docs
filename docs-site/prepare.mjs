@@ -20,6 +20,12 @@ const github = (repo, file) => `https://github.com/ooo-hq/${repo}/blob/main/${fi
 // Keys are `target#fragment` or `target`; a value with its own `#` replaces the fragment.
 const ownerLinks = {
   zils: {
+    'zils/jevk5.py': github('zils', 'zils/jevk5.py'),
+    'zils/d3.py': github('zils', 'zils/d3.py'),
+    'zils/base_miner.py': github('zils', 'zils/base_miner.py'),
+    'zils/miner.py': github('zils', 'zils/miner.py'),
+    'docs/base-election.md#what-miners-improve': '/operations/base-tier#what-a-round-decides',
+    'docs/automatic-base-mining.md': github('zils', 'docs/automatic-base-mining.md'),
     'README.md#setup': '/legacy/kev-quickstart#repository-setup',
     'README.md#miner-setup': `${github('zils', 'README.md')}#miner-setup`,
     'README.md': '/getting-started/models#',

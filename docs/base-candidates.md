@@ -1,5 +1,8 @@
 # Base candidates
 
+For a smoke attempt, training settings and controlled comparisons, use the
+[miner tuning guide](miner-tuning.md).
+
 A base candidate is a full-weight replacement for the pinned text base,
 `d3-mini-4.5b-v1` (the base on both channels since 17 October 2026, adopted by
 owner decision after it tied the H2O incumbent on the confirmation draw; see

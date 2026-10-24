@@ -23,6 +23,7 @@ export const guides = [
   ['docs/queue-miners.md', 'operations/miners', 'Run a queue miner', 'zils'],
   ['docs/mining.md', 'operations/fleet-miners', 'Run a fleet miner', 'zils'],
   ['docs/base-candidates.md', 'operations/base-candidates', 'Submit a base candidate', 'zils'],
+  ['docs/miner-tuning.md', 'operations/miner-tuning', 'Tune a base miner', 'zils'],
   ['docs/miner-admission.md', 'operations/miner-admission', 'Miner admission', 'zils'],
   ['docs/mining-terms.md', 'operations/miner-terms', 'Miner terms', 'zils'],
   ['docs/testnet.md', 'operations/testnet', 'Bittensor testnet', 'zils'],
