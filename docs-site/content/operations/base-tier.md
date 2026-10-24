@@ -23,6 +23,8 @@ training settings, code entry points and a controlled comparison workflow.
 
 One hotkey has one active candidate commitment. The pinned parent routes it to a pool. Disabled pools, wrong-lineage parents and copied earlier commitments are rejected. Validators discover commitments on chain and download candidates; miners need no inbound port or validator URL.
 
+Each pool can have its own **submission cooldown**: the minimum time between one hotkey's distinct submissions to that pool, counted in chain blocks. A commitment inside the cooldown is refused at intake, after you have already paid for its training and upload; commit again once it has passed. Retries and the confirmation run of an accepted submission are never refused, and each pool's cooldown is tracked separately. If you run the [automatic base miner](https://github.com/ooo-hq/zils/blob/main/docs/automatic-base-mining.md), set `interval_seconds` to at least the pool's cooldown, plus a small margin.
+
 ## What a round decides
 
 The election uses a **0–100 decision score**, with separate metrics for each question type:
