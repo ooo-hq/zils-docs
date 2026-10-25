@@ -5,6 +5,20 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Base-election bar lowered to +2
+
+October 25, 2026
+
+A base-model candidate now needs **+2 decision-score points** over the incumbent,
+down from +3, with the other gates unchanged: a positive paired confidence bound,
+calibration protection, two independent draws and the adapter regression suite.
+Sealed exams are larger (100 test items per family) so the narrower bar is still
+measured precisely, and the new exam passed qualification against the Decision
+Index reference models. Six known exam families were refreshed; their public
+development seed is
+[`zils-ai/base-exam-seed-v3`](https://huggingface.co/datasets/zils-ai/base-exam-seed-v3).
+See the [election guide](/operations/base-tier#what-a-round-decides).
+
 ## Decision-quality election guide
 
 October 23, 2026
