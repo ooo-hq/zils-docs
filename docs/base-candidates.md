@@ -204,7 +204,7 @@ format perfectly and still tied stock d3 on the sealed draws.
 ## How it is scored
 
 Use the [current election guide](/operations/base-tier#what-a-round-decides):
-**+3 decision-score points**, a strictly positive paired lower 95% bound, and
+**+2 decision-score points**, a strictly positive paired lower 95% bound, and
 no more than **0.005 calibrated Brier regression**, on each of two independent
 draws. The second starts at least 12 hours after the candidate and incumbent
 finish their first-draw evidence. Eligible runners-up can qualify.

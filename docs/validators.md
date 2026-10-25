@@ -8,9 +8,9 @@ subnet 579; mainnet is not implemented.
 
 ## Current base-election setup
 
-**Checked 23 October 2026:** z3-mini decision-quality election is live on testnet
+**Checked 25 October 2026:** z3-mini decision-quality election is live on testnet
 579. Use `base_pools` and `base_pool_rounds`, with a qualified per-pool exam,
-fixed +3-point policy, calibration protection and a pinned adapter suite. The
+fixed +2-point policy, calibration protection and a pinned adapter suite. The
 [current election guide](/operations/base-tier) describes qualification, the
 50% base / 20% feature / 30% adapter allocation, king rewards and channel review.
 Use the [operator runbook](https://github.com/ooo-hq/zils/blob/main/docs/base-election.md)

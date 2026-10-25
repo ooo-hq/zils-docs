@@ -118,7 +118,7 @@ Use the [decision-quality election](base-election.md#what-miners-improve) as the
 authoritative metric and qualification contract. Private validator exams are not
 available to miners, and a local result cannot certify a win.
 
-The current election requires **+3 points on its 0–100 score**, a positive paired
+The current election requires **+2 points on its 0–100 score**, a positive paired
 lower 95% confidence bound, and at most 0.005 Brier regression on each of two
 independent draws. Confirmation starts at least 12 hours after both first-draw
 evaluations finish. Reference adapters must also pass their regression suite.

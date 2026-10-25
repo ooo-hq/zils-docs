@@ -182,7 +182,7 @@ and 30% customer adapters**. The old 70/30 split is historical. See the
 [current election and payout guide](/operations/base-tier#who-is-paid).
 
 - **Base models:** z3-mini candidates must improve the decision score by at least
-  **+3 points**, have a strictly positive paired lower 95% bound, and increase
+  **+2 points**, have a strictly positive paired lower 95% bound, and increase
   calibrated Brier by no more than **0.005** on each of two independent draws.
   Confirmation starts at least 12 hours after both candidate and incumbent finish
   their first evidence. All eligible candidates can qualify. The pinned adapter

@@ -7,7 +7,7 @@ description: The live testnet decision-quality election, king payouts, and revie
 
 Miners compete to improve **z3** by submitting a full-weight replacement for a pool's pinned base. Validators measure decision quality on private exams. Passing an exam does not earn a reward or publish a model: a candidate must qualify, survive a release-window comparison, and receive reviewed promotion.
 
-**Live status, checked 23 October 2026:** the decision-quality election is running for z3-mini on testnet subnet **579**. The incumbent is **z3-mini v1**, the founding baseline using unchanged upstream d3-mini weights. Its king history is empty; no elected successor or completed release window was present at this check. Mainnet incentives are not live.
+**Live status, checked 25 October 2026:** the decision-quality election is running for z3-mini on testnet subnet **579**. The incumbent is **z3-mini v1**, the founding baseline using unchanged upstream d3-mini weights. Its king history is empty; no elected successor or completed release window was present at this check. Mainnet incentives are not live.
 
 The five public lineages are z3-lite, z3-nano, z3-mini, z3-flash and z3. Their operational pool keys remain `d3-lite`, `d3-nano`, `d3-mini`, `d3-flash` and `d3`. Only the mini base competition is enabled in this verified configuration; each other base pool is disabled with zero allocation. A registered profile alone does not open a competition. See [public names and artifact identities](/getting-started/models#public-names-and-artifact-identities).
 
@@ -41,7 +41,7 @@ A candidate must pass **all three gates on each qualifying draw**:
 
 | Gate | Requirement |
 | --- | --- |
-| Decision improvement | At least **+3.0 points** over the incumbent |
+| Decision improvement | At least **+2.0 points** over the incumbent |
 | Uncertainty | Paired bootstrap **lower 95% bound strictly above zero**, using 2,000 resamples |
 | Calibration protection | Calibrated full-vector Brier increases by **no more than 0.005** |
 
