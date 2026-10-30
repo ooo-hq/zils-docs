@@ -7,7 +7,8 @@ way to win the base election.
 
 This guide covers **base candidates**, using the z3-mini founding profile
 `d3-mini-4.5b-v1` as the concrete example. Customer queue adapters and feature
-competitions have separate contracts. Use the exact parent accepted by your
+competitions have separate contracts. For the z3-mini soup pool, train the same way but submit a body
+with `zils commit-body`; see [Soup pool](https://docs.zils.ai/operations/soup). Use the exact parent accepted by your
 target pool; a listed profile does not establish that its competition is enabled.
 
 ## 1. Prepare the runtime and a smoke attempt

@@ -81,6 +81,7 @@ export default defineConfig({
         { text: 'Miner qualification', link: '/operations/miner-qualification' },
         { text: 'Checkpoint evaluation', link: '/evaluation/checkpoints' },
         { text: 'Base-model competition', link: '/operations/base-tier' },
+        { text: 'Soup pool', link: '/operations/soup' },
         { text: 'Tune a base miner', link: '/operations/miner-tuning' },
         { text: 'Submit a base candidate', link: '/operations/base-candidates' },
         { text: 'Miner admission', link: '/operations/miner-admission' },
