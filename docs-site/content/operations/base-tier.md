@@ -11,7 +11,7 @@ Miners compete to improve **z3** by submitting a full-weight replacement for a p
 
 The five public lineages are z3-lite, z3-nano, z3-mini, z3-flash and z3. Their operational pool keys remain `d3-lite`, `d3-nano`, `d3-mini`, `d3-flash` and `d3`. Only the mini base competition is enabled in this verified configuration; each other base pool is disabled with zero allocation. A registered profile alone does not open a competition. See [public names and artifact identities](/getting-started/models#public-names-and-artifact-identities).
 
-The z3-mini pool runs as a **soup pool** from the mainnet launch: instead of crowning one candidate, validators average up to five miner bodies each day and pay seats in that soup. See [Soup pool](/operations/soup). The king election below applies to every other pool.
+From the mainnet launch every base pool runs as a **soup pool**: instead of crowning one candidate, validators average up to five miner bodies each day and pay seats in that soup. Lite and mini run from the launch; flash and z3 open later. See [Soup pool](/operations/soup). The rest of this page describes the king election that soup pools replace.
 
 ## Submit a candidate
 
