@@ -232,15 +232,21 @@ whoever operates them; find them on the metagraph
 
 Start with the installer on the mining host. It clones Zils into `~/.zils/zils`,
 builds the miner runtime and, on Linux x86_64 with an NVIDIA GPU, the d3 training
-runtime, links `zils` into `~/.local/bin` and starts `zils setup`, which asks for
+runtime, links `zils-miner` and `btcli` into `~/.local/bin` and starts
+`zils-miner setup`, which asks for
 your wallet, candidate folder and Hugging Face repo, saves them to
 `~/.zils/miner.json` and runs the doctor. Rerun it to update.
+
+The miner command is `zils-miner`. The `zils` command is the customer CLI
+(`npm install -g @zils/cli`); from version 0.4.8 it also runs the miner
+commands, so `zils doctor` and `zils-miner doctor` do the same thing. Older
+installs linked the miner as `zils`; rerunning the installer removes that link.
 
 ```bash
 curl -fsSL https://zils.ai/install.sh | sh
 ```
 
-From then on `zils doctor` names the next step and prints its command; the steps are:
+From then on `zils-miner doctor` names the next step and prints its command; the steps are:
 
 1. **Register a hotkey on testnet subnet 579** following the
    [registration guide](bittensor-registration.md); keep the hotkey file on the
@@ -254,15 +260,15 @@ From then on `zils doctor` names the next step and prints its command; the steps
    passes the candidate contract; the exam is realistic decisions in families you
    have not seen, so what you train on decides everything.
 4. **Upload and commit.** Log in to Hugging Face once (`hf auth login`, a write
-   token), then let `zils commit-candidate` upload the candidate files to
+   token), then let `zils-miner commit-candidate` upload the candidate files to
    your public model repo and commit `zils1:<hash>:<revision>:<repo>` on chain
    with your hotkey (details in [base candidates: commit](base-candidates.md#commit)):
 
    ```bash
-   zils commit-candidate
+   zils-miner commit-candidate
    ```
 
-   It reads the wallet, candidate and repo saved by `zils setup`; flags such as
+   It reads the wallet, candidate and repo saved by `zils-miner setup`; flags such as
    `--candidate` or `--repo` override them for one run.
 
    Without `--yes` it is a dry run that prints the commitment; with `--yes` it
@@ -276,7 +282,7 @@ From then on `zils doctor` names the next step and prints its command; the steps
    failing one with the exact command that fixes it:
 
    ```bash
-   zils doctor
+   zils-miner doctor
    ```
 
    You can run it before step 1 (it tells you to create the wallet), before

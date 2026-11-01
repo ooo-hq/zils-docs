@@ -102,16 +102,16 @@ validator reads each registered hotkey's commitment at its round's preflight
 block, freezes it in that round's chain snapshot and pulls the revision itself.
 No validator URL, open port or long-running process is needed.
 
-Install with `scripts/install.sh` ([miner setup](mining.md)); `zils setup` saves
+Install with `scripts/install.sh` ([miner setup](mining.md)); `zils-miner setup` saves
 the wallet, candidate and repo that the commands below default to.
-`zils doctor` checks each prerequisite in order (requirements, d3 training
+`zils-miner doctor` checks each prerequisite in order (requirements, d3 training
 runtime, hotkey file, registration, candidate, Hugging Face login and repo at the
 revision, the commitment on chain) and prints the first fix or, when all pass,
-the block your commitment landed in. `zils commit-candidate` does the work:
+the block your commitment landed in. `zils-miner commit-candidate` does the work:
 
 ```bash
 hf auth login   # once, with a write token for your account
-zils commit-candidate   # flags such as --candidate or --repo override the saved values
+zils-miner commit-candidate   # flags such as --candidate or --repo override the saved values
 ```
 
 From a checkout without the installer, `.venv-kev/bin/python -m zils.miner` takes
