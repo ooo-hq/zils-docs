@@ -80,9 +80,11 @@ Validators run one soup round per day for each open soup pool:
    - a body built largely from other miners' bodies: other hotkeys' bodies explain at least 30% of the part of its change that the house ingredients, the current soup and the release leave unexplained;
    - a behavioural twin of a pool body (near-identical answers, temperature-scaled copies included).
 
-   **You may fine-tune the current soup or the release**, as well as a house ingredient: the change you add is measured from them, so a fine-tune is not refused because the soup contains other miners' bodies, and it is paid as a trainer body. Re-weighting the seated bodies, or re-uploading one with small changes, is refused. Only a near-exact re-upload or a broken body bans its hash; the other refusals apply to that commitment only, and it is evaluated again when you commit a new revision or the pool body it matched leaves the pool.
+   **You may fine-tune the current soup or the release**, as well as a house ingredient or a listed public model (see [Pay](#pay)): the change you add is measured from them, so a fine-tune is not refused because the soup contains other miners' bodies, and it is paid as a trainer body. Re-weighting the seated bodies, or re-uploading one with small changes, is refused. Re-uploading a listed public model is allowed, since that is a scout's work, but the first near re-upload of each listed model wins: another hotkey's later near re-upload of it is refused while the first stays in the pool. Only a near-exact re-upload or a broken body bans its hash; the other refusals apply to that commitment only, and it is evaluated again when you commit a new revision or the pool body it matched leaves the pool.
 4. **Pool:** new bodies are screened on a few hundred items. The pool is the current members, the house ingredients, the best screened new bodies and the best past single bodies, at most 20 (flash 10, z3 5).
 5. **Solo:** each pool body is graded alone on the chassis. Every score from here on (solo, greedy, contribution, crown) is on the items of this round and the validator's last two finished rounds pooled together (`decision_rounds`, default 3), because one subset's noise is larger than the 0.3-point margin. A new body is graded on the earlier rounds' items too.
+
+   Under the default scoring, `calibrated_brier`, the validator holds apart a private 20% of those items, chosen by a secret that changes every round, and fits one temperature per body or soup on them. The other 80% are scored at that temperature on Brier skill (ranked probability score skill for Score questions), each against the best constant answer for the family. Confidence counts, but sharpening or softening a body's probabilities without changing its answers earns nothing. Bodies are always graded at the temperature the validator fits; a temperature in a body's own files is never read. The 0.3-point margins apply on this scale.
 6. **Greedy soup:** starting from the best single body, add the next best only if the soup's score rises by at least **0.3** points; stop at **5** members.
 7. **Contribution:** each member is left out once; what the soup loses without it is its contribution.
 
@@ -92,17 +94,26 @@ The pool's emission share splits **80% to soup seats and 20% to the best single 
 
 | Part | Share | Who earns it |
 | --- | --- | --- |
-| Soup seats | 80% | Members whose contribution is at least **0.3** points, in equal parts, each multiplied by its rate. If no member clears the floor, the seat share burns. |
+| Soup seats | 80% | Members whose contribution is at least **0.3** points, in equal parts, each multiplied by its rate and subject to the fine-tune rule below. If no member clears the floor, the seat share burns. |
 | Crown | 20% | The round's best single body that is not a house ingredient, multiplied by its rate, only if it beats every house ingredient alone and the current soup by at least **0.3** points on the pooled items. Otherwise the crown burns. A soup usually beats its members, so expect the crown to burn in most rounds; it pays for a body that is better than the soup by itself. |
+
+**Fine-tunes (launch rule).** A seat is credited by what the soup loses without the body, so a fine-tune that takes its base's place would also be credited with its base's contribution. Until seats are credited relative to a body's base, validators split each body's change over the allowed bases (house ingredients, listed public models, the soup and the release). If at least half of it comes from those bases, the body is a fine-tune, and its bases are the ones explaining at least 10% of it:
+
+- If one of its bases is a listed public model, it is paid at the scout rate.
+- Otherwise its seat is paid only if the body alone beats the best of its bases by at least **0.3** points on the round's items. If a base cannot be scored that round, the seat is unpaid.
+
+A body held back this way keeps its place in the soup and its seat share burns. Train enough to beat what you started from.
 
 | Rate | Multiplier | Applies to |
 | --- | --- | --- |
 | Trainer | 1.0 | A body you trained, including a fine-tune of a house ingredient, the current soup or the release. |
-| Scout | 0.25 | A body within a similarity threshold of a listed open model released after launch. |
-| House mix | 0.25 | A body whose change from Qwen is almost entirely a mix of house ingredients' changes (less than 5% left over; real fine-tunes leave about 10%), or, when it was admitted, almost entirely a mix of house ingredients, the soup and the release. |
+| Scout | 0.25 | An unchanged or lightly changed re-upload of a model on the pool's known-public list (weight-change cosine of at least 0.9 to it), or a fine-tune of a listed model under the launch rule above. |
+| House mix | 0.25 | A body whose change from Qwen is almost entirely a mix of house ingredients' and listed models' changes (less than 5% left over; real fine-tunes leave about 10%), or, when it was admitted, almost entirely a mix of house ingredients, listed models, the soup and the release. |
 | House ingredient | 0 | The open decision models of the pool's size already public at launch. The pool includes them unpaid. |
 
 Each pool has its own house ingredients, listed in the `zils` repository under `zils/data/`: `soup-house.json` (mini: five open Qwen3.5-4B decision models), `soup-house-lite.json` (`vllm-sr/d3-lite` and `internlm/Intern-Decision-0.8B`), `soup-house-flash.json` (`vllm-sr/d3-flash`) and `soup-house-z3.json` (`vllm-sr/d3-ultra`).
+
+Each pool may also have a **known-public list** of other public decision models of its size, each pinned to a revision: `soup-known-lite.json` and `soup-known-mini.json` in the same folder. Flash and z3 have none. Finding one of these models and committing it unchanged or lightly changed earns the scout rate. Full pay is for real training: a fine-tune that moves well away from every listed model (cosine under 0.9) earns the trainer rate, whichever model it started from. Validators resolve each list entry once, keep only a private sketch of its weights and delete the files; listed models are never graded, seated or paid themselves.
 
 Every unearned part burns to the subnet owner's uid, as in the base tier. Until miners submit new bodies, most of a pool's share burns.
 
@@ -112,10 +123,10 @@ The launch configuration (`zils/data/base-pools-launch.json`) gives the base emi
 
 ## What validators publish
 
-Each round's public record lists the soup members (hotkey, body hash, rate), their rounded contributions, per-category soup scores, the rounds whose items the decisions were scored on and their item count, and sha256 hashes of the item subset, the per-item predictions and the soup weights, so a round can be audited against the validator's private record. Per-family scores are never published. On the fixed round bank, exam items and labels stay private, so outside re-grading of such a round is not possible yet. A validator may instead draw round items from [Zils Current](/operations/current), whose items are public and can be rebuilt by anyone; a body committed after an item resolved could have been trained on it.
+Each round's public record lists the soup members (hotkey, body hash, rate), their rounded contributions, per-category soup scores, the pool's scoring and the soup's fitted temperature, the rounds whose items the decisions were scored on and their item count, and sha256 hashes of the item subset, the per-item predictions and the soup weights, so a round can be audited against the validator's private record. Per-family scores are never published. On the fixed round bank, exam items and labels stay private, so outside re-grading of such a round is not possible yet. A validator may instead draw round items from [Zils Current](/operations/current), whose items are public and can be rebuilt by anyone; a body committed after an item resolved could have been trained on it.
 
 ## Releases
 
-A soup is not served until it is released. Every 14 to 28 days, at a release window, the current soup must beat the current release by at least +1 point with a positive lower bound on each of two sealed release draws that rounds never use, pass the 12-hour confirmation draw and the pinned three-seed adapter suite. A reviewed promotion then makes it that tier's next z3 version. Members are paid through seats, not as kings, and the release itself has no single winner.
+A soup is not served until it is released. Every 14 to 28 days, at a release window, the current soup must beat the current release by at least +1 point with a positive lower bound on each of two sealed release draws that rounds never use, pass the 12-hour confirmation draw and the pinned three-seed adapter suite. A reviewed promotion then makes it that tier's next z3 version; the released soup carries the temperature fitted for it, which serving applies. Members are paid through seats, not as kings, and the release itself has no single winner.
 
-The margin (0.3), floor (0.3), member cap (5), pool size, change bound (0.15), 80/20 split, rates (1.0 / 0.25 / 0), pool shares and release cadence are policy choices made for the launch, not tuned results.
+The margin (0.3), floor (0.3), member cap (5), pool size, change bound (0.15), 80/20 split, rates (1.0 / 0.25 / 0), the fine-tune launch rule, the scoring, pool shares and release cadence are policy choices made for the launch, not tuned results.

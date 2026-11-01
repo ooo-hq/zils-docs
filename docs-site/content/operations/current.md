@@ -49,17 +49,31 @@ python -m zils.current grade --items BANK/<date>/items.jsonl --model CHECKPOINT
 - **Proof and cross-check.** Every item must carry its source link, source ids and an outcome time later than its question time. For a random sample of each stream the label is derived again by a different method (the page history for reverts, whether the article still exists for deletion discussions, a second fetch for Stack Exchange). A stream below 97% agreement is removed from the export, and a stream that fails in the nightly job is paused until a person re-enables it.
 - **Overlap check.** Each export is compared with reference sets (exam draws, the round bank, benchmark items, training pools) by prompt fingerprint, content hash, normalized text and shared passages of about 50 words. Matching items are dropped. Without references the export stops unless the check is explicitly skipped, and the manifest records that.
 
-The overlap check catches copies, not paraphrases or translations, and the outcome phrase list is short, so paraphrased outcomes can slip through.
+The overlap check catches copies, not paraphrases or translations, and the outcome phrase list is short, so paraphrased outcomes can slip through. Many streams resolve only tens of items in a freshness window, which is why soup rounds merge or drop small streams (below).
 
 ## Soup rounds on Current items
 
 By default a soup round draws its items from the validator's fixed round bank. A validator can point a pool at its Zils Current exports instead:
 
 ```json
-"exam": { "source": "current", "current_bank": "/var/lib/zils-current/bank" }
+"exam": {
+  "source": "current",
+  "current_bank": "/var/lib/zils-current/bank",
+  "current_share": 0.33,
+  "min_family_items": 100,
+  "exclude_streams": ["stackexchange-score-*"]
+}
 ```
 
-Each round then takes up to 1,000 items (by default) from dated folders whose manifest checks out: items resolved in the last 14 days, drawn at most 3 times across rounds, fitting the pool's input cap, with yes/no labels balanced, at least 3 streams contributing and no stream holding more than 40% of the Current part. Within a day, items are ranked under the validator's private seed. The fixed round bank fills any cell the Current part does not cover; when Current streams cover every cell, the whole subset can come from Current. If the rules cannot be met, the round uses the fixed round bank as usual, and its record says so.
+This is a **blend**: the fixed round bank keeps its families in every cell of the base score, and Current families are added next to them, up to `current_share` of the subset. With only `source` and `current_bank`, Current streams replace the bank's families in the cells they cover.
+
+Each round then takes up to 1,000 items (by default) from dated folders whose manifest checks out: items resolved in the last 14 days, drawn at most 3 times across rounds, fitting the pool's input cap, with yes/no labels balanced, at least 3 streams contributing and no stream holding more than 40% of the Current part. Within a day, items are ranked under the validator's private seed. The fixed round bank fills any cell the Current part does not cover; without a blend, when Current streams cover every cell, the whole subset can come from Current.
+
+Every cell of the base score has a fixed weight and the families in a cell count equally, so a stream with a few dozen items could move the whole score. Three quality settings guard against that; setting any of them applies the defaults shown above to the others:
+
+- **`min_family_items`** (default 100): small streams of the same cell and question type are merged into one family, and only families that reach the minimum are drawn. Families of equal size are rotated between rounds by the validator's private seed.
+- **`exclude_streams`** (default `["stackexchange-score-*"]`): streams that are never drawn. Stack Exchange score items show close to zero skill for every model measured, so they are left out by default.
+- **`current_share`** (default 1): below 1, the round blends as described above. If the rules cannot be met, the round uses the fixed round bank as usual, and its record says so.
 
 Pooled decisions over the last three rounds work the same way on Current items. See [Soup pool](/operations/soup).
 
