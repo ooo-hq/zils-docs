@@ -127,7 +127,7 @@ Passing exams is not itself a payout: promotion and king history determine rewar
 ## 4. Publish a reviewed candidate
 
 Complete [testnet registration](bittensor-registration.md), configure your own
-wallet and public Hugging Face repository with `zils setup`, and run `zils doctor`.
+wallet and public Hugging Face repository with `zils-miner setup`, and run `zils-miner doctor`.
 The miner installer supplies this `zils` command; npm's `@zils/cli` is the separate
 customer client. Keep provenance and reports outside the candidate directory,
 whose file list is strict.
@@ -135,7 +135,7 @@ whose file list is strict.
 For your real candidate, replace `CANDIDATE_DIRECTORY` and `YOUR_ACCOUNT/YOUR_REPO`:
 
 ```sh
-zils commit-candidate --model d3-mini-4.5b-v1 \
+zils-miner commit-candidate --model d3-mini-4.5b-v1 \
   --candidate CANDIDATE_DIRECTORY --repo YOUR_ACCOUNT/YOUR_REPO
 ```
 
