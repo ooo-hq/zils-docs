@@ -22,7 +22,7 @@ There is one soup pool per model size, each with its own bodies, rounds, seats a
 
 The z3 chassis uses `prefix_bidir` attention and the `header-v1` prompt layout; both are fixed by the chassis, so a z3 body is an ordinary Qwen3.8-27B-layout fine-tune. Round items longer than a pool's input cap are left out of that pool's rounds.
 
-Lite and mini run rounds from the start. Flash and z3 open later, each at a block fixed in the validator configuration. A pool pays nothing before it opens (its share burns), and it may pay a temporary **boosted share** for its first weeks that steps down to its long-run share (see [Pay](#pool-shares)). Bodies committed to a pool before it opens are admitted at its first round.
+Lite and mini run rounds from the start. Flash and z3 open later, each at a block fixed in the validator configuration. A pool pays nothing before it opens; its share burns (see [Pool shares](#pool-shares)). Bodies committed to a pool before it opens are admitted at its first round.
 
 ## What a body is
 
@@ -90,11 +90,11 @@ Validators run one soup round per day for each open soup pool:
 
 ## Pay
 
-The pool's emission share splits **80% to soup seats and 20% to the best single body** (the crown). Seats are re-earned every round; a displaced member stops earning at once.
+Each pool's emission share pays **five seats of 16% each** (80% in all) and **20% to the best single body** (the crown). A seat's value is fixed: it does not grow when fewer members are seated. Seats are re-earned every round; a displaced member stops earning at once.
 
 | Part | Share | Who earns it |
 | --- | --- | --- |
-| Soup seats | 80% | Members whose contribution is at least **0.3** points, in equal parts, each multiplied by its rate and subject to the fine-tune rule below. If no member clears the floor, the seat share burns. |
+| Soup seats | 5 × 16% | One seat for each member whose contribution is at least **0.3** points, multiplied by its rate and subject to the fine-tune rule below. Empty seats, house seats and seats below the floor burn. |
 | Crown | 20% | The round's best single body that is not a house ingredient, multiplied by its rate, only if it beats every house ingredient alone and the current soup by at least **0.3** points on the pooled items. Otherwise the crown burns. A soup usually beats its members, so expect the crown to burn in most rounds; it pays for a body that is better than the soup by itself. |
 
 **Fine-tunes (launch rule).** A seat is credited by what the soup loses without the body, so a fine-tune that takes its base's place would also be credited with its base's contribution. Until seats are credited relative to a body's base, validators split each body's change over the allowed bases (house ingredients, listed public models, the soup and the release). If at least half of it comes from those bases, the body is a fine-tune, and its bases are the ones explaining at least 10% of it:
@@ -119,7 +119,7 @@ Every unearned part burns to the subnet owner's uid, as in the base tier. Until 
 
 ### Pool shares
 
-The launch configuration (`zils/data/base-pools-launch.json`) gives the base emission to lite 35%, mini 30%, flash 20% and z3 10%; the other 5% is unassigned and burns. Flash and z3 burn their shares until their opening blocks. The launch configuration boosts flash to 30% for its first two weeks and 25% for the next two, and z3 to 15% for its first two weeks; a boost is paid out of budget that would otherwise burn and never reduces another pool's share. The exact blocks are in each validator's configuration and its published report.
+The launch configuration (`zils/data/base-pools-launch.json`) gives lite, mini, flash and z3 25% of the base emission each. With the base tier at the whole budget, a trainer's seat is 4% of all emissions and a crown 5%; the four pools have 24 paid spots. Flash and z3 burn their shares until their opening blocks, which are in each validator's configuration and its published report.
 
 ## What validators publish
 
@@ -129,4 +129,4 @@ Each round's public record lists the soup members (hotkey, body hash, rate), the
 
 A soup is not served until it is released. Every 14 to 28 days, at a release window, the current soup must beat the current release by at least +1 point with a positive lower bound on each of two sealed release draws that rounds never use, pass the 12-hour confirmation draw and the pinned three-seed adapter suite. A reviewed promotion then makes it that tier's next z3 version; the released soup carries the temperature fitted for it, which serving applies. Members are paid through seats, not as kings, and the release itself has no single winner.
 
-The margin (0.3), floor (0.3), member cap (5), pool size, change bound (0.15), 80/20 split, rates (1.0 / 0.25 / 0), the fine-tune launch rule, the scoring, pool shares and release cadence are policy choices made for the launch, not tuned results.
+The margin (0.3), floor (0.3), member cap (5), pool size, change bound (0.15), 80/20 split, fixed seat value, rates (1.0 / 0.25 / 0), the fine-tune launch rule, the scoring, pool shares and release cadence are policy choices made for the launch, not tuned results.
