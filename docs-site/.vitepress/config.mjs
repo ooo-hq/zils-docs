@@ -60,7 +60,6 @@ export default defineConfig({
         { text: 'Rank options · SDK', link: '/sdks/ranking' },
         { text: 'Image decisions', link: '/api/images' },
         { text: 'API reference & bulk jobs', link: '/api/reference' },
-        { text: 'Run JevK5 locally (historical)', link: '/getting-started/local-inference' },
       ] },
       { text: 'Models & source', collapsed: true, items: [
         { text: 'z3 model line', link: '/getting-started/models' },
@@ -71,8 +70,6 @@ export default defineConfig({
         { text: 'Understand the result', link: '/training/results' },
         { text: 'Train from the CLI', link: '/training/cli' },
         { text: 'Image training on z3-mini', link: '/training/imajev' },
-        { text: 'H2O text adapters (retiring)', link: '/training/h2o' },
-        { text: 'JevK5 (retired)', link: '/training/jevk5' },
         { text: 'Training workflow', link: '/training/shared-queue' },
         { text: 'Automatic training & activation', link: '/training/automatic' },
         { text: 'Model versions & upgrades', link: '/training/versions' },
@@ -96,7 +93,6 @@ export default defineConfig({
       { text: 'Platform operations', collapsed: true, items: [
         { text: 'Platform source setup', link: '/operations/platform-setup' },
         { text: 'Deploy z3-mini adapters', link: '/operations/d3' },
-        { text: 'Deploy H2O adapters (retiring)', link: '/operations/h2o' },
         { text: 'Deploy the decision API', link: '/operations/decision-api' },
         { text: 'Deploy customer models', link: '/operations/customer-models' },
         { text: 'Deploy the training service', link: '/operations/training-service' },
@@ -111,13 +107,6 @@ export default defineConfig({
         { text: 'Commerce reproduction', link: '/research/commerce-reproduction' },
         { text: 'Queued training pilot', link: '/research/queue-pilot' },
         { text: 'Verified testnet round', link: '/research/testnet-round' },
-      ] },
-      { text: 'Legacy Kev 0.8B', collapsed: true, items: [
-        { text: 'Local fleet setup', link: '/legacy/kev-quickstart' },
-        { text: 'Dataset format', link: '/legacy/kev-data' },
-        { text: 'Training queue', link: '/legacy/kev-queue' },
-        { text: 'Training results', link: '/legacy/kev-results' },
-        { text: 'Synthetic benchmarks', link: '/evaluation/benchmarks' },
       ] },
     ],
   },

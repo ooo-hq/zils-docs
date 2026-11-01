@@ -89,7 +89,7 @@ capability grounds; its confirmation draw tied, so this overrides the promotion
 rule rather than winning under it. See [d3-mini](/getting-started/models).
 
 **H2O, JevK5 and Imajev are retired.** H2O serving is off and H2O is retiring;
-existing H2O jobs keep their frozen profile. [JevK5](/training/jevk5) and Imajev
+existing H2O jobs keep their frozen profile. JevK5 and Imajev
 are retired; image jobs run on d3-mini.
 
 ## SDK 0.3.0

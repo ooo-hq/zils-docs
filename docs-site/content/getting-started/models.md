@@ -50,14 +50,13 @@ profile contracts, not a claim that any particular GPU is qualified.
 | Text: yes/no, choice and score questions, up to four images or one video per decision | 4,096 input tokens; up to 255 outcomes |
 | Image training job: one canonical PNG and one choice question per example | The processed prompt, photo tokens included, must fit 4,096 tokens; up to 255 outcomes |
 
-Retired and retiring profiles:
+Retired profiles:
 
-- **H2O Lightning 4B** (`h2o-lightning-4b-v1.2.3`) is retiring. Its serving ended on 17 October 2026.
-  Existing jobs and releases keep their frozen profile and the [H2O contract](/training/h2o)
-  (2,048 prompt tokens). An H2O task moves to z3-mini only through a `base_change` upgrade job.
+- **H2O Lightning 4B** (`h2o-lightning-4b-v1.2.3`) was retired on 22 October 2026. Its serving
+  ended on 17 October 2026, and its profile is gone from the code.
 - **Imajev 4B** (`imajev-4b-v1`) was retired on 17 October 2026. Image jobs now run on z3-mini;
   no Imajev release is registered or served. See [image training](/training/imajev).
-- **JevK5 4B** was [retired](/training/jevk5) on 17 October 2026. Its frozen records stay readable;
+- **JevK5 4B** was retired on 17 October 2026. Its frozen records stay readable;
   nothing creates, trains or serves it.
 
 API request limits also apply. The text API's Score request contract allows

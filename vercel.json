@@ -10,6 +10,51 @@
       "source": "/legacy/kev-miners",
       "destination": "/operations/fleet-miners",
       "permanent": true
+    },
+    {
+      "source": "/training/h2o",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/operations/h2o",
+      "destination": "/operations/d3",
+      "permanent": true
+    },
+    {
+      "source": "/training/jevk5",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/getting-started/local-inference",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/legacy/kev-quickstart",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/legacy/kev-data",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/legacy/kev-queue",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/legacy/kev-results",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/evaluation/benchmarks",
+      "destination": "/evaluation/checkpoints",
+      "permanent": true
     }
   ]
 }

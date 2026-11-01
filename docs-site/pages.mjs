@@ -1,8 +1,6 @@
 // Only these reviewed repository documents are published by the docs build.
 // The fourth field names the owning repository; null marks a page maintained here.
 export const guides = [
-  ['docs/h2o-queue.md', 'training/h2o', 'Pinned H2O text adapters (retiring)', 'zils'],
-  ['docs/h2o-rollout.md', 'operations/h2o', 'Deploy H2O adapters (retiring)', 'zils-platform'],
   ['docs/d3-rollout.md', 'operations/d3', 'Deploy z3-mini adapters', 'zils-platform'],
   ['docs/image-training.md', 'training/imajev', 'Image training on z3-mini (Imajev retired)', 'zils-platform'],
   ['docs/image-decisions.md', 'api/images', 'Image decisions', 'zils-platform'],
@@ -12,14 +10,12 @@ export const guides = [
   ['docs/model-research.md', 'research/open-models', 'Tuned open models and B300', 'zils'],
   ['docs/decision-api.md', 'api/reference', 'Decision API reference', null],
   ['docs/decision-api-deployment.md', 'operations/decision-api', 'Deploy the decision API', null],
-  ['docs/jevk5-queue.md', 'training/jevk5', 'JevK5 training queue (retired)', 'zils'],
   ['docs/automatic-training.md', 'training/automatic', 'Automatic training and activation', 'zils-platform'],
   ['docs/customer-adapter-serving.md', 'operations/customer-models', 'Deploy customer models', 'zils-platform'],
   ['docs/version-selection.md', 'training/versions', 'Customer model versions', 'zils-platform'],
   ['docs/customer-jobs.md', 'training/local-jobs', 'Local training jobs', 'zils'],
   ['docs/training-workflow.md', 'training/shared-queue', 'Training workflow', null],
   ['docs/supabase-training.md', 'operations/training-service', 'Deploy the training service', 'zils-platform'],
-  ['docs/kev-training-queue.md', 'legacy/kev-queue', 'Kev training queue', null],
   ['docs/queue-miners.md', 'operations/miners', 'Run a queue miner', 'zils'],
   ['docs/mining.md', 'operations/fleet-miners', 'Run a fleet miner', 'zils'],
   ['docs/base-candidates.md', 'operations/base-candidates', 'Submit a base candidate', 'zils'],
@@ -32,7 +28,6 @@ export const guides = [
   ['docs/queue-validator.md', 'operations/queue-validator', 'Run the queue validator', 'zils-platform'],
   ['docs/development.md', 'operations/development', 'Local development', null],
   ['docs/evaluation.md', 'evaluation/checkpoints', 'Checkpoint evaluation', 'zils'],
-  ['docs/benchmark.md', 'evaluation/benchmarks', 'Synthetic benchmarks', 'zils'],
   ['docs/experiments.md', 'research/experiment-history', 'Experiment history', 'zils'],
   ['docs/jevbench-public.md', 'research/jevbench', 'Public JevBench comparison', 'zils'],
   ['docs/queued-training-pilot-001.md', 'research/queue-pilot', 'Queued training pilot', null],
@@ -41,11 +36,17 @@ export const guides = [
   ['docs/roadmap.md', 'getting-started/roadmap', 'Roadmap and limitations', 'zils'],
 ];
 
-// These workflows still require the original Kev checkpoint and training head.
-export const legacyGuides = new Set([
+
+// Retired pages: their sources are deleted, so links to them resolve to the last revision
+// that published them; vercel.json redirects their old site URLs.
+export const retiredRevision = 'https://github.com/ooo-hq/zils-docs/blob/5770c6a';
+export const retiredGuides = [
+  'docs/h2o-queue.md',
+  'docs/h2o-rollout.md',
+  'docs/jevk5-queue.md',
   'docs/kev-training-queue.md',
   'docs/benchmark.md',
-]);
+];
 
 export const downloads = [
   'examples/training/train.jsonl',

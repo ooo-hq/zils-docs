@@ -72,4 +72,4 @@ To order several options instead of selecting one answer, try experimental
 adds optional grouped comparisons. The guide includes Python and TypeScript
 examples and explains relative scores, usage limits and the quality tradeoff.
 
-To self-host, use the [API deployment guide](/operations/decision-api#start-from-a-fresh-clone). The historical [local JevK5 inference](/getting-started/local-inference) guide records the retired upstream runtime; it is not the current shared model.
+To self-host, use the [API deployment guide](/operations/decision-api#start-from-a-fresh-clone).

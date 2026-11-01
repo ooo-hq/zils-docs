@@ -20,7 +20,7 @@ Record the context available at decision time, allowed outcomes, and correct lab
 
 Each line is one complete record. `label` identifies an outcome; `group_id` keeps related source records together; `family` identifies the task group for evaluation. The training format differs from the prediction API's `model`, `state`, and `questions` request.
 
-The z3-mini founding profile supports at most 255 outcomes and 4,096 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [z3-mini](/getting-started/models). Frozen H2O jobs keep their 2,048-token [contract](/training/h2o#training-and-scoring).
+The z3-mini founding profile supports at most 255 outcomes and 4,096 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [z3-mini](/getting-started/models).
 
 ## Separate the data
 
