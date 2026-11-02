@@ -20,7 +20,7 @@ Record the context available at decision time, allowed outcomes, and correct lab
 
 Each line is one complete record. `label` identifies an outcome; `group_id` keeps related source records together; `family` identifies the task group for evaluation. The training format differs from the prediction API's `model`, `state`, and `questions` request.
 
-The z3-mini founding profile supports at most 255 outcomes and 4,096 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [z3-mini](/getting-started/models). Frozen H2O jobs keep their 2,048-token [contract](/training/h2o#training-and-scoring).
+z3-mini supports at most 255 outcomes and 8,192 input tokens per example. Inputs that exceed the limit are rejected, not truncated. See [z3-mini](/getting-started/models).
 
 ## Separate the data
 
@@ -44,6 +44,6 @@ Training may complete with `no_qualifying_model`. The [product-matching study](/
 
 Approved miner operators can read and retain exported training data. The export-consent flag records your decision; it does not provide confidential compute or recall downloaded copies.
 
-Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. The [automatic workflow](/training/automatic) can assign an approved miner when capacity is available and activate only accepted, verified customer models.
+Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. When capacity is available, the platform assigns an approved miner, and only accepted, verified models are activated. Training costs $0.20 per million training tokens with a $2 minimum per run; see [pricing](/getting-started/pricing).
 
-For terminal uploads, use the [training CLI](/training/cli). Image jobs require image qualification for the selected profile and keep a frozen image intake; see [image training](/training/imajev). Retired JevK5 job records keep their original 16-outcome limit and model identity.
+For terminal uploads, use the [training CLI](/training/cli). For image jobs, see [Train on images](/training/images).

@@ -1,15 +1,14 @@
-# Tune a base miner
+# Train a soup body
 
 Start by changing your training data while keeping the supplied trainer fixed.
 Compare the resulting checkpoint with its parent on separate development cases
 before publishing it. The supplied recipe is a starting point, not a demonstrated
-way to win the base election.
+way to earn a soup seat.
 
-This guide covers **base candidates**, using the z3-mini founding profile
-`d3-mini-4.5b-v1` as the concrete example. Customer queue adapters and feature
-competitions have separate contracts. For a soup pool, train the same way but submit a body
-with `zils commit-body --pool <pool>`; see [Soup pool](https://docs.zils.ai/operations/soup). Use the exact parent accepted by your
-target pool; a listed profile does not establish that its competition is enabled.
+This guide trains a body for the `d3-mini` pool, using the z3-mini profile
+`d3-mini-4.5b-v1` as the concrete example; other pools work the same way with their own
+parent. To make a body without training, merge or re-upload listed public models instead
+([merge models](/sdks/overview#merge-models), [Soup pool: pay](/operations/soup#pay)).
 
 ## 1. Prepare the runtime and a smoke attempt
 
@@ -71,7 +70,7 @@ For data-only experiments, use the smoke commands with your real export and new
 output paths. Cover the decision types and domains you want to improve, balance
 labels, review ambiguous examples, and keep related source material within one
 split. Use public or otherwise permitted research data; never use customer exports
-or validator-private exams for base training. Mini's 4,096-token limit includes
+or validator-private exams for base training. Mini's 8,192-token limit includes
 the compiled question and state. Longer training inputs do not extend it.
 
 The relevant code is:
@@ -81,7 +80,7 @@ The relevant code is:
 | [`zils/jevk5.py`](../zils/jevk5.py) → `train` | Shared training loop, despite the historical name: optimizer, shuffling, accumulation and recorded metrics |
 | [`zils/d3.py`](../zils/d3.py) | D3 runtime, LoRA construction, adapter validation, full-weight merge and command arguments |
 | [`zils/base_miner.py`](../zils/base_miner.py) | Scheduled attempts, GPU coordination, receipts, upload and chain commitment |
-| [`zils/miner.py`](../zils/miner.py) | Setup, doctor and explicit candidate submission |
+| [`zils/miner.py`](../zils/miner.py) | Setup and body commits |
 
 Keep recipe experiments in a separate checkout. A learning-rate change needs
 both the optimizer and recorded `learning_rate` in `training_metrics.json` updated.
@@ -113,43 +112,26 @@ follow the [candidate contract](base-candidates.md#what-stays-fixed).
    wins. Training loss or one favorable seed is not a qualification result.
 
 This is an experiment protocol, not an automatic benchmark command. Supply your
-own permitted datasets and evaluation harness. The historical
-[local evaluation rubric](evaluation.md) is not the current base-election score.
-Use the [decision-quality election](base-election.md#what-miners-improve) as the
-authoritative metric and qualification contract. Private validator exams are not
-available to miners, and a local result cannot certify a win.
+own permitted datasets and evaluation harness. Private validator exams are not
+available to miners, and a local result cannot certify that a body earns.
 
-The current election requires **+2 points on its 0–100 score**, a positive paired
-lower 95% confidence bound, and at most 0.005 Brier regression on each of two
-independent draws. Confirmation starts at least 12 hours after both first-draw
-evaluations finish. Reference adapters must also pass their regression suite.
-Passing exams is not itself a payout: promotion and king history determine rewards.
+Validators score bodies with calibrated Brier skill on their private exams, and a
+fine-tune earns only when it improves on its bases by the pool's margin. Rewards
+come from seats in the round's soup and from the crown; see
+[Soup pool: pay](/operations/soup#pay).
 
-## 4. Publish a reviewed candidate
+## 4. Commit your checkpoint as a body
 
-Complete [testnet registration](bittensor-registration.md), configure your own
-wallet and public Hugging Face repository with `zils-miner setup`, and run `zils-miner doctor`.
-The miner installer supplies this `zils` command; npm's `@zils/cli` is the separate
-customer client. Keep provenance and reports outside the candidate directory,
-whose file list is strict.
+Complete [registration](bittensor-registration.md) and run `zils-miner setup` to
+configure your wallet and a public Hugging Face repository. The miner installer
+supplies `zils-miner`; npm's `@zils/cli` is the separate customer client.
 
-For your real candidate, replace `CANDIDATE_DIRECTORY` and `YOUR_ACCOUNT/YOUR_REPO`:
+A body must be the pool's full Qwen3.5 model with its vision tower. Check your
+checkpoint folder before uploading anything:
 
 ```sh
-zils-miner commit-candidate --model d3-mini-4.5b-v1 \
-  --candidate CANDIDATE_DIRECTORY --repo YOUR_ACCOUNT/YOUR_REPO
+zils-miner commit-body --pool d3-mini --path ./my-body --check
 ```
 
-That command is a dry run. Review the parent, wallet, hash and repository, then
-repeat with `--yes` to upload and commit publicly. Keep the immutable revision
-available during assessment. See [submission and results](base-candidates.md#commit)
-for readback, duplicates and result discovery.
-
-For unattended attempts, use [scheduled base mining](automatic-base-mining.md).
-Set its `data` and matching `data_sha256` to your reviewed export. The runner calls
-the existing trainer; it has no custom-trainer command or hyperparameter settings.
-It varies seeds, does not select recipes using development scores, and does not
-wait for a validator decision before its next completed-cycle attempt. Configure
-the shared GPU lock, service environment, disk retention and failure recovery
-before enabling a timer. Automation publishes attempts; it does not establish
-that they improve the base.
+Then follow [Commit a body](/operations/soup#commit-a-body) to write the ownership
+file, upload to Hugging Face and commit the exact revision on chain.

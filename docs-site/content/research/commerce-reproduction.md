@@ -22,4 +22,4 @@ The [attribution page](/research/attribution) preserves the applicable model, da
 
 ## Run a supported public workflow
 
-Use the [local JevK5 guide](/getting-started/local-inference) to run local decisions with the same pinned starting checkpoint. The separate [legacy fleet quickstart](/legacy/kev-quickstart) covers Kev 0.8B training. Neither path reproduces the commerce experiment's additional adapter or measured evaluation.
+The retired [local JevK5 guide](https://github.com/ooo-hq/zils-docs/blob/5770c6a/docs-site/content/getting-started/local-inference.md) ran local decisions with the same pinned starting checkpoint. The retired [Kev fleet quickstart](https://github.com/ooo-hq/zils-docs/blob/5770c6a/docs-site/content/legacy/kev-quickstart.md) covered Kev 0.8B training. Neither path reproduces the commerce experiment's additional adapter or measured evaluation.

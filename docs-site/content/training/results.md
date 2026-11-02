@@ -28,16 +28,16 @@ API confidence is not simply the largest probability. [How decisions work](/gett
 
 First versions compare with the calibrated pinned base. Upgrades compare with the previous accepted version's exact serving weights and temperature on the new test set. Candidates are calibrated on the new calibration split. See [version selection](/training/versions).
 
-Accepted z3-mini artifacts, and older H2O artifacts, contain `adapter_config.json`, `adapter_model.safetensors`, `model.json`, and `release.json`. Accepted image jobs produce the same text adapter release. Older Imajev artifacts additionally preserve the separately validated decision head and image configuration. Legacy Kev downloads retain their original format. Preserve the report, data split identifiers, model revision, and calibration record with each artifact.
+Accepted z3-mini artifacts contain `adapter_config.json`, `adapter_model.safetensors`, `model.json`, and `release.json`. Accepted image jobs produce the same text adapter release. Preserve the report, data split identifiers, model revision, and calibration record with each artifact.
 
 ## Distinguish acceptance from API readiness
 
 The dashboard's separate `workflow` state describes assignment and activation. **Only `ready` confirms an API model ID.** `activating`, `activation_failed`, or `needs_review` does not mean the new model is serving.
 
-The [automatic workflow](/training/automatic) verifies the runtime's release identity before registration. A stale upgrade cannot overwrite a newer active version. Use the immutable model ID to pin a version, or its stable task alias to follow accepted upgrades.
+The platform verifies the runtime's release identity before registration. A stale upgrade cannot overwrite a newer active version. Use the immutable model ID to pin a version, or its stable task alias to follow accepted upgrades.
 
 ## Compare more than accuracy
 
-Read probability error, high-confidence mistakes, task-group results, sample sizes, and independent final evaluation. The [JevK5 product-matching experiment](/research/commerce) retained an unfavorable additional-training result; its adapter was not promoted.
+Read probability error, high-confidence mistakes, task-group results, sample sizes, and independent final evaluation. An earlier [product-matching experiment](/research/commerce) retained an unfavorable additional-training result; its adapter was not promoted.
 
-Latency comparisons must identify hardware and timing scope. A few successful requests do not establish production capacity or a service-level guarantee. The [API guide](/api/reference#verification-and-measured-scope) records measured checks and limitations.
+Latency comparisons must identify hardware and timing scope. A few successful requests do not establish production capacity or a service-level guarantee. See the [API limits](/api/reference#capacity-usage-and-retention).

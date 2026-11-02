@@ -39,7 +39,7 @@ The merged d3 code ran end to end on a GPU for the first time (qualification par
 
 These are one card on one night. Nothing above 4,096 input tokens was tested, and the holdouts are teacher-authored, not customer data.
 
-**Decision, October 17, 2026.** The owner adopted d3-mini as the base anyway, recorded as an override of the promotion rule rather than a win under it. The grounds are capability: adapters trained on d3-mini beat adapters trained on H2O on the reference job and on ABCD, and d3-mini takes images and video, which H2O does not serve. The same afternoon both channels moved to d3-mini and H2O serving was switched off. Existing H2O jobs and releases keep their frozen profile and move only through `base_change` upgrade jobs. Stock d3-mini is now the base-tier incumbent that candidates must beat under the unchanged rule.
+**Decision, October 17, 2026.** The owner adopted d3-mini as the base anyway, recorded as an override of the promotion rule rather than a win under it. The grounds are capability: adapters trained on d3-mini beat adapters trained on H2O on the reference job and on ABCD, and d3-mini takes images and video, which H2O does not serve. The same afternoon both channels moved to d3-mini and H2O serving was switched off. Existing H2O jobs and releases keep their frozen profile and move only through `base_change` upgrade jobs.
 
 ## Repository experiments
 
@@ -60,4 +60,4 @@ Reports identify relevant hardware, frozen source revisions, aggregate measureme
 
 ## Reproduce a workflow
 
-Start with the [API quickstart](/getting-started/quickstart) for hosted decisions, or the historical [local JevK5 inference](/getting-started/local-inference) guide for the retired upstream runtime. The [legacy synthetic benchmark](/evaluation/benchmarks) generates data for the Kev fleet. The [commerce reproduction status](/research/commerce-reproduction) explains which evidence is available and which scripts still need publication. Public aggregate JSON downloads are linked from each report.
+Start with the [API quickstart](/getting-started/quickstart) for hosted decisions. The retired [local JevK5 inference](https://github.com/ooo-hq/zils-docs/blob/5770c6a/docs-site/content/getting-started/local-inference.md) and [Kev synthetic benchmark](https://github.com/ooo-hq/zils-docs/blob/5770c6a/docs/benchmark.md) guides stay readable at their last published revision. The [commerce reproduction status](/research/commerce-reproduction) explains which evidence is available and which scripts still need publication. Public aggregate JSON downloads are linked from each report.
