@@ -37,9 +37,9 @@ Freeze your acceptance criteria before inspecting the final test results. Repeat
 
 The [research record](/research/) includes gains, regressions and rejected candidates. Start with a report's question, dataset, baseline and limitations before its headline score. A deterministic baseline can outperform a learned model when rules fully describe the task.
 
-For a speed comparison, match hardware, runtime, input lengths and measurement conditions. H2O's older 4090 speed ratio does not guarantee performance on the updated runtime. Training and adapter reload checks establish compatibility, not accuracy on your task.
+For a speed comparison, match hardware, runtime, input lengths and measurement conditions. Training and adapter reload checks establish compatibility, not accuracy on your task.
 
-Use the [z3-mini profile](/getting-started/models) when studying current model compatibility. Legacy Kev, JevK5, H2O and Imajev experiments retain their recorded model identities; they are not instructions to change the current default.
+Use the [z3-mini profile](/getting-started/models) when studying current model compatibility. Older experiments keep their recorded model names; they are not instructions to change the current default.
 
 ## Reproduce or contribute
 

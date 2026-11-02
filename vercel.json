@@ -130,6 +130,11 @@
       "source": "/operations/base-tier",
       "destination": "/operations/soup",
       "permanent": true
+    },
+    {
+      "source": "/training/imajev",
+      "destination": "/training/images",
+      "permanent": true
     }
   ]
 }

@@ -5,8 +5,7 @@ Install `@zils/cli` from npm using the
 defaults to the z3-mini founding baseline through its immutable d3-mini profile. Optional `--pool d3-lite`,
 `--base-channel latest`, or `--model EXACT_PROFILE_ID` selects a qualified profile
 advertised by the service. Service pool keys remain d3-lite, d3-nano, d3-mini, d3-flash and d3;
-catalog membership alone does not mean a pool is available. H2O and JevK5 are retired for new
-jobs; the CLI only downloads their older accepted results. Training execution remains in the hosted platform;
+catalog membership alone does not mean a pool is available. Training execution remains in the hosted platform;
 no GPU or model installation is needed on your laptop.
 
 The public model line is **z3**. Existing API IDs, pool keys, downloaded artifacts
@@ -25,10 +24,7 @@ existing invited account. Keep the terminal open and open email links on the sam
 computer. The fixed local callback uses port **43187**; a remote/headless shell is
 not supported by this flow. Sign-in expires after ten minutes.
 
-Browser sign-in requires the operator to enable the matching
-[platform configuration](https://github.com/ooo-hq/zils-platform/blob/main/docs/cli-training.md)
-and [website approval page](https://github.com/ooo-hq/zils-web/blob/main/docs/cli-sign-in.md).
-The code is not evidence that a hosted service has enabled this beta OAuth flow.
+`zils login` opens your browser to approve the sign-in.
 
 The account session is saved privately to `~/.zils/config.account.json`, separate
 from the inference key in `~/.zils/config.json`. Files use mode `0600` on POSIX;
@@ -69,13 +65,13 @@ The export flag explicitly permits training data to be copied to approved worker
 Both quality thresholds are required; acceptance may produce no qualifying model.
 Before creation, the CLI prints the active training account, service, files,
 selected immutable model, thresholds and export consent to stderr. Submission uses that account's training
-allowance/credit under the service's rules; the CLI does not estimate a price.
+credit: $0.20 per million training tokens with a $2 minimum per run ([pricing](/getting-started/pricing)). The CLI does not estimate the price before submission.
 JSON results remain on stdout.
 
 Each UTF-8 JSONL case requires `id`, `group_id`, `family`, `state`, `question`, and
 `label`. Labels are strings: `"false"`/`"true"` for `noul`, a criterion key for
 `choice`, or a zero-based index string for `score`. Questions support at most
-255 outcomes. The server enforces the pinned model limits (the z3-mini founding baseline allows 4,096 input tokens); the CLI never truncates data.
+255 outcomes. The server enforces the pinned model limits (z3-mini allows 8,192 input tokens); the CLI never truncates data.
 
 IDs must be globally unique. Related source groups and identical state/question
 pairs must stay in one split. Calibration and test families must match and occur
@@ -87,8 +83,7 @@ Selection is checked against fresh discovery before one create request. When
 combined, pool, channel and exact profile must agree. The exact profile is frozen
 in the local receipt and checked on creation, upload and resume; channel changes
 do not change an existing job. Without pool discovery, the mini stable default
-continues to work. These flags require this source version of the CLI; a source
-change does not publish an npm release or enable a hosted pool.
+continues to work.
 
 ## Follow and recover a run
 
@@ -135,7 +130,7 @@ zils train cancel JOB_ID
 zils train cancel JOB_ID --yes --json
 ```
 
-Downloads require an accepted supported z3 result, or an older accepted H2O or JevK5 result. The CLI verifies provider/job/file
+Downloads require an accepted z3 result. The CLI verifies provider/job/file
 paths, release identity, model metadata and the backend-compatible checkpoint
 SHA-256 before publishing four files to a **new** directory. Existing paths are
 never overwritten. The filesystem must support hard links within the destination's

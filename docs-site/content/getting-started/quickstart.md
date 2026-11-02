@@ -15,6 +15,8 @@ Sign in at [zils.ai/train](https://zils.ai/train), open **API keys**, and create
 
 Key management uses your signed-in session. Prediction calls use the resulting Zils API key. These credentials are not interchangeable.
 
+Requests are prepaid at $0.06 per million input tokens, so add credit to your account first; a request without credit returns HTTP `402`. See [pricing and limits](/getting-started/pricing).
+
 Replace `YOUR_ZILS_API_KEY` in each `curl` command below with the API key you just created.
 
 ## 2. List available models
@@ -51,7 +53,7 @@ curl --fail-with-body 'https://training.zils.ai/decision/v1/systemone' \
   }'
 ```
 
-The response's `answers.route` contains the selected `choice`, per-option `probabilities`, and `confidence`. The top-level `model` identifies the resolved release; `usage` records input tokens and zero generated output tokens. Read the actual returned values rather than assuming this example establishes accuracy on your traffic.
+The response's `answers.route` contains the selected `choice`, per-option `probabilities`, and `confidence`. The top-level `model` identifies the resolved release; `usage` records the billed input tokens; output is not charged. Read the actual returned values rather than assuming this example establishes accuracy on your traffic.
 
 The API also supports yes/no (`noul`) and score questions. [How decisions work](/getting-started/decisions) explains the fields and their meaning.
 
@@ -68,8 +70,6 @@ You have completed the API quickstart when the response contains a resolved `mod
 Install the [Zils SDK or CLI](/sdks/overview) for application integration. The [API reference](/api/reference) covers keys, bulk jobs, errors, capacity, and retention. [Prepare a dataset](/training/data) covers task evaluation and optional training.
 
 To order several options instead of selecting one answer, try experimental
-[SDK ranking](/sdks/ranking). SDK 0.3.0 keeps pairwise ranking as the default and
-adds optional grouped comparisons. The guide includes Python and TypeScript
+[SDK ranking](/sdks/ranking). The SDK uses pairwise ranking by default and
+offers optional grouped comparisons. The guide includes Python and TypeScript
 examples and explains relative scores, usage limits and the quality tradeoff.
-
-To self-host, use the [API deployment guide](/operations/decision-api#start-from-a-fresh-clone).

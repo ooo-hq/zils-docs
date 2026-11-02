@@ -1,8 +1,8 @@
 // Only these reviewed repository documents are published by the docs build.
 // The fourth field names the owning repository; null marks a page maintained here.
 export const guides = [
-  ['docs/image-training.md', 'training/imajev', 'Image training on z3-mini (Imajev retired)', 'zils-platform'],
-  ['docs/image-decisions.md', 'api/images', 'Image decisions', 'zils-platform'],
+  ['docs/image-training.md', 'training/images', 'Train on images', 'zils-platform'],
+  ['docs/image-decisions.md', 'api/images', 'Send images with a decision', 'zils-platform'],
   ['docs/developer-tools.md', 'sdks/overview', 'SDKs, CLI and MCP', 'zils-sdk'],
   ['docs/training-cli.md', 'training/cli', 'Train from the CLI', 'zils-sdk'],
   ['docs/model-research.md', 'research/open-models', 'Tuned open models and B300', 'zils'],
@@ -10,7 +10,7 @@ export const guides = [
   ['docs/version-selection.md', 'training/versions', 'Customer model versions', 'zils-platform'],
   ['docs/training-workflow.md', 'training/shared-queue', 'Training workflow', null],
   ['docs/mining.md', 'operations/fleet-miners', 'Run a fleet miner', 'zils'],
-  ['docs/miner-tuning.md', 'operations/miner-tuning', 'Tune a base miner', 'zils'],
+  ['docs/miner-tuning.md', 'operations/miner-tuning', 'Train a soup body', 'zils'],
   ['docs/mining-terms.md', 'operations/miner-terms', 'Miner terms', 'zils'],
   ['docs/testnet.md', 'operations/testnet', 'Bittensor testnet', 'zils'],
   ['docs/bittensor-registration.md', 'operations/bittensor-registration', 'Register on Bittensor', 'zils'],
@@ -20,7 +20,6 @@ export const guides = [
   ['docs/queued-training-pilot-001.md', 'research/queue-pilot', 'Queued training pilot', null],
   ['docs/commerce-pilot-001.md', 'research/commerce', 'Product-matching experiment', null],
   ['docs/testnet-round-001.md', 'research/testnet-round', 'Verified testnet round', 'zils'],
-  ['docs/roadmap.md', 'getting-started/roadmap', 'Roadmap and limitations', 'zils'],
 ];
 
 
@@ -33,6 +32,7 @@ export const retiredGuides = [
   'docs/jevk5-queue.md',
   'docs/kev-training-queue.md',
   'docs/benchmark.md',
+  'docs/roadmap.md',
   'docs/d3-rollout.md',
   'docs/decision-api-deployment.md',
   'docs/customer-adapter-serving.md',

@@ -39,7 +39,7 @@ The merged d3 code ran end to end on a GPU for the first time (qualification par
 
 These are one card on one night. Nothing above 4,096 input tokens was tested, and the holdouts are teacher-authored, not customer data.
 
-**Decision, October 17, 2026.** The owner adopted d3-mini as the base anyway, recorded as an override of the promotion rule rather than a win under it. The grounds are capability: adapters trained on d3-mini beat adapters trained on H2O on the reference job and on ABCD, and d3-mini takes images and video, which H2O does not serve. The same afternoon both channels moved to d3-mini and H2O serving was switched off. Existing H2O jobs and releases keep their frozen profile and move only through `base_change` upgrade jobs. Stock d3-mini is now the base-tier incumbent that candidates must beat under the unchanged rule.
+**Decision, October 17, 2026.** The owner adopted d3-mini as the base anyway, recorded as an override of the promotion rule rather than a win under it. The grounds are capability: adapters trained on d3-mini beat adapters trained on H2O on the reference job and on ABCD, and d3-mini takes images and video, which H2O does not serve. The same afternoon both channels moved to d3-mini and H2O serving was switched off. Existing H2O jobs and releases keep their frozen profile and move only through `base_change` upgrade jobs.
 
 ## Repository experiments
 

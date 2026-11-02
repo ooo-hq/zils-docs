@@ -29,31 +29,29 @@ Read [how Zils fits into your application](/getting-started/ecosystem) for the c
 <div class="start-links">
 <a href="/getting-started/quickstart"><strong>Developers</strong><span>Make your first decision through the API, then connect it to your application with an SDK.</span></a>
 <a href="/operations/soup"><strong>Miners</strong><span>Commit model bodies to a soup pool and earn when they improve it.</span></a>
-<a href="/operations/validators"><strong>Validators</strong><span>Understand independent evaluation and the access needed to operate a validator.</span></a>
+<a href="/operations/validators"><strong>Validators</strong><span>Score committed bodies, build each pool's soup and set weights on chain.</span></a>
 <a href="/research/getting-started"><strong>Learn and research</strong><span>Understand decision models, design a first experiment, and read the evidence.</span></a>
 </div>
 
 ## How the pieces fit together
 
-Developers integrate decisions and supply examples when they want to improve a task. Miners execute model workloads. Validators independently evaluate trained candidates before acceptance. The platform coordinates accounts, jobs and access to accepted models.
+Developers call decision models and supply examples when they want a model tuned to their task. On the Bittensor network, miners build better base models: each size of the [z3 line](/getting-started/models) is a soup pool, and miners commit model bodies that validators average into the pool's next release. The platform runs accounts, billing, training jobs and hosted decisions.
 
 You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text and image adapters use **z3-mini**, whose founding baseline is the unchanged d3-mini checkpoint adopted on 17 October 2026. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
 
 ## What works today
 
-**New in SDK 0.3.0:** [optional grouped ranking](/sdks/ranking#optional-grouped-ranking)
-can use fewer comparisons for lists of 2–10 options. Pairwise remains the default;
-grouped ranking can reduce ordering quality and needs evaluation on your task.
-Python and TypeScript are supported. Read the [release note](/changelog#sdk-0-3-0).
-
-| Start with | Access today |
+| Start with | How |
 | --- | --- |
-| Hosted decisions | A Zils account with API access; use the models listed for your account |
-| SDKs and command-line tools | [JavaScript/TypeScript SDK and CLI](/sdks/overview) on npm; Python source and release artifacts require SDK repository access |
-| Miner training work | Operator approval and qualification for each model |
-| [Base-model competition](/operations/base-tier) | A hotkey registered on Bittensor testnet subnet 579, a public Hugging Face repo and `zils.miner commit-candidate` |
-| Validator operation | Operator coordination and protected access; public permissionless onboarding is not available |
+| Hosted decisions | A Zils account and an API key; see the [quickstart](/getting-started/quickstart) |
+| Price | $0.06 per million input tokens, output free; training $0.20 per million tokens, $2 minimum per run. Prepaid top-ups start at $5. See [pricing and limits](/getting-started/pricing) |
+| SDKs and CLI | `npm install -g @zils/cli` and `npm install @zils/sdk` (TypeScript); the Python SDK is available from source. See [SDKs and CLI](/sdks/overview) |
+| Find where Zils fits | `npx -y @zils/cli fit agent` in your project, or `zils fit` |
+| Mining | Commit a model body to a [soup pool](/operations/soup) with `zils-miner`, installed by `curl -fsSL https://zils.ai/install.sh \| sh` |
+| Validating | See [Run a validator](/operations/validators) |
 
-Miners are the model execution architecture. Development GPUs are used for bootstrapping and testing. The current approved-worker queue does not establish an open network that discovers and routes inference to arbitrary public miners. Read [capabilities and remaining work](/getting-started/roadmap) for the boundary between available workflows and planned network capabilities.
+Hosted decisions run on platform GPUs today; serving from miners is not live yet.
+Read [what's available](/getting-started/roadmap) for the boundary between current
+features and planned work.
 
 For access or a pilot, [contact Zils](https://zils.ai/contact). To contribute code or documentation, use the [repository map](/getting-started/repositories).
