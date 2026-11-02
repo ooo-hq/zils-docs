@@ -10,7 +10,7 @@ ranked order and relative scores. For example, rank support actions by how well
 they address a customer's issue, or rank product descriptions by relevance to a
 request.
 
-**Available in SDK 0.3.0 · Experimental.** Ranking is available in the
+**Experimental.** Ranking is available in the
 JavaScript/TypeScript and Python SDKs. The [playground](https://zils.ai/playground)
 links to this guide; it does not yet have an interactive ranking demo.
 
@@ -33,7 +33,7 @@ ranking CLI command, or ranking MCP tool.
 Use Node.js 20 or newer and install the published package:
 
 ```sh
-npm install @zils/sdk@^0.3.0
+npm install @zils/sdk
 ```
 
 Set `ZILS_API_KEY` through your server's secret storage. The SDK uses an inference
@@ -63,9 +63,8 @@ options. See [SDK configuration](/sdks/overview#credentials-and-defaults).
 
 ## Python
 
-Use Python 3.11 or newer and the 0.3.0 package. Python is available through source
-and release artifacts that require SDK repository access; it is not on PyPI.
-See [Python installation](/sdks/overview#install-python) before running this code.
+Use Python 3.11 or newer. The Python SDK is not published yet; see
+[Python SDK and MCP server](/sdks/overview#python-sdk-and-mcp-server).
 Set `ZILS_API_KEY` through your application's secret storage.
 
 ```python
@@ -86,7 +85,7 @@ timeout, retry, and extra-header options.
 ## Optional grouped ranking
 
 **Pairwise ranking remains the default.** Existing calls still compare every
-pair in both orders. Version 0.3.0 lets you explicitly choose overlapping groups
+pair in both orders. The SDK also lets you explicitly choose overlapping groups
 to use fewer model judgments:
 
 ```ts
@@ -192,6 +191,3 @@ Invalid inputs are rejected before a request. Incomplete or invalid comparisons
 raise an error instead of returning a partial ranking. A model request can
 already have been billed even if its response cannot be ranked. API and transport
 errors propagate normally; there is no automatic repair request.
-
-Read the [0.3.0 release note](/changelog#sdk-0-3-0) for availability across SDKs,
-the CLI, and the playground.

@@ -1,19 +1,13 @@
 # Zils SDKs, CLI, and MCP
 
 Use the same Zils decision API from Python, JavaScript/TypeScript, a terminal, or
-an MCP-compatible agent. The clients list available models and answer
-yes/no (`noul`), choice, and ordered-score questions. The CLI also supports [text training](/training/cli) with browser
-account sign-in. Image training, bulk jobs, miner/validator administration, and
+an MCP-compatible agent. It lists available models and answers
+yes/no (`noul`), choice, and ordered-score questions. The CLI also supports [z3-mini text training](training-cli.md) with browser
+account sign-in, finds where Zils fits in your code, and merges models. Image training, bulk jobs, miner/validator administration, and
 billing management remain in their existing APIs.
 
-SDK 0.3.0 adds optional [grouped ranking](/sdks/ranking#optional-grouped-ranking)
-for ordering 2–10 options by your criterion with fewer comparisons. Pairwise
-remains the default. Python sync/async and TypeScript clients expose `rank`;
-the CLI and MCP do not add a ranking command or tool. See the
-[release note](/changelog#sdk-0-3-0).
-
 The CLI and JavaScript/TypeScript SDK are distributed as `@zils/cli` and
-`@zils/sdk` on npm. The Python SDK/MCP package is installed from source or release artifacts and is
+`@zils/sdk` on npm. The Python SDK/MCP package is installed from source and is
 not published on PyPI. No model download or GPU is required.
 
 ## Install from npm
@@ -29,61 +23,24 @@ zils train list
 You can also use `npx @zils/cli login`. First use downloads the bundled Python
 CLI's dependencies from PyPI into a private cache; subsequent starts reuse it.
 No global Python packages are modified. Set `ZILS_PYTHON` to a Python executable
-path if it is not on your PATH. See the [published CLI package](https://www.npmjs.com/package/@zils/cli).
+path if it is not on your PATH. See the [CLI package guide](../packages/cli/README.md).
 
-For JavaScript/TypeScript applications, run `npm install @zils/sdk@^0.3.0`.
+For JavaScript/TypeScript applications, run `npm install @zils/sdk`.
 
-## Install Python
+## Python SDK and MCP server
 
-Python requires version 3.11 or newer. If you have SDK repository access,
-download `zils_sdk-0.3.0-py3-none-any.whl` from the
-[0.3.0 release](https://github.com/ooo-hq/zils-sdk/releases/tag/v0.3.0) and run:
-
-```sh
-python -m pip install ./zils_sdk-0.3.0-py3-none-any.whl
-```
-
-Python is not published on PyPI. For the MCP extra or development, use the source
-installation below. Public npm packages do not require repository access.
-
-## Install from a fresh clone
-
-The SDK source currently requires organization access. Do not use
-`pip install zils-sdk` as a published-package instruction.
-
-Use Python 3.11+ and Node.js 20+. The commands below use a macOS/Linux shell;
-on Windows, activate the environment with `.venv-tools\Scripts\Activate.ps1`.
-
-```sh
-git clone https://github.com/ooo-hq/zils-sdk.git
-cd zils-sdk
-python3 -m venv .venv-tools
-. .venv-tools/bin/activate
-python -m pip install "./packages/python[mcp]"
-zils --version
-```
-
-The Python distribution installs both `zils` and `zils-mcp`. Omit `[mcp]` if you
-only need the Python SDK and CLI. For the JavaScript/TypeScript package:
-
-```sh
-npm ci --prefix packages/typescript
-npm run build --prefix packages/typescript
-npm pack ./packages/typescript
-```
-
-For version 0.3.0 this writes `zils-sdk-0.3.0.tgz` in the current directory. Install that tarball
-into your Node application with `npm install /path/to/zils-sdk-0.3.0.tgz`.
-The installed import is `@zils/sdk`; both `import` and `require` are supported.
+The Python SDK and the `zils-mcp` server are not published yet; installing them
+needs access to the private `zils-sdk` repository. The npm CLI bundles its own
+Python implementation, so `@zils/cli` works without it.
 
 ## Credentials and defaults
 
 Bare `zils login` opens your browser to sign in with your Zils account for training.
 It does not create an inference API key. `zils login --api-key` explicitly selects
-the private key prompt described below. See [training sign-in](/training/cli).
+the private key prompt described below. See [training sign-in](training-cli.md).
 
 Create a customer API key in the Zils dashboard or through the
-[key-management API](/api/reference#create-a-key-and-call-the-model).
+[key-management API](/api/reference).
 `zils login --api-key` validates an existing key and stores it locally; it does not create
 an account or issue a key.
 
@@ -158,6 +115,52 @@ for a per-request timeout. `--body` cannot be combined with `--state` or
 `0` success, `1` API/connection failure, `2` invalid input/configuration/file access,
 `130` interrupted. Run `zils decide --help` for available flags.
 
+## Find where Zils fits
+
+Paste this into Claude Code, Cursor or Codex in your project:
+
+> Use `npx -y @zils/cli fit agent` to install the Zils skill, then see where Zils fits in this repo.
+
+The agent reads your code, writes test cases from your app's own rules, asks Zils,
+and reports what Zils would handle. You only approve the Zils sign-in in your browser.
+
+To do it yourself, run `zils fit` for a guided tour. `zils fit scan` finds the model
+calls in your code that make typed decisions, `zils fit record` logs what they
+receive and answer, and `zils fit run` replays that log on Zils to show how much of
+the traffic it can take. Agreement with your current model is not the same as accuracy;
+check disagreements yourself.
+
+## Merge models
+
+`zils merge` blends 2–5 fine-tunes of the same base model into a new model folder
+on your machine: a soup, like the ones the network's [soup pools](/operations/soup)
+build every day. Each model is a local folder or a Hugging Face repo id:
+
+```sh
+zils merge vllm-sr/d3-lite eljiwo/jiwo-0.8b cribl-ai/cribl-decision-2-0.8B --out ./my-soup
+zils merge ./model-a ./model-b ./model-c --weights 2,1,1 --out ./my-soup
+zils merge ./model-a ./model-b --method slerp --weight 0.3 --out ./my-mix
+```
+
+- Every model gets an even portion by default. `--weights` sets portions in order
+  (normalised to sum to one); with two models, `--weight` is the second model's share.
+  `--method slerp` follows the arc between exactly two models.
+- The output keeps the first model's files and layout, and `merge.json` records the
+  recipe. Every other model's licence is copied as `LICENSE-model-2`, `LICENSE-model-3`
+  and so on; check them before you share the result.
+- Text-only fine-tunes merge into a multimodal model: weight names line up across
+  `model.` and `model.language_model.` prefixes, and weights not every model has are
+  kept from the first.
+- To use the result as a soup body, add `--pool d3-lite` or `--pool d3-mini`. With
+  the [Zils miner](/operations/fleet-miners) installed, this runs the miner's body
+  check on the new folder and says whether it is a valid body. A body must be the
+  full Qwen3.5 model with its vision tower, so list a full checkpoint (such as
+  `vllm-sr/d3-lite`) first. A mix of listed public models is paid the scout rate,
+  not the trainer rate.
+- Hugging Face models download into your cache and are checked against the Hub's
+  SHA-256; set `HF_TOKEN` for gated or private models. Nothing is uploaded, hosted
+  or scored.
+
 ## Python SDK
 
 Set `ZILS_API_KEY` through your application's secret manager or pass `api_key`.
@@ -213,17 +216,172 @@ answers, and error classes come from the compatible TypeSafe client.
 
 ## Ranking
 
-Use `client.rank` to order 2–10 JSON items by a criterion in SDK 0.3.0. It uses
-Choice comparisons with the existing model, then returns original indices,
-relative strengths, comparison count, and unchanged usage metadata.
+SDK version 0.2.0 adds experimental `rank`, using the existing model and HTTP API.
+Install TypeScript with `npm install @zils/sdk@^0.4.11`, or install the Python
+checkout as described above.
+Requests use the configured Zils endpoint and existing Choice decisions.
 
-The [ranking guide](/sdks/ranking) includes complete Python and TypeScript
-examples, input limits, error behavior, and score interpretation. Ranking is
-experimental; a relative strength is not a confidence percentage. Ten items
-require 90 judgments by default, or 10 with explicit `groupSize: 4` in TypeScript
-or `group_size=4` in Python. Both use one HTTP request. Grouped mode can worsen
-the full ordering, so evaluate later choices as well as the first. There is no
-new API question type, CLI command, MCP tool, or interactive playground ranking demo.
+```ts
+import { ZilsClient } from '@zils/sdk';
+
+const client = new ZilsClient();
+const items = ['Update the logo', 'Checkout is failing', 'Fix a typo'];
+const result = await client.rank({
+  items,
+  instructions: 'Most urgent customer impact first',
+});
+for (const entry of result.ranking) console.log(items[entry.index], entry.score);
+console.log(result.model, result.comparisons, result.usage.billable_input_tokens);
+```
+
+`rank(request, options)` returns a `Promise<RankResult>` and accepts the existing
+per-call timeout, retry, and abort-signal options. An optional `request.model`
+overrides the configured model. It does not expose `APIPromise.withResponse()`.
+
+```python
+from zils_sdk import ZilsClient
+
+items = ["Update the logo", "Checkout is failing", "Fix a typo"]
+with ZilsClient() as client:
+    result = client.rank(items, "Most urgent customer impact first")
+    for entry in result.ranking:
+        print(items[entry.index], entry.score)
+    print(result.model, result.comparisons, result.usage.billable_input_tokens)
+```
+
+Use `await client.rank(items, instructions)` with `AsyncZilsClient` for the async
+equivalent. Python returns a `RankResult` with `RankedItem` entries; both types
+are exported. Existing per-call model, timeout, retry, and extra-header options
+are supported.
+
+### Grouped ranking
+
+The SDK has an optional group size. Pairwise ranking remains the default;
+set the option explicitly to evaluate grouped ranking.
+
+```ts
+const result = await client.rank({
+  items,
+  instructions: 'Most urgent customer impact first',
+  groupSize: 4,
+});
+```
+
+```python
+result = client.rank(items, "Most urgent customer impact first", group_size=4)
+```
+
+Python's async client accepts the same keyword. Omit the option (or use Python
+`None`) for the existing all-pairs method. An explicit group size must be an
+integer from 2 to 10; groups use `min(group_size, len(items))` distinct input
+indices. The overall list still requires 2–10 items.
+
+The SDK places items in input order on a cycle and compares one consecutive
+group starting at each item, wrapping at the end. For five items and groups of
+four, the questions cover `ABCD`, `BCDE`, `CDEA`, `DEAB`, and `EABC`. This connects
+all items through overlapping groups and places every item in every position
+once. A group size of 2 explicitly selects this sparse cycle; it does not select
+the default all-pairs method. Groups as large as the list compare all items in
+each of `n` rotated presentations.
+
+| Items | Default all-pairs judgments | Grouped judgments (`groupSize: 4`) |
+| --- | --- | --- |
+| 2 | 2 | 2 |
+| 3 | 6 | 3 |
+| 10 | 90 | 10 |
+
+Both methods use one HTTP request and return the same result shape. `comparisons`
+counts Choice questions, so grouped mode returns `n`. Larger groups put more
+text in each question and change the competing alternatives; they do not reduce
+the number of grouped questions further. Context limits still apply. Fewer
+questions do not guarantee proportional billing or latency savings.
+
+Grouped mode fits a Luce choice model: within a group, an item's predicted
+probability is its strength divided by the sum of strengths in that group.
+The fit uses all returned probabilities as fractional outcomes, accounting for
+the alternatives in each question. It does not compare raw probabilities across
+different groups or treat one group as independent judgments of every pair.
+Before fitting, each probability is floored at `0.001` and the group is
+renormalized to sum to one. This changes extreme evidence to keep strengths
+finite. The same convergence threshold, iteration limit and output rounding
+described below apply.
+
+Four items per group is a starting point for evaluation, not a validated quality
+setting. A small synthetic live pilot found ordering regressions, including poor
+fallback choices despite a correct first choice. Position balancing reduces a
+fixed positional preference; it does not
+remove content-dependent bias. Different input permutations change the groups
+and can change rankings when judgments are inconsistent with one set of
+strengths. Scores are relative to this list and method, not calibrated confidence.
+Compare both methods on independently labeled examples before changing your
+application's default; measure ranking quality, returned token usage and elapsed
+time. The included synthetic tests establish arithmetic and protocol behavior,
+not real-world ranking accuracy or savings.
+
+### Contract and cost
+
+- Supply 2–10 items and a nonempty instruction describing which items should
+  rank highest. Items can be any finite JSON value, including structured records.
+  Object keys must be strings; convert dates, sets, and other custom objects to
+  JSON values yourself. Unsupported values are rejected without sending a request.
+  Duplicate items remain separate entries, identified by their original indices.
+- By default the SDK sends one `POST /v1/systemone` request containing `n * (n - 1)` Choice
+  questions: every pair in both orders. Two items require 2 judgments, three
+  require 6, and ten require 90. One request is not one model evaluation.
+- The returned `ranking` is ordered strongest first. Each entry has a zero-based
+  `index` into the original list and a `score` relative to the strongest fitted
+  strength. Ties retain input order; tied leaders can all score 1.
+- `comparisons` counts the Choice judgments: ordered pairs by default or groups when selected. `model`
+  and `usage` come from the actual response. Billable and resource tokens remain
+  distinct; a missing billable count stays missing. No cost is estimated locally.
+- The existing body/context budgets, execution limits, billing, and timeout apply.
+  Ten long documents can still exceed those limits. Automatic retries remain off
+  by default; callers can explicitly opt in through the existing retry options.
+
+### What the score means
+
+The default pairwise method averages `P(A beats B)` with `1 - P(B beats A)` from the reversed
+comparison. This reduces fixed presentation-order bias; it does not guarantee
+that the judgments are unbiased or correct. It uses these probabilities as
+fractional wins in a Bradley–Terry maximum-likelihood fit. The model's separate
+Choice `confidence` is not used as an additional weight.
+
+A fitted strength divided by the largest strength becomes the displayed score.
+For example, illustrative scores of 1.0, 0.5, and 0.25 describe relative
+strengths, not probabilities of being correct. Under the fitted model, a 0.5
+item has a `0.5 / (0.5 + 1)`, or one-third, chance of beating the leader. Scores
+do not sum to 1 and cannot be compared across unrelated lists or criteria.
+The best item in a poor list can still score 1; there is no separate ranking
+confidence or absolute quality threshold.
+
+Exact arithmetic and unit conversion can produce incorrect model comparisons.
+Compute derived numeric fields and normalize units in ordinary code first. If
+the entire criterion is a numeric sort, use ordinary sorting directly. Comparing
+both orders and fitting strengths does not correct wrong comparison evidence.
+
+The [Bradley–Terry MM algorithm](https://doi.org/10.1214/aos/1079120141)
+uses the complete comparison graph. Pair probabilities are clipped to
+`[0.001, 0.999]` before fitting so zero/one judgments cannot force infinite
+strength ratios. This bounds extreme evidence and changes those extreme inputs;
+it is not a measured calibration of the model. The fit stops when the maximum
+absolute log-strength update is below `1e-10`, with a 100,000-iteration ceiling.
+Output strengths use ten significant digits, preserving tiny positive scores
+while suppressing floating-point differences between ties.
+
+Invalid inputs are rejected before the request. Missing comparisons, the wrong
+answer type, invalid probabilities or confidence, missing/invalid model or token
+usage, or a nonconvergent fit raise an error instead of returning a partial ranking.
+A successful model request may
+already be billed even if its response cannot be ranked. Transport/API failures
+propagate normally; the SDK never silently substitutes per-item scoring or
+submits a second request to repair an answer.
+
+Tests cover known synthetic strengths, ties, cyclic preferences, fixed order
+bias, extreme probabilities, structured/duplicate items, and the existing
+gateway contract. They do not establish ranking accuracy, latency, or cost on
+real customer data. Grouped fixtures also cover overlapping sets, balanced
+positions, group-size validation, and both SDKs' agreement with known strengths.
+There is no top-k shortcut, new model training, CLI command, or MCP tool.
 
 ## MCP
 
@@ -264,24 +422,3 @@ TypeScript as `undefined`. The response model can be the pinned version behind
 the requested alias. Use an exact release ID when reproducibility requires it.
 Model probabilities require evaluation for your task; installing a client does
 not establish accuracy or serving capacity.
-
-## Development checks and packaging
-
-From the repository root in the activated environment:
-
-```sh
-python -m pip install -r requirements/dev.txt "./packages/python[mcp]" build
-npm ci --prefix packages/typescript
-make check PYTHON=python
-python -m build packages/python
-npm pack ./packages/typescript
-```
-
-Checks use a local HTTP contract fixture, CLI subprocesses, and the MCP stdio
-protocol. Run `make check-integration PLATFORM_DIR=/path/to/zils-platform` in an
-environment with the platform and subnet dependencies installed to run the same
-checks against the real Zils gateway. They do not contact a hosted model
-or spend credit. Python wheel/sdist files appear in `packages/python/dist/`.
-The npm CLI and TypeScript SDK are published at 0.3.0. Python 0.3.0 wheel/source
-archives are available in the access-controlled SDK release, not PyPI. Source
-changes do not automatically publish new versions.

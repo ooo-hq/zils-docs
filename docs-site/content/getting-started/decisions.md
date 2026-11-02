@@ -44,7 +44,7 @@ API question type, and it does not train a new model. A ranking score of 1 means
 strongest in that list, not certainty or absolute quality. Noul, Choice, and Score
 keep their existing behavior.
 
-SDK 0.3.0 keeps pairwise ranking as the default and adds
+The SDK uses pairwise ranking by default and offers
 [optional grouped comparisons](/sdks/ranking#optional-grouped-ranking). Grouped
 mode uses fewer judgments but can produce worse ordering, especially for later
 choices. Evaluate it on your task before changing your application's setting.
@@ -63,7 +63,7 @@ The upstream Python runtime has a different response contract. Do not apply its 
 
 Measure accuracy, probability error, high-confidence mistakes, and important task groups on labeled data held out from development. Compare with your current approach and the shared model before training an adapter.
 
-The [JevK5 product-matching experiment](/research/commerce) recorded an additional adapter that reduced held-out accuracy and worsened probability error. A completed training run does not establish an improvement.
+An earlier [product-matching experiment](/research/commerce) recorded an additional adapter that reduced held-out accuracy and worsened probability error. A completed training run does not establish an improvement.
 
 ## Apply your policy
 

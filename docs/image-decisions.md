@@ -1,20 +1,14 @@
-# Image decisions
+# Send images with a decision
 
-Before running service commands, complete the [source installation](../README.md#source-installation).
-Run from the zils-platform checkout with the pinned sibling zils checkout available,
-unless a section explicitly says to use the subnet checkout.
-
-Image decisions run on d3-mini: a d3 release takes up to four photos per request with any
-question type through the text adapter server, and image training jobs freeze the d3
-profile ([image training](image-training.md#d3-image-jobs)). The Imajev profile is retired
-(17 October 2026): no Imajev release is registered or served. The service does not
-generate images, transcribe audio, accept video, draw boxes, or compare reference pairs.
-Both image flags default to off.
+z3-mini takes up to four photos with a decision request, with any question type, and
+answers in the normal response shape. You can also train a model on your own labelled
+photos ([Train on images](image-training.md)). The service does not generate images,
+transcribe audio, accept video, draw boxes, or compare reference pairs.
 
 ## Client flow
 
 1. Sign in and choose **Images**. Upload a still JPEG or PNG, describe the decision,
-   and provide 2–16 answers. Photos stay private to the account.
+   and provide 2–16 answers (the website form's limit). Photos stay private to the account.
 2. For client training, review every answer and item group, confirm the split and
    success targets, and submit. Related views of one item belong in one split.
 3. Review held-out accuracy, recall, false alarms, unknown count and denominators.
@@ -22,12 +16,8 @@ Both image flags default to off.
 4. After **API ready**, **Try your model** fetches the owned model's saved question
    and immutable ID. The existing account/key controls access.
 
-An unknown decision displays **Needs review**. Known-answer probabilities are
-conditional on a known answer, while `unknown_probability` retains the native unknown
-mass. `confidence` is the concentration of the full native distribution; it is not a
-calibrated probability that the selected answer is correct. Never discard unknowns
-when comparing models: the evaluator counts them as incorrect and includes their
-probability in Brier loss and log loss.
+`confidence` is the concentration of the returned distribution; it is not a calibrated
+probability that the selected answer is correct. Read `probabilities` for that.
 
 ## API contract
 
@@ -70,8 +60,8 @@ tokens, signed image read URLs and raw held-out predictions are never returned.
 Image requests use the existing prepaid account, rate limits and API keys. The
 `usage.billable_input_tokens` meter counts the model's processed visual tokens plus
 one canonical copy of the supplied state and question. It excludes asset IDs,
-filenames, model routing and internal prompt wrappers. The existing input-token
-price applies; `usage.input_tokens` remains the full processed context used for
+filenames, model routing and internal prompt wrappers. Decisions cost $0.06 per million
+billable input tokens ([pricing](/getting-started/pricing)); `usage.input_tokens` remains the full processed context used for
 resource limits. Credit is reserved before prediction and settled once on success;
 a failed prediction releases its reservation. Insufficient credit returns 402.
 
@@ -84,9 +74,9 @@ pauses on a credit error. Top up in Billing and resume only the remaining images
 | --- | --- |
 | Input | One still JPEG or PNG, 10 MiB source and canonical output |
 | Decoded photo | 16 million pixels; 8,192 pixels per edge |
-| Model input | RGB PNG; processor budget 65,536–400,000 pixels; at most 4,096 actual tokens |
-| Question text | Flattened instructions and each answer description: at most 2,000 characters; put longer context in `state`, within the total token limit |
-| Decision | One choice question; 2–16 named answers; realtime only |
+| Model input | RGB PNG; processor budget 65,536–400,000 pixels; at most 8,192 tokens including the photos |
+| Decision (API) | Up to 4 images and 8 questions of any type; up to 255 answers per question; realtime only |
+| Decision (website) | One choice question with 2–16 answers |
 | Prediction/draft assets | 24 hours; active submitted jobs retain required data |
 | Training assets | 30 days after the job reaches a terminal state |
 | Runtime read grants | At most 10 minutes, bounded by asset and lease expiry |
@@ -103,4 +93,4 @@ is too large. 422 means invalid image/question or a mismatch with the saved task
 429 means account/upload limits; 503 means unavailable runtime or capacity. No image
 bulk endpoint is supported.
 
-See [image training and rollout](image-training.md) for installation and evidence.
+To train a model on your photos, see [Train on images](image-training.md).

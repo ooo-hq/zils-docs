@@ -1,10 +1,9 @@
 # Training workflow
 
-Use the [Zils dashboard](https://zils.ai/train) to submit your data, train H2O text
-candidates, and review the result. You need a Zils account with training access
-and labeled data you are authorized to share with approved miners. You do not
-need to set up a database or run a GPU to use the hosted service. For access,
-[contact Zils](https://zils.ai/contact).
+Use the [Zils dashboard](https://zils.ai/train) to submit your data, train z3-mini text
+models, and review the result. You need a Zils account with credit
+($0.20 per million training tokens, $2 minimum per run; see [pricing](/getting-started/pricing)) and labeled data you are authorized to share with approved miners. You do not
+need to set up a database or run a GPU to use the hosted service.
 
 ## 1. Prepare your data
 
@@ -19,8 +18,8 @@ allowed answers, labels, and three separate JSONL files:
 | `test.jsonl` | Evaluate candidates | Trusted validator; not sent to miners |
 
 Keep related source records together in one split. Choose your minimum accuracy
-and required improvement in probability error before submitting the job. H2O
-training supports at most 255 outcomes and 2,048 prompt tokens per example.
+and required improvement in probability error before submitting the job. z3-mini
+training supports at most 255 outcomes and 8,192 input tokens per example.
 Oversized inputs are rejected, not silently shortened.
 
 ## 2. Upload and submit
@@ -94,11 +93,8 @@ test data stay with the trusted validator.
 
 Canceling stops new claims and prevents a canceled job from completing through
 the queue. It does not immediately stop remote compute or delete data already
-downloaded by a miner. Training files and local run records remain until operator
-cleanup; automatic training-data retention and deletion are not implemented.
+downloaded by a miner. Uploaded files stay until scheduled cleanup removes them;
+copies a miner has already downloaded are outside that cleanup.
 The decision API's bulk-data retention controls are separate.
 
-For service configuration and miner approval, use
-[Deploy the training service](supabase-training.md).
-
-For terminal training, use the [CLI guide](/training/cli). For image-and-text adapters, use [Imajev training](/training/imajev). Each job freezes its own model profile; existing JevK5 jobs are not converted to H2O.
+For terminal training, use the [CLI guide](/training/cli). For photos, see [Train on images](/training/images). Each job freezes its own model profile.

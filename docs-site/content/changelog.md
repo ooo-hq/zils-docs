@@ -5,6 +5,57 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Soup pools, `zils merge` and `zils-miner`
+
+November 1, 2026
+
+**Every base pool is a soup.** Each z3 size has its own [soup pool](/operations/soup):
+miners commit model bodies, and validators keep the bodies that improve the pool and
+average them into its next release. The four pools (lite, mini, flash and z3) each
+get 25% of emissions, and all emissions go to the base pools. Lite and mini open
+first; flash and z3 open later.
+
+**SDK 0.4.11.** `zils merge` blends 2–5 fine-tunes of one base into a new model on
+your machine, and `--pool d3-lite` or `--pool d3-mini` checks that the result is a
+valid soup body ([merge models](/sdks/overview#merge-models)). Out-of-credit training
+errors now say how much credit a job needs.
+
+**The miner command is `zils-miner`.** The miner installer
+(`curl -fsSL https://zils.ai/install.sh | sh`) used to install a command named
+`zils`, which hid the customer CLI. The customer `zils` (`@zils/cli` 0.4.8 or later)
+now forwards miner commands to `zils-miner`.
+
+## Zils Current
+
+October 31, 2026
+
+[Zils Current](/operations/current) is a live stream of questions labelled by real
+outcomes after they happen, so soup exams can include items no model has seen.
+
+## z3-mini takes 8,192 input tokens
+
+October 28, 2026
+
+z3-mini's input limit doubled from 4,096 to 8,192 tokens per model pass, for
+decisions and training. The other sizes keep 4,096. See
+[z3-mini limits](/getting-started/models#z3-mini-limits).
+
+## Pricing
+
+October 22, 2026
+
+Decisions cost $0.06 per million input tokens, with no charge for output. Training
+costs $0.20 per million training tokens, with a $2 minimum per run (since October 21).
+See [pricing and limits](/getting-started/pricing).
+
+## `zils fit`
+
+October 21, 2026
+
+SDK 0.4.0 adds `zils fit`: it finds the model calls in your code that make typed
+decisions and shows how much of that traffic Zils can take. In an AI coding agent,
+run `npx -y @zils/cli fit agent`. See [find where Zils fits](/sdks/overview#find-where-zils-fits).
+
 ## Base-election bar lowered to +2
 
 October 25, 2026
@@ -119,7 +170,7 @@ group sizes and the tradeoff. JavaScript/TypeScript SDK and CLI 0.3.0 are
 published on npm. The CLI bundles the matching Python SDK without adding a
 ranking command or MCP tool. Python sync/async support is available through
 source and release artifacts with SDK repository access; see
-[Python installation](/sdks/overview#install-python). The playground links to
+[Python installation](/sdks/overview#python-sdk-and-mcp-server). The playground links to
 the guide and does not yet have an interactive ranking demo.
 
 ## SDK 0.2.0

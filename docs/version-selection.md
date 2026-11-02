@@ -34,7 +34,7 @@ with the UUID of an accepted, API-ready job owned by the signed-in customer:
 }
 ```
 
-To move a task to another base (for example from H2O to d3-mini), also set
+To move a task to another base (for example to a newer z3-mini release), also set
 `"base_change": true` in `acceptance` beside `previous_job_id`, and create the job
 on the new base (for example with `"base_channel": "latest"`). Without the flag a
 predecessor on a different base is refused; with it on the same base the request
@@ -43,6 +43,13 @@ candidates are scored on the new one. The processor fails such a job with
 "previous release runtime unavailable" when it has no reference checkpoint or
 runtime interpreter for the previous release's base. The check runs at validation,
 before any worker trains, and again before evaluation.
+
+When Zils retires a base, it moves the tasks still served on it with a
+`base_change` upgrade that also sets `"migration": true`. That run asks for
+continuity, not a gain: the lowest-Brier candidate is accepted when its Brier is
+at most 0.005 above the frozen release's, it meets `min_accuracy`, and it beats
+the uniform forecast; `min_brier_improvement` is not applied. `migration` is
+refused without `base_change`.
 
 Use the same training-service authentication and upload/submit endpoints as an
 initial run. No new credentials or database migration are required. The caller
@@ -71,21 +78,14 @@ data across jobs. Acceptance measures this dataset, not guaranteed future qualit
 
 ## Base channels
 
-New text jobs train on one of two enabled base profiles. `stable` is the default
-and is the profile named by `ZILS_TRAINING_MODEL`; `latest` is the profile named
-by `ZILS_TRAINING_MODEL_LATEST` and defaults to the same profile when unset. A
-job chooses with `"base_channel": "latest"` in the `POST /v1/jobs` body; an
-explicit `model` must be the base of the chosen channel. `GET /v1/config`
-publishes both under `channels`. Setting only `ZILS_TRAINING_MODEL_LATEST` offers
-a profile to jobs that opt in while `stable` keeps its own. Since 17 October 2026
-the hosted platform names `d3-mini-4.5b-v1` on both channels (owner decision, see the
-subnet roadmap); H2O jobs created before then keep their frozen profile. A job's `model_profile` records the exact
-profile it trained on, so later channel moves never change existing jobs or
-releases. Moving a channel is a configuration change on the training API and
-processor followed by a restart, as in the [H2O rollout](h2o-rollout.md); the
-base-tier competition promotes winners to `latest`, and `stable` follows only
-after a full window there. Automatic "follow stable" upgrades are not
-implemented; use an explicit upgrade with `previous_job_id`.
+New text jobs train on one of two base channels. `stable` is the default; a job opts
+in to `latest` with `"base_channel": "latest"` in the `POST /v1/jobs` body, and an
+explicit `model` must be the base of the chosen channel. `GET /v1/config` publishes
+both under `channels`. Today both name `d3-mini-4.5b-v1` (z3-mini v1). A job's
+`model_profile` records the exact profile it trained on, so later channel moves never
+change existing jobs or releases. Models do not follow a channel automatically; to
+move one to a new base, create an explicit upgrade with `previous_job_id` and
+`base_change`.
 
 ## Activation and API names
 

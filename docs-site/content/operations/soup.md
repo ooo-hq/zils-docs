@@ -5,7 +5,7 @@ description: "How the z3 soup pools work: the four pools, what a body is, how to
 
 # Soup pool
 
-In a soup pool, miners do not compete for one crown. Each day validators build the best **soup**: a uniform average of up to five model bodies submitted by different miners. You earn by holding a seat in the round's soup, or by submitting the round's best single body. From the mainnet launch every z3 base pool is a soup pool; the soup replaces the [king election](/operations/base-tier).
+In a soup pool, miners do not compete for one crown. Each day validators build the best **soup**: a uniform average of up to five model bodies submitted by different miners. You earn by holding a seat in the round's soup, or by submitting the round's best single body. From the mainnet launch every z3 base pool is a soup pool.
 
 The soup pool is new at the mainnet launch. The design rests on one internal experiment on public open models, in which plain averages of two or three public Qwen3.5-4B decision fine-tunes scored above stock z3-mini on two sealed exam draws, and adding a fifth model lowered the score. Treat the numbers on this page as launch policy that may change, not as measured results.
 
@@ -47,7 +47,7 @@ curl -fsSL https://zils.ai/install.sh | sh
 1. Put the body's safetensors and `README.md` (with the licence) in one folder. Let the CLI write the ownership file for your hotkey; it also checks the body locally and prints its hash:
 
    ```bash
-   zils commit-body --pool <pool> --repo <you>/<body-repo> --path ./my-body --write-owner
+   zils-miner commit-body --pool <pool> --repo <you>/<body-repo> --path ./my-body --write-owner
    ```
 
    `--pool` is `d3-lite`, `d3-mini` (the default), `d3-flash` or `d3` (z3).
@@ -61,11 +61,11 @@ curl -fsSL https://zils.ai/install.sh | sh
 3. Check and commit. Without `--yes` the command is a dry run: it validates the body at that revision against the pool's chassis and parent, prints the body hash and the exact commitment (`zilsb2:<body sha256>:<revision>:<repo>` for d3-mini, `zilsb3:<pool>:<body sha256>:<revision>:<repo>` for the other pools), and writes nothing. With `--yes` it also confirms the repo matches your local folder, writes the commitment with your hotkey and reads it back:
 
    ```bash
-   zils commit-body --pool <pool> --repo <you>/<body-repo> --revision <upload commit> --path ./my-body
-   zils commit-body --pool <pool> --repo <you>/<body-repo> --revision <upload commit> --path ./my-body --yes
+   zils-miner commit-body --pool <pool> --repo <you>/<body-repo> --revision <upload commit> --path ./my-body
+   zils-miner commit-body --pool <pool> --repo <you>/<body-repo> --revision <upload commit> --path ./my-body --yes
    ```
 
-   Without `--path` the command downloads the body at the revision instead. It also downloads the pool's pinned chassis and Qwen parent (about 2 GB each for lite, 9 GB for mini, 17 to 19 GB for flash and 52 to 56 GB for z3) unless you pass local copies with `--chassis` and `--base`. Wallet flags, `--network` and `--netuid` work as for `commit-candidate`.
+   Without `--path` the command downloads the body at the revision instead. It also downloads the pool's pinned chassis and Qwen parent (about 2 GB each for lite, 9 GB for mini, 17 to 19 GB for flash and 52 to 56 GB for z3) unless you pass local copies with `--chassis` and `--base`. Wallet flags choose the hotkey, and `--network` and `--netuid` choose the subnet.
 
 A hotkey has **one commitment slot, shared by `zils1` base candidates and soup bodies of every pool**: committing a body replaces the hotkey's base candidate or its body in another pool, and the reverse. Use a separate hotkey for each pool. Validators key seats by hotkey and body hash, so a body already in the pool keeps its seat until it leaves the pool, even after you commit a new one.
 
@@ -115,7 +115,7 @@ Each pool has its own house ingredients, listed in the `zils` repository under `
 
 Each pool may also have a **known-public list** of other public decision models of its size, each pinned to a revision: `soup-known-lite.json` and `soup-known-mini.json` in the same folder. Flash and z3 have none. Finding one of these models and committing it unchanged or lightly changed earns the scout rate. Full pay is for real training: a fine-tune that moves well away from every listed model (cosine under 0.9) earns the trainer rate, whichever model it started from. Validators resolve each list entry once, keep only a private sketch of its weights and delete the files; listed models are never graded, seated or paid themselves.
 
-Every unearned part burns to the subnet owner's uid, as in the base tier. Until miners submit new bodies, most of a pool's share burns.
+Every unearned part burns to the subnet owner's uid. Until miners submit new bodies, most of a pool's share burns.
 
 ### Pool shares
 

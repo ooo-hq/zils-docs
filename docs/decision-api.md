@@ -14,22 +14,21 @@ The current hosted API base is `https://training.zils.ai/decision`. Sign in at
 [zils.ai/train](https://zils.ai/train) to manage account API keys. Use the
 `zils-shared` alias or a model ID available to your account. Training defaults do not repoint the shared alias; see [model profiles](/getting-started/models).
 Training uses `https://training.zils.ai`; predictions use its `/decision` route.
-Use the hosted endpoint with your API key. Operators running their own service
-can follow [Deploy the decision API](decision-api-deployment.md).
+Use the hosted endpoint with your API key.
 
 ## Request and credential contract
 
 | Operation | Credential | Result |
 | --- | --- | --- |
-| `POST /v1/keys` with `{"name":"production"}` | Supabase user access token | Key metadata and a secret shown once |
-| `GET /v1/keys` | Supabase user access token | Key metadata |
-| `POST /v1/keys/{id}/revoke` with `{}` | Supabase user access token | Revoked key metadata |
+| `POST /v1/keys` with `{"name":"production"}` | Signed-in session token | Key metadata and a secret shown once |
+| `GET /v1/keys` | Signed-in session token | Key metadata |
+| `POST /v1/keys/{id}/revoke` with `{}` | Signed-in session token | Revoked key metadata |
 | `GET /v1/models` | Zils API key | Accessible model names and aliases |
 | `POST /v1/systemone` | Zils API key | Typed answers and input/output token counts |
 
 Send credentials as `Authorization: Bearer ...`. Prediction and bulk endpoints
-use your Zils API key. Key-management endpoints use the signed-in user's Supabase
-Auth access token. You can also create and revoke keys in the
+use your Zils API key. Key-management endpoints use the access token of your
+signed-in session. You can also create and revoke keys in the
 [Zils dashboard](https://zils.ai/train). A revoked key cannot authorize new requests.
 
 An API key identifies your account. Select a model using its ID or an alias such
@@ -41,7 +40,7 @@ An [example commerce request](../examples/zils-api/request.json) asks Choice,
 Noul, and Score questions about one state. Responses retain question IDs:
 
 ```json
-{"model":"zils-jevk5-v0.3-r1","answers":{"compatible":{"type":"noul","noul":0.9}},"usage":{"input_tokens":120,"output_tokens":0}}
+{"model":"d3-mini-4.5b-v1-base","answers":{"compatible":{"type":"noul","noul":0.9}},"usage":{"input_tokens":120,"output_tokens":0}}
 ```
 
 This is an illustrative response, not a recorded quality result. `noul` is the
@@ -95,8 +94,7 @@ const result = await client.systemOne({
 console.log(result.answers.match.noul);
 ```
 
-For Python, follow the [source installation](/sdks/overview#install-from-a-fresh-clone)
-(the Python package is not yet on PyPI):
+The Python SDK is not published yet ([details](/sdks/overview#python-sdk-and-mcp-server)); with it installed:
 
 ```python
 from zils_sdk import Noul, ZilsClient
@@ -153,8 +151,7 @@ create with the same idempotency key to recover the batch ID. If the input has
 already arrived, the response omits `upload`; submit that batch without uploading
 again. Otherwise, `upload` contains a fresh signed destination. Use a new
 idempotency key for changed inputs. Repeated submit does not change
-versions or duplicate jobs. Signed uploads expire after two hours under
-[Supabase Storage's documented behavior](https://supabase.com/docs/reference/javascript/storage-from-createsigneduploadurl); create again with the same key for a fresh destination.
+versions or duplicate jobs. Signed upload destinations expire; create again with the same key for a fresh destination.
 Upload completion is checked at submit; dataset/schema validation happens in the
 worker. Empty, malformed JSONL, duplicate IDs, or invalid envelope IDs fail the
 file before any inference. Invalid individual request bodies produce per-record
@@ -192,19 +189,15 @@ to read all committed results. Each page requires a valid API key.
 ## Capacity, usage, and retention
 
 Default operational boundaries are **1 MiB per decision request**, JSON depth 32,
-**4,096 tokens per rendered model pass**, **65,536 reserved input tokens across a
+**8,192 tokens per rendered model pass** on z3-mini, **65,536 reserved input tokens across a
 request**, **25 MiB / 10,000 records per bulk file**, and **24 hours per batch**.
 Large Choice requests use multiple passes. The adaptive final pass uses a
 conservative UTF-8 byte bound for admission, so long descriptions can be rejected
 even when a particular outcome would fit. No truncation is performed.
 
-Self-hosted deployments may configure different token boundaries. These are
-execution bounds, not trained context quality claims. One GPU executes serially, with at most one pending real-time
-request and one pending bulk request. When both lanes wait, at most four
-real-time executions precede the waiting bulk execution. The 30-second execution
-wait can return 504 while the GPU remains occupied; it never opens a second
-execution slot prematurely. Full lanes return 529. HTTP connection concurrency
-is bounded to 32 per service; the hosted edge can impose additional limits.
+These are execution bounds, not trained context quality claims. When the model is
+busy, a request that waits 30 seconds returns 504 and a full queue returns 529; retry
+with backoff. Real-time requests take priority over bulk work.
 
 Rate limits apply across all API keys belonging to the same account. Requests
 reserve their worst-case token work; unused reservations are not refunded. A
@@ -219,36 +212,8 @@ for 30 days. Cleanup runs at most once a minute during worker processing; outage
 can delay physical deletion. Storage backups and copies already downloaded are
 outside this deletion mechanism.
 
-## Verification and measured scope
+## Billing
 
-The implementation has local HTTP, real PostgreSQL, official SDK, and RTX 4090
-runtime checks. A hosted smoke check also verified key creation/revocation,
-real inference, private Supabase uploads, retry recovery, and account isolation.
-Its four-record synthetic bulk job completed three valid records and returned
-one expected validation error. This verifies the workflow, not customer model
-quality or production capacity. There is no billing, measured service-level
-guarantee, or open-miner inference network. Adapter activation is gated on
-acceptance and verified serving; it never promotes a rejected candidate. Onboarding
-is a separate service.
-
-For reproduction commands and infrastructure checks, use
-[Verify the deployment](decision-api-deployment.md#verify-the-deployment).
-
-The 2026-10-04 hardware smoke used the pinned BF16 JevK5 release, eager execution,
-and synthetic commerce inputs on a 24 GB RTX 4090. The private runtime's HTTP
-preflight and inference endpoints were exercised; elapsed times below measure the
-inference HTTP call, excluding startup, hashing, and the separate preflight.
-Another model was resident but idle, so this was not an isolated performance run.
-
-| Synthetic request | Actual input tokens | Reserved tokens | One observed call |
-| --- | ---: | ---: | ---: |
-| Choice + Noul + Score | 430 | 430 | 0.655 s |
-| 13 Noul questions | 1,638 | 1,638 | 1.137 s |
-| 17 Choice options | 820 | 1,634 | 0.328 s |
-| 50 Choice options | 1,600 | 2,422 | 0.496 s |
-| 255 Choice options | 6,680 | 7,510 | 1.929 s |
-
-All returned distributions and accounting passed the gateway response validator.
-These single requests establish runtime plumbing, not quality improvement,
-concurrency capacity, p95 latency, or a service guarantee. Prior adapter comparisons
-are separate experiments; these requests did not test an accepted customer adapter.
+Each request is charged $0.06 per million logical input tokens; output is free.
+`usage` in each response reports the counted tokens. Without enough credit, new
+requests return `402 insufficient_credit`. See [pricing and limits](/getting-started/pricing).
