@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readdir } from 'node:fs/promises';
 import { guides, downloads, retiredGuides, retiredRevision } from './pages.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -14,7 +15,7 @@ routes.set('experiments/commerce-001/licenses/', '/research/attribution');
 routes.set('experiments/commerce-001/README.md', '/research/commerce-reproduction');
 // GitHub links to a guide published here from its owning repository use the site route.
 const githubRoutes = new Map(guides.filter(([, , , owner]) => owner).map(([source, route, , owner]) =>
-  [`https://github.com/ooo-hq/${owner}/blob/main/${source.replace(/^docs\/queue-validator\.md$/, 'docs/validators.md')}`, `/${route}`]));
+  [`https://github.com/ooo-hq/${owner}/blob/main/${source}`, `/${route}`]));
 const publicFiles = new Map(downloads.map(source => [source, `/downloads/${source}`]));
 const github = (repo, file) => `https://github.com/ooo-hq/${repo}/blob/main/${file}`;
 // Links that resolve differently depending on the repository that owns the guide.
@@ -36,7 +37,7 @@ const ownerLinks = {
   },
   'zils-platform': {
     'README.md#checks': `${github('zils-platform', 'README.md')}#checks`,
-    'README.md': '/operations/platform-setup',
+    'README.md': '/getting-started/repositories#',
     'docs/miner-grading.md': github('zils-platform', 'docs/miner-grading.md'),
     'docs/image-rollout.md': github('zils-platform', 'docs/image-rollout.md'),
     'docs/spaces-storage.md': github('zils-platform', 'docs/spaces-storage.md'),
@@ -86,5 +87,16 @@ for (const [source, url] of publicFiles) {
   const target = path.join(output, 'public', url);
   await mkdir(path.dirname(target), { recursive: true });
   await cp(path.join(repo, source), target);
+}
+// Links to removed pages go where their old URL redirects (vercel.json); the target has no matching heading.
+const redirects = new Map(JSON.parse(await readFile(path.join(repo, 'vercel.json'), 'utf8')).redirects
+  .map(({ source, destination }) => [source, destination]));
+for (const entry of await readdir(output, { recursive: true, withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
+  const file = path.join(entry.parentPath, entry.name);
+  const markdown = await readFile(file, 'utf8');
+  const rewritten = markdown.replace(/\]\((\/[^)\s#]+)(?:#[^)\s]*)?\)/g,
+    (link, route) => redirects.has(route) ? `](${redirects.get(route)})` : link);
+  if (rewritten !== markdown) await writeFile(file, rewritten);
 }
 console.log(`Prepared ${guides.length} technical guides and ${downloads.length} public evidence files.`);

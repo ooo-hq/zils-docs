@@ -28,7 +28,7 @@ Read [how Zils fits into your application](/getting-started/ecosystem) for the c
 
 <div class="start-links">
 <a href="/getting-started/quickstart"><strong>Developers</strong><span>Make your first decision through the API, then connect it to your application with an SDK.</span></a>
-<a href="/operations/miners"><strong>Miners</strong><span>Check access and hardware requirements, then run approved text or image training workloads.</span></a>
+<a href="/operations/soup"><strong>Miners</strong><span>Commit model bodies to a soup pool and earn when they improve it.</span></a>
 <a href="/operations/validators"><strong>Validators</strong><span>Understand independent evaluation and the access needed to operate a validator.</span></a>
 <a href="/research/getting-started"><strong>Learn and research</strong><span>Understand decision models, design a first experiment, and read the evidence.</span></a>
 </div>

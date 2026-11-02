@@ -18,7 +18,7 @@
     },
     {
       "source": "/operations/h2o",
-      "destination": "/operations/d3",
+      "destination": "/getting-started/models",
       "permanent": true
     },
     {
@@ -53,7 +53,82 @@
     },
     {
       "source": "/evaluation/benchmarks",
-      "destination": "/evaluation/checkpoints",
+      "destination": "/operations/soup",
+      "permanent": true
+    },
+    {
+      "source": "/operations/d3",
+      "destination": "/getting-started/models",
+      "permanent": true
+    },
+    {
+      "source": "/operations/decision-api",
+      "destination": "/api/reference",
+      "permanent": true
+    },
+    {
+      "source": "/operations/customer-models",
+      "destination": "/training/results",
+      "permanent": true
+    },
+    {
+      "source": "/operations/training-service",
+      "destination": "/training/shared-queue",
+      "permanent": true
+    },
+    {
+      "source": "/operations/development",
+      "destination": "/getting-started/repositories",
+      "permanent": true
+    },
+    {
+      "source": "/operations/base-candidates",
+      "destination": "/operations/soup",
+      "permanent": true
+    },
+    {
+      "source": "/evaluation/checkpoints",
+      "destination": "/operations/soup",
+      "permanent": true
+    },
+    {
+      "source": "/operations/miners",
+      "destination": "/operations/soup",
+      "permanent": true
+    },
+    {
+      "source": "/operations/queue-validator",
+      "destination": "/operations/validators",
+      "permanent": true
+    },
+    {
+      "source": "/operations/miner-admission",
+      "destination": "/operations/miner-terms",
+      "permanent": true
+    },
+    {
+      "source": "/operations/miner-qualification",
+      "destination": "/operations/soup",
+      "permanent": true
+    },
+    {
+      "source": "/training/local-jobs",
+      "destination": "/training/shared-queue",
+      "permanent": true
+    },
+    {
+      "source": "/training/automatic",
+      "destination": "/training/results",
+      "permanent": true
+    },
+    {
+      "source": "/operations/platform-setup",
+      "destination": "/getting-started/repositories",
+      "permanent": true
+    },
+    {
+      "source": "/operations/base-tier",
+      "destination": "/operations/soup",
       "permanent": true
     }
   ]
