@@ -5,6 +5,22 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Zils is live on Bittensor mainnet
+
+November 3, 2026
+
+**Subnet 127 on `finney`.** The Zils validator publishes weights on Bittensor
+mainnet subnet 127. Miners register a hotkey on 127 with real TAO and commit
+soup bodies with `zils-miner`; add `--network finney --netuid 127` to every chain
+command, because the CLI never assumes mainnet. The subnet is full, so a
+registration replaces the lowest-scoring UID past its immunity period, and a
+hotkey that earns nothing can be replaced the same way. See the
+[registration guide](https://github.com/ooo-hq/zils/blob/main/docs/bittensor-registration.md)
+and [mining guide](https://github.com/ooo-hq/zils/blob/main/docs/mining.md).
+No bodies have been committed on mainnet yet, so every pool's share burns until
+the first body is kept. Entries below dated before today describe the testnet
+rehearsal on subnet 579.
+
 ## Soup pools, `zils merge` and `zils-miner`
 
 November 1, 2026
