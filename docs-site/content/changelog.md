@@ -41,11 +41,11 @@ errors now say how much credit a job needs.
 `zils`, which hid the customer CLI. The customer `zils` (`@zils/cli` 0.4.8 or later)
 now forwards miner commands to `zils-miner`.
 
-## Zils Current
+## Zils Current (now Zils Outcomes)
 
 October 31, 2026
 
-[Zils Current](/operations/current) is a live stream of questions labelled by real
+[Zils Current](/operations/current), since renamed Zils Outcomes, is a live stream of questions labelled by real
 outcomes after they happen, so soup exams can include items no model has seen.
 
 ## z3-mini takes 8,192 input tokens

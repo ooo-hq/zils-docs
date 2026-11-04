@@ -1,13 +1,15 @@
 ---
-title: Zils Current
-description: "Zils Current turns public events into decision questions labelled by what actually happened, and a soup pool can draw its round items from them."
+title: Zils Outcomes
+description: "Zils Outcomes turns public events into decision questions labelled by what actually happened, and a soup pool can draw its round items from them."
 ---
 
-# Zils Current
+# Zils Outcomes
 
 Real-world decisions, labelled by what actually happened.
 
-Zils Current (`python -m zils.current`, in the `zils` repository) turns public events into decision questions and labels each one with what really happened later. A Wikipedia edit is saved; within days it is reverted or it stays. A Stack Exchange question is asked; a week later it is closed or still open. The text available when the event happened is the question, and the outcome is the label. Nothing is decided by a language model.
+(Formerly Zils Current. The tool and its settings keep that name: `python -m zils.current`, `exam.source: "current"`, `current_bank`.)
+
+Zils Outcomes (`python -m zils.current`, in the `zils` repository) turns public events into decision questions and labels each one with what really happened later. A Wikipedia edit is saved; within days it is reverted or it stays. A Stack Exchange question is asked; a week later it is closed or still open. The text available when the event happened is the question, and the outcome is the label. Nothing is decided by a language model.
 
 Because every item describes an event that happened after a model was trained, no model can have seen it at training time. Any validator or miner can run the tool on a machine with network access and rebuild the same items from the same public sources. It writes local files only and never uploads anything.
 
@@ -51,9 +53,9 @@ python -m zils.current grade --items BANK/<date>/items.jsonl --model CHECKPOINT
 
 The overlap check catches copies, not paraphrases or translations, and the outcome phrase list is short, so paraphrased outcomes can slip through. Many streams resolve only tens of items in a freshness window, which is why soup rounds merge or drop small streams (below).
 
-## Soup rounds on Current items
+## Soup rounds on Outcomes items
 
-By default a soup round draws its items from the validator's fixed round bank. A validator can point a pool at its Zils Current exports instead:
+By default a soup round draws its items from the validator's fixed round bank. A validator can point a pool at its Zils Outcomes exports instead:
 
 ```json
 "exam": {
@@ -65,9 +67,9 @@ By default a soup round draws its items from the validator's fixed round bank. A
 }
 ```
 
-This is a **blend**: the fixed round bank keeps its families in every cell of the base score, and Current families are added next to them, up to `current_share` of the subset. With only `source` and `current_bank`, Current streams replace the bank's families in the cells they cover.
+This is a **blend**: the fixed round bank keeps its families in every cell of the base score, and Outcomes families are added next to them, up to `current_share` of the subset. With only `source` and `current_bank`, Outcomes streams replace the bank's families in the cells they cover.
 
-Each round then takes up to 1,000 items (by default) from dated folders whose manifest checks out: items resolved in the last 14 days, drawn at most 3 times across rounds, fitting the pool's input cap, with yes/no labels balanced, at least 3 streams contributing and no stream holding more than 40% of the Current part. Within a day, items are ranked under the validator's private seed. The fixed round bank fills any cell the Current part does not cover; without a blend, when Current streams cover every cell, the whole subset can come from Current.
+Each round then takes up to 1,000 items (by default) from dated folders whose manifest checks out: items resolved in the last 14 days, drawn at most 3 times across rounds, fitting the pool's input cap, with yes/no labels balanced, at least 3 streams contributing and no stream holding more than 40% of the Outcomes part. Within a day, items are ranked under the validator's private seed. The fixed round bank fills any cell the Outcomes part does not cover; without a blend, when Outcomes streams cover every cell, the whole subset can come from Outcomes.
 
 Every cell of the base score has a fixed weight and the families in a cell count equally, so a stream with a few dozen items could move the whole score. Three quality settings guard against that; setting any of them applies the defaults shown above to the others:
 
@@ -75,6 +77,6 @@ Every cell of the base score has a fixed weight and the families in a cell count
 - **`exclude_streams`** (default `["stackexchange-score-*"]`): streams that are never drawn. Stack Exchange score items show close to zero skill for every model measured, so they are left out by default.
 - **`current_share`** (default 1): below 1, the round blends as described above. If the rules cannot be met, the round uses the fixed round bank as usual, and its record says so.
 
-Pooled decisions over the last three rounds work the same way on Current items. See [Soup pool](/operations/soup).
+Pooled decisions over the last three rounds work the same way on Outcomes items. See [Soup pool](/operations/soup).
 
 Every resolved item is public and can be rebuilt by anyone, labels included. A body committed after an item resolved could have been trained on it. The short freshness window narrows that gap but does not close it.

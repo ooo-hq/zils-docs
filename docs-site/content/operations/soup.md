@@ -73,7 +73,7 @@ A hotkey has **one commitment slot, shared by `zils1` base candidates and soup b
 
 Validators run one soup round per day for each open soup pool:
 
-1. **Seed.** The hash of the first block after the commit deadline picks the round's exam subset and breaks ties. The subset comes from the validator's private round bank or, if it is set up, partly or wholly from fresh [Zils Current](/operations/current) items.
+1. **Seed.** The hash of the first block after the commit deadline picks the round's exam subset and breaks ties. The subset comes from the validator's private round bank or, if it is set up, partly or wholly from fresh [Zils Outcomes](/operations/current) items.
 2. **Admit** new bodies with the checks above, at most 6 new bodies and 12 claims per round in commitment order (flash: 4 and 6; z3: 2 and 3). A hotkey whose claim fails a check or a download sits out the next 3 rounds.
 3. **Reject copies:**
    - a re-upload, whose change from Qwen is nearly identical (cosine ≥ 0.999) to an earlier commitment's, a house ingredient's, the current soup's or the release's;
@@ -125,7 +125,7 @@ The launch configuration (`zils/data/base-pools-launch.json`) gives lite, mini, 
 
 ## What validators publish
 
-Each round's public record lists the soup members (hotkey, body hash, rate), their rounded contributions, per-category soup scores, the pool's scoring and the soup's fitted temperature, the rounds whose items the decisions were scored on and their item count, and sha256 hashes of the item subset, the per-item predictions and the soup weights, so a round can be audited against the validator's private record. Per-family scores are never published. On the fixed round bank, exam items and labels stay private, so outside re-grading of such a round is not possible yet. A validator may instead draw round items from [Zils Current](/operations/current), whose items are public and can be rebuilt by anyone; a body committed after an item resolved could have been trained on it.
+Each round's public record lists the soup members (hotkey, body hash, rate), their rounded contributions, per-category soup scores, the pool's scoring and the soup's fitted temperature, the rounds whose items the decisions were scored on and their item count, and sha256 hashes of the item subset, the per-item predictions and the soup weights, so a round can be audited against the validator's private record. Per-family scores are never published. On the fixed round bank, exam items and labels stay private, so outside re-grading of such a round is not possible yet. A validator may instead draw round items from [Zils Outcomes](/operations/current), whose items are public and can be rebuilt by anyone; a body committed after an item resolved could have been trained on it.
 
 ## Releases
 
