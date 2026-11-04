@@ -76,7 +76,7 @@ export default defineConfig({
       ] },
       { text: 'Miner & validator operations', collapsed: true, items: [
         { text: 'Soup pool', link: '/operations/soup' },
-        { text: 'Zils Current', link: '/operations/current' },
+        { text: 'Zils Outcomes', link: '/operations/current' },
         { text: 'Train a soup body', link: '/operations/miner-tuning' },
         { text: 'Miner terms', link: '/operations/miner-terms' },
         { text: 'Local and testnet fleets', link: '/operations/fleet-miners' },
