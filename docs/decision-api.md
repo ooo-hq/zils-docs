@@ -204,7 +204,10 @@ reserve their worst-case token work; unused reservations are not refunded. A
 single request must fit within the account's entire per-second token allowance.
 For temporary throttling, back off and honor `Retry-After`.
 
-Real-time input/output bodies are not persisted by these services. Bulk inputs,
+Real-time input/output bodies of paid requests are not persisted by these services.
+Free-tier requests and answers may be stored for up to 180 days to train models, as the free tier
+terms state.
+Bulk inputs,
 request records, and committed results are retained for seven days after a
 terminal state, then deleted by the worker. Result access returns 410 after that
 period even if cleanup is delayed. Batch metadata and usage records are retained
