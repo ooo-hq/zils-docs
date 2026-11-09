@@ -130,7 +130,7 @@ zils train cancel JOB_ID
 zils train cancel JOB_ID --yes --json
 ```
 
-Downloads require an accepted z3 result. The CLI verifies provider/job/file
+Downloads require an accepted z3 result from a private job; open-tier models are served by Zils and used through the API. The CLI verifies provider/job/file
 paths, release identity, model metadata and the backend-compatible checkpoint
 SHA-256 before publishing four files to a **new** directory. Existing paths are
 never overwritten. The filesystem must support hard links within the destination's
