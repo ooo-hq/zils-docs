@@ -36,7 +36,8 @@ is who sees the training data:
   to network miners. Charged as above.
 - **Open tier:** Zils network miners train the run. They receive the training split
   (not calibration or test) and must delete it within 7 days of the run finishing;
-  Zils cannot verify that they do. Free.
+  Zils cannot verify that they do. Free. The trained model is served by Zils and used
+  through the API; its files cannot be downloaded.
 
 Open-tier limits:
 
