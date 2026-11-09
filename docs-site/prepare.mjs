@@ -42,6 +42,14 @@ const ownerLinks = {
     'docs/fleet-nodes.md': github('zils', 'docs/fleet-nodes.md'),
     'docs/fleet-node-runbook.md': github('zils', 'docs/fleet-node-runbook.md'),
     'docs/version-selection.md#changing-the-base-profile': '/training/versions#request-an-upgrade',
+    'docs/queue-miners.md': '/operations/customer-jobs#',
+    'docs/miner-admission.md': '/operations/customer-jobs#',
+    'docs/base-candidates.md': github('zils', 'docs/base-candidates.md'),
+    'docs/customer-jobs.md': github('zils', 'docs/customer-jobs.md'),
+    'docs/evaluation.md': github('zils', 'docs/evaluation.md'),
+    'docs/development.md': github('zils', 'docs/development.md'),
+    'docs/miner-grading.md': github('zils', 'docs/miner-grading.md'),
+    'docs/releases.md': github('zils', 'docs/releases.md'),
   },
   'zils-platform': {
     'README.md#checks': `${github('zils-platform', 'README.md')}#checks`,
@@ -53,6 +61,7 @@ const ownerLinks = {
   },
   'zils-sdk': {
     'packages/cli/README.md': 'https://www.npmjs.com/package/@zils/cli#',
+    'docs/fit.md': '/sdks/overview#find-where-zils-fits',
   },
 };
 

@@ -15,10 +15,10 @@ z3 is the Zils line of decision models. z3-mini v1 is its founding baseline,
 using the unchanged upstream d3-mini weights. It was selected by Zils as the
 starting point for the mini lineage; it is not a miner-trained election winner.
 
-Under the z3 release policy, miners train candidates against the current
-incumbent of an enabled lineage. After independent
-validation and release approval, an elected candidate becomes a subsequent z3
-release. A submitted candidate is not an official release.
+Under the z3 release policy, each size is a soup pool: miners commit model
+bodies, and validators average the bodies that improve the pool. At a release
+window, a soup that beats the current release on sealed draws and passes review
+becomes the next z3 release. A submitted body is not an official release.
 
 ## Provenance
 
@@ -30,7 +30,7 @@ The original runtime filenames and immutable d3 profile remain valid.
 
 ## Use and availability
 
-The Zils profile has a 4,096-token input ceiling. Hosted availability is checked
+The Zils profile has an 8,192-token input ceiling. Hosted availability is checked
 separately from weight publication. Use the model ID returned by your Zils
 account's model listing for inference; this release name is not itself an API
 inference alias.

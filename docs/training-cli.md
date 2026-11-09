@@ -5,7 +5,8 @@ Install `@zils/cli` from npm using the
 defaults to the z3-mini founding baseline through its immutable d3-mini profile. Optional `--pool d3-lite`,
 `--base-channel latest`, or `--model EXACT_PROFILE_ID` selects a qualified profile
 advertised by the service. Service pool keys remain d3-lite, d3-nano, d3-mini, d3-flash and d3;
-catalog membership alone does not mean a pool is available. Training execution remains in the hosted platform;
+catalog membership alone does not mean a pool is available. Customer training runs on z3-mini.
+Training execution remains in the hosted platform;
 no GPU or model installation is needed on your laptop.
 
 The public model line is **z3**. Existing API IDs, pool keys, downloaded artifacts
@@ -19,12 +20,10 @@ not new API aliases. The founding mini baseline uses unchanged upstream weights.
 zils login
 ```
 
-Your browser opens Zils account sign-in and asks you to approve the CLI. Use your
-existing invited account. Keep the terminal open and open email links on the same
+Your browser opens Zils account sign-in and asks you to approve the CLI. Sign in
+with Google or an email link; anyone can sign up. Keep the terminal open and open email links on the same
 computer. The fixed local callback uses port **43187**; a remote/headless shell is
 not supported by this flow. Sign-in expires after ten minutes.
-
-`zils login` opens your browser to approve the sign-in.
 
 The account session is saved privately to `~/.zils/config.account.json`, separate
 from the inference key in `~/.zils/config.json`. Files use mode `0600` on POSIX;
@@ -45,6 +44,44 @@ privately enter an existing key, or `zils login --api-key -` to read from stdin.
 `zils logout` removes both local credential types, retaining recovery receipts.
 It does not revoke remote sessions/keys, delete jobs, or unset environment keys.
 
+## Prepare splits from a spreadsheet or export
+
+`zils train prepare` turns one file of past examples into the three splits. It
+reads CSV, TSV, a JSON array of objects, or JSON Lines; export Excel sheets as
+CSV first. It runs locally: no login, nothing sent.
+
+```sh
+zils train prepare tickets.csv --decide team --read message --read channel --group customer_id
+```
+
+- `--decide` is the column holding the right answer. It needs 2–255 different
+  answers, and each answer needs examples from at least 3 separate cases.
+- `--read` names a column the model reads; repeat it. Without it, every other
+  column is read except ID-like columns (`id`, `*_id`, `uuid`, `key`) and columns
+  that give the answer away. A column gives it away when its value fixes the
+  answer in at least 95% of rows, like the agent who handled a ticket; the
+  output lists these under `leaks`, and names them even when `--read` includes
+  them. Leave out anything only known after the decision, such as a resolution
+  time: `prepare` cannot tell those apart, so check what it reads.
+- `--group` names the case each row belongs to (a customer, a thread), so
+  related rows stay in one split. Without it, each row is its own case.
+- `--name` and `--question` set the training name and the decision in words;
+  `--out` sets the folder (default `zils-training/<name>`). Existing files are
+  never overwritten.
+
+`prepare` also reads decision logs written by `record` (see [fit](fit.md)): a
+log file, or a folder with one log per episode. `--decide` picks the logged
+question when there are several, and `--questions` reads its wording and options
+from the file `zils fit scan` writes. Each episode stays in one split, the logged
+state is kept as JSON, and repeats of an earlier situation are left out and
+counted. `zils fit train` does this and submits in one step.
+
+The rules match the zils.ai training page, so the same file gives the same
+splits in both: one choice question per row, about 70/15/15 by rows, every
+answer in all three splits, and identical rows refused. The command prints the
+counts, the answers per split, the most training can cost, and the matching
+`zils train submit` command. `--json` writes the same as JSON.
+
 ## Submit three reviewed splits
 
 From the repository root, this synthetic example demonstrates the input format:
@@ -61,12 +98,35 @@ zils train submit --name ticket-routing \
 This command creates a real job when connected to an enabled service. Run it only
 when you intend to submit training. These tiny examples establish syntax, not
 model quality; local tests do not spend credits or train on a live GPU.
-The export flag explicitly permits training data to be copied to approved workers.
+The export flag explicitly permits training data to be copied to the workers that train the job.
 Both quality thresholds are required; acceptance may produce no qualifying model.
 Before creation, the CLI prints the active training account, service, files,
 selected immutable model, thresholds and export consent to stderr. Submission uses that account's training
-credit: $0.20 per million training tokens with a $2 minimum per run ([pricing](/getting-started/pricing)). The CLI does not estimate the price before submission.
-JSON results remain on stdout.
+credit: $0.20 per million training tokens with a $2 minimum per run
+([pricing](/getting-started/pricing)). JSON results remain on stdout.
+
+Choose who trains the job with `--tier`:
+
+- `--tier private` (the default when `--tier` is left out): paid, trained only
+  on Zils workers.
+- `--tier open`: free, trained by Zils network miners. They receive the
+  training split and must delete it within 7 days of the job finishing; Zils
+  cannot verify that they do. It also needs `--allow-open-tier-training`, your
+  permission to send the training split to them. If the service does not offer
+  the open tier yet, the CLI cancels the job before anything is uploaded or
+  charged instead of training it as private.
+  An account can start 3 open jobs in any 24 hours, each up to 5,000 examples
+  and 5,000,000 training tokens, and the open tier as a whole has a daily limit; past either,
+  train the job privately.
+  An open-tier model is served by Zils and used through the API; it cannot be
+  downloaded.
+
+Add `--max-cost 5` to refuse a private job, before anything is sent, when it could
+cost more than $5. Open jobs are free, so the limit does not apply to them. The service bills each train-split prompt token once at
+$0.20 per million, never below $2. The CLI cannot count tokens without the
+model's tokenizer, so it prices every train case at the 8,192-token cap: the
+ceiling is `max($2, train cases × 8,192 × $0.20 / 1M)`, and the real charge is
+usually far lower.
 
 Each UTF-8 JSONL case requires `id`, `group_id`, `family`, `state`, `question`, and
 `label`. Labels are strings: `"false"`/`"true"` for `noul`, a criterion key for
@@ -130,7 +190,7 @@ zils train cancel JOB_ID
 zils train cancel JOB_ID --yes --json
 ```
 
-Downloads require an accepted z3 result from a private job; open-tier models are served by Zils and used through the API. The CLI verifies provider/job/file
+Downloads require an accepted z3 result from a private job. Models trained on the open tier are served by Zils and used through the API; they cannot be downloaded. The CLI verifies provider/job/file
 paths, release identity, model metadata and the backend-compatible checkpoint
 SHA-256 before publishing four files to a **new** directory. Existing paths are
 never overwritten. The filesystem must support hard links within the destination's

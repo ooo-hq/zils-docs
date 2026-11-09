@@ -34,7 +34,7 @@ A body is the full set of language and vision weights of a fine-tune of the pool
 - **Size:** the safetensors total at most the pool's body size cap.
 - **Ownership:** the repo holds `zils-owner.json` containing exactly `{"hotkey": "<your ss58 hotkey>"}`, the hotkey that commits it. Scouts who find a good open model re-upload it to their own repo with their own ownership file. The first valid commitment of a body hash wins it.
 
-For training settings and comparing a fine-tune with its parent before you publish, see [Tune a base miner](/operations/miner-tuning).
+For training settings and comparing a fine-tune with its parent before you publish, see [Train a soup body](/operations/miner-tuning).
 
 ## Commit a body
 
@@ -121,7 +121,7 @@ Every unearned part burns to the subnet owner's uid. Until miners submit new bod
 
 ### Pool shares
 
-The launch configuration (`zils/data/base-pools-launch.json`) gives the base pools 80% of all emissions and the adapter track, which pays miners for customer models, the other 20%. Lite and mini get 25% of all emissions each, so a trainer's seat there is 4% and a crown 5%; flash and z3 get 15% each (a seat 2.4%, a crown 3%). The four pools have 24 paid spots. Flash and z3 burn their shares until their opening blocks, which are in each validator's configuration and its published report.
+The launch configuration (`zils/data/base-pools-launch.json`) gives the base pools 80% of all emissions and the adapter track, which pays miners for [customer models](/operations/customer-jobs), the other 20%. Lite and mini get 25% of all emissions each, so a trainer's seat there is 4% and a crown 5%; flash and z3 get 15% each (a seat 2.4%, a crown 3%). The four pools have 24 paid spots. Flash and z3 burn their shares until their opening blocks, which are in each validator's configuration and its published report.
 
 ## What validators publish
 

@@ -31,7 +31,7 @@ The API calls your context `state`, your question definitions `questions`, and t
 
 The shared API accepts 2–255 Choice outcomes and 2–10 Score levels. A score can be fractional because it is an expectation over levels. Instructions may be omitted or null. Give clear instructions when your task needs them.
 
-The model reads scores for answer options without generating a prose answer. Large choice sets require multiple passes. Request, token, and execution bounds still apply; see [API capacity](/api/reference#capacity-usage-and-retention). Customer adapters use their [training-compatible serving limits](/operations/customer-models).
+The model reads scores for answer options without generating a prose answer. Large choice sets require multiple passes. Request, token, and execution bounds still apply; see [API capacity](/api/reference#capacity-usage-and-retention). Customer adapters use their [training-compatible serving limits](/getting-started/models#z3-mini-limits).
 
 ## Rank a short list with the SDK
 
@@ -69,4 +69,4 @@ An earlier [product-matching experiment](/research/commerce) recorded an additio
 
 Your application decides when to act or request review. A threshold does not implement a review system, and prompt instructions do not guarantee behavior.
 
-The [training workflow](/training/automatic) evaluates candidates before activation. First versions compare with the calibrated base; explicit upgrades compare with the previous accepted version. [Version selection](/training/versions) keeps rejected or stale candidates from replacing the active model.
+The [training workflow](/training/shared-queue) evaluates candidates before activation. First versions compare with the calibrated base; explicit upgrades compare with the previous accepted version. [Version selection](/training/versions) keeps rejected or stale candidates from replacing the active model.

@@ -53,6 +53,7 @@ export default defineConfig({
       { text: 'Choose your path', items: [
         { text: 'Developers: first decision', link: '/getting-started/quickstart' },
         { text: 'Miners: commit a model body', link: '/operations/soup' },
+        { text: 'Miners: train customer jobs', link: '/operations/customer-jobs' },
         { text: 'Validators: score bodies', link: '/operations/validators' },
         { text: 'Learn & research', link: '/research/getting-started' },
       ] },
@@ -76,12 +77,13 @@ export default defineConfig({
       ] },
       { text: 'Miner & validator operations', collapsed: true, items: [
         { text: 'Soup pool', link: '/operations/soup' },
+        { text: 'Train customer jobs', link: '/operations/customer-jobs' },
         { text: 'Zils Outcomes', link: '/operations/current' },
         { text: 'Train a soup body', link: '/operations/miner-tuning' },
         { text: 'Miner terms', link: '/operations/miner-terms' },
-        { text: 'Local and testnet fleets', link: '/operations/fleet-miners' },
+        { text: 'Fleet miners', link: '/operations/fleet-miners' },
         { text: 'Register on Bittensor', link: '/operations/bittensor-registration' },
-        { text: 'Bittensor testnet', link: '/operations/testnet' },
+        { text: 'Testnet rehearsal fleet', link: '/operations/testnet' },
       ] },
       { text: 'Research record', collapsed: true, items: [
         { text: 'Results & evidence', link: '/research/' },

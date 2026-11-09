@@ -1,6 +1,6 @@
 # Run a fleet miner
 
-Local and Bittensor testnet fleets support **d3-mini 4.5B** text jobs
+Local and Bittensor fleets support **d3-mini 4.5B** text jobs
 (`d3-mini-4.5b-v1`, the base since 17 October 2026). Existing Kev 0.8B bundles
 remain supported; H2O Lightning 4B, ImaJev and JevK5 4B bundles are retired and no
 longer run. d3 image jobs run in the [hosted queue](queue-miners.md), where a d3
@@ -128,12 +128,12 @@ From the repository root:
 Remove `--rounds 1` for continuous rounds. The validator evaluates after every
 miner submits or the collection deadline expires. It verifies signatures and
 hashes, calibrates each candidate, and scores the separate evaluation cases.
-Local mode never writes weights to Bittensor. Testnet mode needs registered
-wallets and explicit publication; follow the [testnet guide](testnet.md).
+Local mode never writes weights to Bittensor. Chain mode needs registered
+wallets and explicit publication; follow the [chain fleet guide](testnet.md).
 
-## Two tracks on the testnet: the base tier pays first
+## Two tracks on the subnet: the base tier pays first
 
-On a testnet fleet whose validator config carries `base_pools`, miners
+On a chain fleet whose validator config carries `base_pools`, miners
 earn on two tracks, paid from one weight vector on the configured subnet:
 
 - **Base tier (primary, continuous).** Beat the pinned incumbent in your
@@ -156,11 +156,12 @@ earn on two tracks, paid from one weight vector on the configured subnet:
   unchanged; each round's calibrated test-split skill is the adapter weight.
   A validator may instead take the adapter track from real customer work in the
   [hosted queue](queue-miners.md) (`adapter_evidence`, off by default; see
-  [validators §7](validators.md#7-pay-the-adapter-track-from-hosted-queue-work)).
-  Then you earn for customer jobs the queue routed to your hotkey and delivered
-  to the customer, weighted by training tokens × held-out skill × your
-  reliability over the window. Qualification runs and operator-owned jobs earn
-  nothing, and your queue hotkey must be registered on the subnet.
+  [validators §7](validators.md#7-pay-the-adapter-track-from-paid-adapter-use)).
+  Then you earn when an open-tier customer adapter you trained is delivered and
+  customers pay to use it through the API: your share of that paid use over the
+  window, for 30 days after delivery, capped by the validator's `revenue_cap`.
+  Free, test-mode and operator use earn nothing, and your queue hotkey must be
+  registered on the subnet.
 
 Split: the base tier takes `base_pools.share` of the vector (for example **0.7**;
 the validator records the share in every chain attempt and receipt), adapters
@@ -211,13 +212,13 @@ on the sealed exam.
 ## Compete in the base tier from outside
 
 You do not need a bundle, an operator or an invitation to enter the base tier:
-registration on subnet 579 is the admission. About an afternoon end to end, most
+registration on mainnet subnet 127 is the admission. About an afternoon end to end, most
 of it the training run.
 
 You do not need any validator's address or hotkey to compete: candidates are
 chain commitments that every validator reads itself. Validators are run by
 whoever operates them; find them on the metagraph
-(`btcli subnets metagraph --netuid 579 --network test`).
+(`btcli subnets metagraph 127 --network finney`).
 
 Start with the installer on the mining host. It clones Zils into `~/.zils/zils`,
 builds the miner runtime and, on Linux x86_64 with an NVIDIA GPU, the d3 training
@@ -257,9 +258,12 @@ metadata. Existing candidates supply their profile when no selection is saved;
 without a candidate or selection, the CLI asks you to choose instead of assuming
 mini. A candidate for a different tier or parent profile is rejected before upload.
 
-From then on `zils-miner doctor` names the next step and prints its command; the steps are:
+From then on `zils-miner doctor` names the next step and prints its command. Run
+`zils-miner setup --network finney --netuid 127` once: the CLI never assumes mainnet, but
+it saves the chain you named and every later chain command (`doctor`, `check`,
+`commit-candidate`, `commit-body`) uses it unless you pass `--network` again. The steps are:
 
-1. **Register a hotkey on testnet subnet 579** following the
+1. **Register a hotkey on mainnet subnet 127** following the
    [registration guide](bittensor-registration.md); keep the hotkey file on the
    mining host and the coldkey elsewhere.
 2. **Read the [miner terms](mining-terms.md).** Running a miner against a Zils
@@ -302,7 +306,7 @@ From then on `zils-miner doctor` names the next step and prints its command; the
    step 3 (it prints the merge recipe), before step 4 (it prints the commit
    command) and again after each fix.
 6. **Read the result.** Your payout is on chain: the validators' weights and your
-   incentive (`btcli subnets metagraph --netuid 579 --network test`). The
+   incentive (`btcli subnets metagraph 127 --network finney`). The
    aggregate row per round (Brier and accuracy against the incumbent, eligibility,
    the pending and confirmed winner) is in each validator's signed round result on
    its own API (`GET /results/<round>`), not on chain. Per-case results are never returned. An ineligible or
@@ -323,7 +327,9 @@ fifth model lowered the score. Treat the numbers in this section as launch polic
 that may change, not as measured results.
 
 Instead of one winner, each round builds the best **soup**: a uniform average of
-up to five bodies submitted by different miners. You earn by holding a seat in
+up to five bodies submitted by different miners. The average covers the language
+weights; the soup keeps the release's vision tower unchanged, since no exam grades
+images yet. A body still includes a vision tower (any one; usually its parent's). You earn by holding a seat in
 the round's soup, or by submitting the round's best single body.
 
 ### Four pools
@@ -522,7 +528,8 @@ member stops earning at once.
 
 Each pool has its own house ingredients, the open decision models of its size
 already public at launch, listed in `zils/data/`: `soup-house.json` (mini),
-`soup-house-lite.json` (`vllm-sr/d3-lite` and `internlm/Intern-Decision-0.8B`),
+`soup-house-lite.json` (`vllm-sr/d3-lite`, `internlm/Intern-Decision-0.8B`,
+`Maincode/Matilda-Decision-v1-Edge` and `zils-ai/jiwo-0.8b-full`),
 `soup-house-flash.json` (`vllm-sr/d3-flash`) and `soup-house-z3.json`
 (`vllm-sr/d3-ultra`).
 
@@ -560,11 +567,12 @@ Every unearned part burns to the subnet owner's uid, as in the base tier. Until
 miners submit new bodies, most of the pool's share burns.
 
 **Pool shares.** The launch configuration (`zils/data/base-pools-launch.json`)
-gives each of lite, mini, flash and z3 25% of the base emission. With the base
-tier at the whole budget, a trainer's seat is 4% of all emissions and a crown 5%;
-a pool has five seats and one crown, so the four pools have 24 paid spots.
-Flash and z3 burn their shares until their opening blocks, which are in each
-validator's configuration and its published report.
+gives the base pools 80% of all emissions and the adapter track the other 20%.
+Lite and mini get 25% of all emissions each, so a trainer's seat there is 4% and
+a crown 5%; flash and z3 get 15% each (a seat 2.4%, a crown 3%). A pool has five
+seats and one crown, so the four pools have 24 paid spots. Flash and z3 burn
+their shares until their opening blocks, which are in each validator's
+configuration and its published report.
 
 ### What validators publish
 
@@ -600,6 +608,12 @@ reports are in `validator/state/rounds/`. Restarting a miner reuses completed
 candidates; an interrupted training epoch starts again. The validator reloads
 accepted submissions after restart. Service locks prevent duplicate launches,
 and a per-device compute lock serializes work on shared hardware.
+
+When a miner finishes its last round (`--rounds`), it deletes its bundle's
+`miner-training.jsonl`, as the [miner terms](mining-terms.md) require; candidates,
+results and logs stay. Starting that bundle again stops with a message to build a
+new one with `zils.fleet init`. A miner run without `--rounds` keeps the rows until
+it is stopped; delete them then.
 
 Keep started bundles at their original location: saved checkpoint paths are
 absolute. Archive completed rounds between runs if disk space fills; training

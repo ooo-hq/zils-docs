@@ -7,7 +7,7 @@ description: Understand decision models and design your first evaluation without
 
 A decision model estimates which of your defined outcomes fits the context. In Zils, that context can be text or, with an image model, an image plus text. Start by understanding the output, then test one task before comparing models or training adapters.
 
-You can read the concepts and published evidence without an account or GPU. Hosted experiments require API access. Running a miner or validator is a separate role, not a prerequisite for learning or evaluating decisions.
+You can read the concepts and published evidence without an account or GPU. Hosted experiments need a Zils account and an API key. Running a miner or validator is a separate role, not a prerequisite for learning or evaluating decisions.
 
 ## Understand the terms
 

@@ -1,9 +1,9 @@
 {
-  "site": "Existing docs.zils.ai publication, imported 2026-10-10; technical guides re-synced from the owning repositories 2026-10-19",
+  "site": "Existing docs.zils.ai publication, imported 2026-10-10; technical guides re-synced from the owning repositories 2026-10-19; full pass 2026-11-09 (zils guides mining, validators, testnet and miner terms copied from zils main, registration copied then edited for open customer-job admission; SDK guides merged with zils-sdk main)",
   "repositories": {
-    "ooo-hq/zils": "9c474b82ecb0fb2add9d590f75977878b6027063",
-    "ooo-hq/zils-platform": "c203d5eaab1943d0d2b83873b523f65a77b9a46a",
-    "ooo-hq/zils-sdk": "ac2b0e3dccaf42ae1b3c3f97bf11fdd14f9ed9ba"
+    "ooo-hq/zils": "a943241a433e2ef3bc17dfcab999465451e2afaa",
+    "ooo-hq/zils-platform": "4079d0ae75fc8dcbd2bef5f1ed612897a85f3ffd",
+    "ooo-hq/zils-sdk": "7772b4560e2c972f9268b39242d9d072daae8ed6"
   },
   "guide_verifications": {
     "docs/miner-tuning.md": {

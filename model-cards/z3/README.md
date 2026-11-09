@@ -21,7 +21,6 @@ files, SHA-256. Only the model card changed. The original repository is intact.
 4. Update the website and docs weight links to the newly published revision only
    after it resolves and its files are verified. The launch page and model guide now link to the verified z3 revision.
 
-For each elected successor, publish a new immutable revision/version with its
-parent, candidate identity, aggregate validation evidence and approved release
-record. Never reuse a version for different weights. Hosted availability must
+For each released soup, publish a new immutable revision/version with its
+members, aggregate validation evidence and approved release record. Never reuse a version for different weights. Hosted availability must
 be qualified separately; publication alone does not enable an API model.
