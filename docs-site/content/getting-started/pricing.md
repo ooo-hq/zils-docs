@@ -43,8 +43,9 @@ Open-tier limits:
 
 - 3 open-tier runs per account in any 24 hours. Every run you create counts, including
   one you cancel.
-- 5,000,000 training tokens per run. A bigger run fails after validation, before
-  training, and its error gives the private price for the same data.
+- 5,000 examples and 5,000,000 training tokens per run. A bigger run fails after
+  validation, before training; for too many tokens, its error gives the private price
+  for the same data.
 - A daily limit across all accounts.
 
 Past the per-account or daily limit, creating an open-tier run returns HTTP `429`; train it
