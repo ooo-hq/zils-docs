@@ -5,6 +5,13 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Open sign-up
+
+November 9, 2026
+
+Anyone can create a Zils account with Google or an email link; **Get started** on
+[zils.ai](https://zils.ai/sign-in) opens sign-in. Early access is gone.
+
 ## Customer models pay miners
 
 November 9, 2026
@@ -24,9 +31,9 @@ Releases and their notes are on the
 
 ## Open and private training
 
-November 8, 2026
+November 9, 2026
 
-**Choose a tier for every run.** An **open-tier** run is free: network miners
+**Every run is open or private.** An **open-tier** run is free: network miners
 train it, and the model is served by Zils and used through the API; its files
 cannot be downloaded. A **private** run costs $0.20 per million training tokens
 ($2 minimum), trains on Zils workers only, and can be downloaded. Open-tier runs
@@ -45,13 +52,6 @@ are on npm. See the [training workflow](/training/shared-queue).
 **Customer-job miners join by registering.** Any hotkey registered on subnet 127
 can qualify its host and train open-tier customer jobs, with no approval. See
 [train customer jobs](/operations/customer-jobs).
-
-## Open sign-up
-
-November 5, 2026
-
-Anyone can create a Zils account with Google or an email link; **Get started** on
-[zils.ai](https://zils.ai/sign-in) opens sign-in. Early access is gone.
 
 ## Zils is live on Bittensor mainnet
 
