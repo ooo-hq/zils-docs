@@ -26,7 +26,7 @@ z3-mini supports at most 255 outcomes and 8,192 input tokens per example. Inputs
 
 | File | Purpose | Miner access |
 | --- | --- | --- |
-| `train.jsonl` | Fit candidate adapters | Approved miners only |
+| `train.jsonl` | Fit candidate adapters | Zils workers (private) or network miners (open tier) |
 | `calibration.jsonl` | Fit confidence calibration | Validator only |
 | `test.jsonl` | Compare the frozen models | Validator only |
 
@@ -42,8 +42,8 @@ Training may complete with `no_qualifying_model`. The [product-matching study](/
 
 ## Upload with an explicit trust boundary
 
-Approved miner operators can read and retain exported training data. The export-consent flag records your decision; it does not provide confidential compute or recall downloaded copies.
+Whoever trains the run can read the training split. Private runs are trained only by Zils workers; open-tier runs are trained by network miners, who must delete the data within 7 days of the run finishing (see [open tier](/getting-started/pricing#open-tier)). The export-consent flag records your decision; it does not provide confidential compute or recall downloaded copies.
 
-Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. When capacity is available, the platform assigns an approved miner, and only accepted, verified models are activated. Training costs $0.20 per million training tokens with a $2 minimum per run; see [pricing](/getting-started/pricing).
+Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. When capacity is available, the platform assigns an approved miner, and only accepted, verified models are activated. Private training costs $0.20 per million training tokens with a $2 minimum per run; open-tier training is free within its limits. See [pricing](/getting-started/pricing).
 
 For terminal uploads, use the [training CLI](/training/cli). For image jobs, see [Train on images](/training/images).
