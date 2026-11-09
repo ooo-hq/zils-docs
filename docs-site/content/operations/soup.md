@@ -17,8 +17,8 @@ There is one soup pool per model size, each with its own bodies, rounds, seats a
 | --- | --- | --- | --- | --- | --- | --- |
 | `d3-lite` (z3-lite, 0.8B) | `vllm-sr/d3-lite` | `Qwen/Qwen3.5-0.8B` @ `2fc06364715b967f1860aea9cf38778875588b17` | 473 | 2 GiB | 4,096 tokens | `zilsb3:d3-lite:…` |
 | `d3-mini` (z3-mini, 4.5B) | `zils-ai/d3-mini-4.5b-v1` | `Qwen/Qwen3.5-4B` @ `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` | 723 | 10 GiB | 8,192 tokens | `zilsb2:…` |
-| `d3-flash` (z3-flash, 9B) | `vllm-sr/d3-flash` | `Qwen/Qwen3.5-9B` @ `c202236235762e1c871ad0ccb60c8ee5ba337b9a` | 759 | 24 GiB | 4,096 tokens | `zilsb3:d3-flash:…` |
-| `d3` (z3, 27B) | `vllm-sr/d3-ultra` | `Qwen/Qwen3.8-27B` @ `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | 1,183 | 64 GiB | 4,096 tokens | `zilsb3:d3:…` |
+| `d3-flash` (z3-flash, 8.4B) | `vllm-sr/d3-flash` | `Qwen/Qwen3.5-9B` @ `c202236235762e1c871ad0ccb60c8ee5ba337b9a` | 759 | 24 GiB | 4,096 tokens | `zilsb3:d3-flash:…` |
+| `d3` (z3, 26B) | `vllm-sr/d3-ultra` | `Qwen/Qwen3.8-27B` @ `1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0` | 1,183 | 64 GiB | 4,096 tokens | `zilsb3:d3:…` |
 
 The z3 chassis uses `prefix_bidir` attention and the `header-v1` prompt layout; both are fixed by the chassis, so a z3 body is an ordinary Qwen3.8-27B-layout fine-tune. Round items longer than a pool's input cap are left out of that pool's rounds.
 
@@ -34,7 +34,7 @@ A body is the full set of language and vision weights of a fine-tune of the pool
 - **Size:** the safetensors total at most the pool's body size cap.
 - **Ownership:** the repo holds `zils-owner.json` containing exactly `{"hotkey": "<your ss58 hotkey>"}`, the hotkey that commits it. Scouts who find a good open model re-upload it to their own repo with their own ownership file. The first valid commitment of a body hash wins it.
 
-For training settings and comparing a fine-tune with its parent before you publish, see [Tune a base miner](/operations/miner-tuning).
+For training settings and comparing a fine-tune with its parent before you publish, see [Train a soup body](/operations/miner-tuning).
 
 ## Commit a body
 
@@ -121,7 +121,7 @@ Every unearned part burns to the subnet owner's uid. Until miners submit new bod
 
 ### Pool shares
 
-The launch configuration (`zils/data/base-pools-launch.json`) gives the base pools 80% of all emissions and the adapter track, which pays miners for customer models, the other 20%. Lite and mini get 25% of all emissions each, so a trainer's seat there is 4% and a crown 5%; flash and z3 get 15% each (a seat 2.4%, a crown 3%). The four pools have 24 paid spots. Flash and z3 burn their shares until their opening blocks, which are in each validator's configuration and its published report.
+The launch configuration (`zils/data/base-pools-launch.json`) gives the base pools 80% of all emissions and the adapter track, which pays miners for [customer models](/operations/customer-jobs), the other 20%. Lite and mini get 25% of all emissions each, so a trainer's seat there is 4% and a crown 5%; flash and z3 get 15% each (a seat 2.4%, a crown 3%). The four pools have 24 paid spots. Flash and z3 burn their shares until their opening blocks, which are in each validator's configuration and its published report.
 
 ## What validators publish
 

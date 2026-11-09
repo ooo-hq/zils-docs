@@ -5,6 +5,13 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Open sign-up
+
+November 9, 2026
+
+Anyone can create a Zils account with Google or an email link; **Get started** on
+[zils.ai](https://zils.ai/sign-in) opens sign-in. Early access is gone.
+
 ## Customer models pay miners
 
 November 9, 2026
@@ -22,12 +29,36 @@ also deletes a customer's training data as soon as the miner is done with the jo
 Releases and their notes are on the
 [releases page](https://github.com/ooo-hq/zils/releases).
 
+## Open and private training
+
+November 9, 2026
+
+**Every run is open or private.** An **open-tier** run is free: network miners
+train it, and the model is served by Zils and used through the API; its files
+cannot be downloaded. A **private** run costs $0.20 per million training tokens
+($2 minimum), trains on Zils workers only, and can be downloaded. Open-tier runs
+are limited to 3 per account in 24 hours and 5,000 examples and 5,000,000
+training tokens each, and paid runs go first in the queue. See
+[pricing and limits](/getting-started/pricing#open-tier).
+
+**More ways to train.** The website's [table page](https://zils.ai/train/new)
+trains from a spreadsheet or export of past decisions. In the CLI,
+`zils train prepare` turns such a file into the three training files and
+`zils train submit --tier open|private` submits them. Coding agents get the same
+steps as MCP tools (`train_guide`, `train_prepare`, `train_submit` and others),
+and `zils fit train` trains on decisions your program logged. SDK and CLI 0.4.18
+are on npm. See the [training workflow](/training/shared-queue).
+
+**Customer-job miners join by registering.** Any hotkey registered on subnet 127
+can qualify its host and train open-tier customer jobs, with no approval. See
+[train customer jobs](/operations/customer-jobs).
+
 ## Zils is live on Bittensor mainnet
 
 November 3, 2026
 
-**Subnet 127 on `finney`.** The Zils validator publishes weights on Bittensor
-mainnet subnet 127. Miners register a hotkey on 127 with real TAO and commit
+**Subnet 127 on `finney`.** Zils runs on Bittensor mainnet subnet 127, and
+validators publish weights there. Miners register a hotkey on 127 with real TAO and commit
 soup bodies with `zils-miner`; add `--network finney --netuid 127` to every chain
 command, because the CLI never assumes mainnet. The subnet is full, so a
 registration replaces the lowest-scoring UID past its immunity period, and a
@@ -73,22 +104,6 @@ z3-mini's input limit doubled from 4,096 to 8,192 tokens per model pass, for
 decisions and training. The other sizes keep 4,096. See
 [z3-mini limits](/getting-started/models#z3-mini-limits).
 
-## Pricing
-
-October 22, 2026
-
-Decisions cost $0.06 per million input tokens, with no charge for output. Training
-costs $0.20 per million training tokens, with a $2 minimum per run (since October 21).
-See [pricing and limits](/getting-started/pricing).
-
-## `zils fit`
-
-October 21, 2026
-
-SDK 0.4.0 adds `zils fit`: it finds the model calls in your code that make typed
-decisions and shows how much of that traffic Zils can take. In an AI coding agent,
-run `npx -y @zils/cli fit agent`. See [find where Zils fits](/sdks/overview#find-where-zils-fits).
-
 ## Base-election bar lowered to +2
 
 October 25, 2026
@@ -117,6 +132,8 @@ not change validator configuration, elect a model or enable mainnet.
 
 ## z3 model line
 
+October 23, 2026
+
 Zils' decision models now use the **z3** public name. **z3-mini v1** is the
 founding baseline, using unchanged upstream d3-mini weights. Other sizes remain
 planned until separately released and qualified. Subsequent approved
@@ -124,6 +141,22 @@ miner-trained winners receive their own versioned releases.
 
 Existing API IDs, pool keys, downloads and release fingerprints remain valid.
 See the [z3 model guide](/getting-started/models) for names and provenance.
+
+## Pricing
+
+October 22, 2026
+
+Decisions cost $0.06 per million input tokens, with no charge for output. Training
+costs $0.20 per million training tokens, with a $2 minimum per run (since October 21).
+See [pricing and limits](/getting-started/pricing).
+
+## `zils fit`
+
+October 21, 2026
+
+SDK 0.4.0 adds `zils fit`: it finds the model calls in your code that make typed
+decisions and shows how much of that traffic Zils can take. In an AI coding agent,
+run `npx -y @zils/cli fit agent`. See [find where Zils fits](/sdks/overview#find-where-zils-fits).
 
 ## King-of-the-hill payout and d3 CLI support
 

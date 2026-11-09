@@ -12,7 +12,7 @@ export const guides = [
   ['docs/mining.md', 'operations/fleet-miners', 'Run a fleet miner', 'zils'],
   ['docs/miner-tuning.md', 'operations/miner-tuning', 'Train a soup body', 'zils'],
   ['docs/mining-terms.md', 'operations/miner-terms', 'Miner terms', 'zils'],
-  ['docs/testnet.md', 'operations/testnet', 'Bittensor testnet', 'zils'],
+  ['docs/testnet.md', 'operations/testnet', 'Testnet rehearsal fleet', 'zils'],
   ['docs/bittensor-registration.md', 'operations/bittensor-registration', 'Register on Bittensor', 'zils'],
   ['docs/validators.md', 'operations/validators', 'Run a validator', 'zils'],
   ['docs/experiments.md', 'research/experiment-history', 'Experiment history', 'zils'],

@@ -46,12 +46,12 @@ Training does not guarantee improvement. Independent evaluation can reject a can
 | Participant | Responsibility |
 | --- | --- |
 | Developer | Define the task, integrate predictions, measure outcomes and control application actions |
-| Miner | Run approved model workloads and submit trained candidates |
-| Validator | Verify candidates and evaluate them using data withheld from miners |
-| Platform operator | Coordinate access, jobs, model registration and serving integration |
+| Miner | Improve the base models in soup pools, and train open-tier customer models |
+| Validator | Score soup bodies, build each pool's soup and set weights on chain |
+| Platform | Run accounts, training jobs, evaluation on data withheld from miners, and hosted decisions |
 
-The architecture puts model execution on miners. The current hosted training workflow uses approved workers and trusted evaluation processors. Open miner discovery and inference routing to arbitrary public miners remain [work to complete](/getting-started/roadmap). Development GPUs provide bootstrap and test capacity.
+Each training run is open tier or private. Open-tier runs are free and trained by network miners; any miner registered on the subnet can qualify for them. Private runs are paid and trained on Zils workers only. Evaluation and hosted decisions run on Zils; serving from miners is [not available yet](/getting-started/roadmap).
 
-An account-owned adapter does not imply confidential training: approved miners can read and retain exported training examples. Review the dataset and export terms before submitting work.
+An account-owned model does not imply confidential training: on the open tier, the miner that trains your run can read its training split. Use a private run for data that must not leave Zils, and see the [training workflow](/training/shared-queue) before submitting work.
 
 **Next:** [make your first decision](/getting-started/quickstart), using one task you can evaluate.

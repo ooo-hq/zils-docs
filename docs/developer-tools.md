@@ -3,12 +3,14 @@
 Use the same Zils decision API from Python, JavaScript/TypeScript, a terminal, or
 an MCP-compatible agent. It lists available models and answers
 yes/no (`noul`), choice, and ordered-score questions. The CLI also supports [z3-mini text training](training-cli.md) with browser
-account sign-in, finds where Zils fits in your code, and merges models. Image training, bulk jobs, miner/validator administration, and
-billing management remain in their existing APIs.
+account sign-in, finds where Zils fits in your code, trains on its logged decisions, and merges models.
+Image training, bulk jobs, miner/validator administration, and billing management remain in
+their existing APIs.
 
 The CLI and JavaScript/TypeScript SDK are distributed as `@zils/cli` and
-`@zils/sdk` on npm. The Python SDK/MCP package is installed from source and is
-not published on PyPI. No model download or GPU is required.
+`@zils/sdk` on npm (latest 0.4.18). The CLI also starts the MCP server. The Python
+SDK package (`zils_sdk`) is installed from source and is not published on PyPI. No
+model download or GPU is required.
 
 ## Install from npm
 
@@ -29,9 +31,10 @@ For JavaScript/TypeScript applications, run `npm install @zils/sdk`.
 
 ## Python SDK and MCP server
 
-The Python SDK and the `zils-mcp` server are not published yet; installing them
-needs access to the private `zils-sdk` repository. The npm CLI bundles its own
-Python implementation, so `@zils/cli` works without it.
+The Python SDK is not published yet; installing it needs access to the private
+`zils-sdk` repository. The npm CLI bundles its own Python implementation, so
+`@zils/cli` and its MCP server (`npx -y @zils/cli mcp`, see [MCP](#mcp)) work
+without it.
 
 ## Credentials and defaults
 
@@ -129,6 +132,19 @@ calls in your code that make typed decisions, `zils fit record` logs what they
 receive and answer, and `zils fit run` replays that log on Zils to show how much of
 the traffic it can take. Agreement with your current model is not the same as accuracy;
 check disagreements yourself.
+
+Where Zils misses, `zils fit train` turns the logged answers for one question into
+the three training splits and submits them, with the same options as
+`zils train submit`, including `--tier`:
+
+```sh
+zils fit train --log fit-log.jsonl --questions questions.json --decide is_urgent \
+  --min-accuracy 0.8 --min-brier-improvement 0.01 --tier open --allow-open-tier-training \
+  --allow-training-data-export
+```
+
+Choice and yes/no questions train today. When `zils train status` shows the API
+model, measure it on the same log with `zils fit run --model <API model id>`.
 
 ## Merge models
 
@@ -385,28 +401,54 @@ There is no top-k shortcut, new model training, CLI command, or MCP tool.
 
 ## MCP
 
-After installing the Python MCP extra, run `zils login --api-key` in the same user account
-as your agent. Configure an MCP host to launch the installed `zils-mcp` executable
-over stdio. Use the absolute path printed by `command -v zils-mcp` (Windows:
-`where.exe zils-mcp`). A host configuration accepting `mcpServers` looks like:
+With Node.js 20+ and Python 3.11+, add the server to your agent in one line;
+nothing else needs installing:
+
+```sh
+claude mcp add zils -- npx -y @zils/cli mcp      # Claude Code
+codex mcp add zils -- npx -y @zils/cli mcp       # Codex
+```
+
+A host configuration accepting `mcpServers` looks like:
 
 ```json
 {
   "mcpServers": {
-    "zils": {
-      "command": "/absolute/path/to/.venv-tools/bin/zils-mcp"
-    }
+    "zils": { "command": "npx", "args": ["-y", "@zils/cli", "mcp"] }
   }
 }
 ```
 
-Replace the example path. For Codex, register that executable with
-`codex mcp add zils -- /absolute/path/to/.venv-tools/bin/zils-mcp`.
-The MCP server exposes only `list_models` and `decide`. It starts without a key
-so the agent can discover the tools; calls explain how to sign in. Login/key
-changes take effect on the next tool call without restarting the server.
-Credentials come from the environment or shared file, never from tool arguments.
-Unknown tool arguments are rejected before sending a request.
+Then sign in, in the same user account as your agent: `npx @zils/cli login --api-key`
+for decisions and `npx @zils/cli login` for training. The first start sets up a
+private Python environment and can take a minute; run `npx -y @zils/cli --version`
+once beforehand if your agent host times out slow servers.
+
+The server exposes `list_models` and `decide` (inference key), the fit tools, and
+training tools that use the browser account login from `zils login`:
+
+| Tool | What it does |
+|---|---|
+| `fit_scan` | Finds the model calls in the user's code that make typed decisions and drafts Zils questions for them. Local; needs no login. |
+| `fit_run` | Measures a Zils model on logged decisions, as `zils fit run` does. Sends one paid request per distinct logged input and refuses above `max_rows`. |
+| `train_guide` | Returns the step-by-step training walkthrough for an agent: which columns to read, agreeing the pass bars and the tier with the user, how to tell a run has finished, and calling the model with an inference key. Local; needs no login. |
+| `train_prepare` | Turns the user's CSV, TSV, JSON or JSONL file, or `record()` logs, into the three splits, as `zils train prepare` does, and lists columns that give the answer away under `leaks`. Local; needs no login. |
+| `train_check` | Checks three JSONL splits locally and returns case counts and `ceiling_usd`, the most the job can cost. Sends nothing; needs no login. |
+| `train_submit` | Submits a training job. `tier` is required, so the agent asks the user: `private` is paid and needs `max_cost_usd` (the tool refuses before sending anything without it, or when the ceiling is above it), `open` is free and trained by network miners and needs `allow_open_tier_training`. |
+| `train_list` | Lists recent jobs and ready models. |
+| `train_status` | Shows one job's status, evaluation and API model id. |
+| `train_cancel` | Cancels a job; costs already incurred may remain. |
+
+The cost ceiling and data rules are the same as the CLI's; see
+[training](training-cli.md#submit-three-reviewed-splits). An agent should agree
+the cost limit with the user before calling `train_submit`, and should never
+retry an uncertain submission: check `train_list` first.
+
+The server starts without a key or login so the agent can discover the tools;
+calls explain how to sign in. Login/key changes take effect on the next tool
+call without restarting the server. Credentials come from the environment or
+shared file, never from tool arguments. Unknown tool arguments are rejected
+before sending a request.
 
 ## Usage and retries
 

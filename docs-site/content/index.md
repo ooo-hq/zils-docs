@@ -28,14 +28,14 @@ Read [how Zils fits into your application](/getting-started/ecosystem) for the c
 
 <div class="start-links">
 <a href="/getting-started/quickstart"><strong>Developers</strong><span>Make your first decision through the API, then connect it to your application with an SDK.</span></a>
-<a href="/operations/soup"><strong>Miners</strong><span>Commit model bodies to a soup pool and earn when they improve it.</span></a>
+<a href="/operations/soup"><strong>Miners</strong><span>Commit model bodies to a soup pool, or train customers' models, and earn when the work is used.</span></a>
 <a href="/operations/validators"><strong>Validators</strong><span>Score committed bodies, build each pool's soup and set weights on chain.</span></a>
 <a href="/research/getting-started"><strong>Learn and research</strong><span>Understand decision models, design a first experiment, and read the evidence.</span></a>
 </div>
 
 ## How the pieces fit together
 
-Developers call decision models and supply examples when they want a model tuned to their task. On the Bittensor network, miners build better base models: each size of the [z3 line](/getting-started/models) is a soup pool, and miners commit model bodies that validators average into the pool's next release. The platform runs accounts, billing, training jobs and hosted decisions.
+Developers call decision models and supply examples when they want a model tuned to their task. On the Bittensor network, miners build better base models: each size of the [z3 line](/getting-started/models) is a soup pool, and miners commit model bodies that validators average into the pool's next release. Miners also [train customers' open-tier models](/operations/customer-jobs). The platform runs accounts, billing, training jobs and hosted decisions.
 
 You can start with an available model without training anything. An **adapter** is a set of trained changes that specializes a base model for your task. New text and image adapters use **z3-mini**, whose founding baseline is the unchanged d3-mini checkpoint adopted on 17 October 2026. Training produces a candidate to evaluate, and may end with no qualifying model. The [model guide](/getting-started/models) explains selection and compatibility.
 
@@ -43,15 +43,17 @@ You can start with an available model without training anything. An **adapter** 
 
 | Start with | How |
 | --- | --- |
-| Hosted decisions | A Zils account and an API key; see the [quickstart](/getting-started/quickstart) |
-| Price | $0.06 per million input tokens, output free; training $0.20 per million tokens, $2 minimum per run. Prepaid top-ups start at $5. See [pricing and limits](/getting-started/pricing) |
-| SDKs and CLI | `npm install -g @zils/cli` and `npm install @zils/sdk` (TypeScript); the Python SDK is available from source. See [SDKs and CLI](/sdks/overview) |
+| An account | [Get started](https://zils.ai/sign-in) with Google or an email link; anyone can sign up |
+| Hosted decisions | An API key; see the [quickstart](/getting-started/quickstart) |
+| Training | On the website, the CLI, a coding agent over MCP, or `zils fit train`; open tier free, private $0.20 per million tokens. See the [training workflow](/training/shared-queue) |
+| Price | $0.06 per million input tokens, output free. Prepaid top-ups start at $5. See [pricing and limits](/getting-started/pricing) |
+| SDKs and CLI | `npm install -g @zils/cli` and `npm install @zils/sdk` (TypeScript, 0.4.18); the Python SDK is available from source. See [SDKs and CLI](/sdks/overview) |
 | Find where Zils fits | `npx -y @zils/cli fit agent` in your project, or `zils fit` |
-| Mining | Commit a model body to a [soup pool](/operations/soup) with `zils-miner`, installed by `curl -fsSL https://zils.ai/install.sh \| sh` |
+| Mining | Commit a model body to a [soup pool](/operations/soup) with `zils-miner`, installed by `curl -fsSL https://zils.ai/install.sh \| sh`, or [train customer jobs](/operations/customer-jobs) |
 | Validating | See [Run a validator](/operations/validators) |
 
 Hosted decisions run on platform GPUs today; serving from miners is not live yet.
 Read [what's available](/getting-started/roadmap) for the boundary between current
 features and planned work.
 
-For access or a pilot, [contact Zils](https://zils.ai/contact). To contribute code or documentation, use the [repository map](/getting-started/repositories).
+For questions or a pilot, [contact Zils](https://zils.ai/contact). To contribute code or documentation, use the [repository map](/getting-started/repositories).

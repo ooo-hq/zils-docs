@@ -8,8 +8,8 @@ hosted services, application code and SDK implementations in their owning repos.
   availability, and historical measurements from current guarantees.
 - The z3-mini founding baseline retains the immutable d3-mini profile. It is
   the only served base for text and image jobs (`stable` and `latest`
-  since 17 October 2026); existing H2O jobs keep their frozen profile and H2O is
-  retiring; JevK5 and Imajev are retired.
+  since 17 October 2026). JevK5, Imajev, H2O and Kev are retired; name them only
+  in dated research records.
   Miners execute model workloads. Development hardware is only for bootstrapping
   and testing, not the permanent execution architecture.
 - Preserve existing public URLs, evidence bytes and third-party license notices.

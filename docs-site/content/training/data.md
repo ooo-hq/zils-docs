@@ -4,7 +4,7 @@ title: Prepare a dataset
 
 # Prepare data for z3 training
 
-Start with one decision and labeled examples you are authorized to use. The [Zils dashboard](https://zils.ai/train) guides data preparation and upload; the hosted queue trains candidates on the selected immutable profile and evaluates them against a frozen comparison model.
+Start with one decision and labeled examples you are authorized to use. The website's [table page](https://zils.ai/train/new) and `zils train prepare` turn a spreadsheet or export into the files below; the hosted queue trains candidates on the selected immutable profile and evaluates them against a frozen comparison model.
 
 Select an available pool and channel before creating the run. Omitting selection
 keeps the mini stable default. Every new run stores the resolved profile; recovery
@@ -44,6 +44,6 @@ Training may complete with `no_qualifying_model`. The [product-matching study](/
 
 Whoever trains the run can read the training split. Private runs are trained only by Zils workers; open-tier runs are trained by network miners, who must delete the data within 7 days of the run finishing (see [open tier](/getting-started/pricing#open-tier)). The export-consent flag records your decision; it does not provide confidential compute or recall downloaded copies.
 
-Follow [Training workflow](/training/shared-queue) for authentication, private uploads, and approval. When capacity is available, the platform assigns an approved miner, and only accepted, verified models are activated. Private training costs $0.20 per million training tokens with a $2 minimum per run; open-tier training is free within its limits. See [pricing](/getting-started/pricing).
+Follow [Training workflow](/training/shared-queue) for sign-in, tiers and uploads. When capacity is available, the platform assigns a worker: a Zils worker for a private run, a qualified network miner for an open-tier run. Only accepted, verified models are activated. Private training costs $0.20 per million training tokens with a $2 minimum per run; open-tier training is free within its limits. See [pricing](/getting-started/pricing).
 
 For terminal uploads, use the [training CLI](/training/cli). For image jobs, see [Train on images](/training/images).

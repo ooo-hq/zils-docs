@@ -13,10 +13,9 @@ parent. To make a body without training, merge or re-upload listed public models
 ## 1. Prepare the runtime and a smoke attempt
 
 Use Linux x86_64 or WSL 2, a BF16-capable NVIDIA GPU, Git, and `uv`. Follow
-[install and verify the reference](queue-miners.md#2-install-and-verify-the-reference)
-from a fresh clone to create `.venv-kev`, `.venv-d3`, and `models/d3-reference`.
-That installation section sends no chain transaction; customer queue admission
-is not needed for local base experiments. Run the commands below from the clone's
+[install](/operations/customer-jobs#_1-install) to create `.venv-kev`, `.venv-d3`,
+and `models/d3-reference`. Installing sends no chain transaction, and customer-job
+qualification is not needed for local base experiments. Run the commands below from the clone's
 root. Do not modify a checkout used by a running worker or validator.
 
 The existing mini recipe has measured about 10.5 GB of GPU memory; workers require

@@ -5,13 +5,13 @@ description: Create a Zils API key and make a decision with an available model.
 
 # Make your first API call
 
-Call an available model without downloading weights or running a GPU. You need a Zils account with API access and a terminal with Bash or zsh, and curl.
+Call an available model without downloading weights or running a GPU. You need a Zils account and a terminal with Bash or zsh, and curl. To create an account, choose **Get started** on [zils.ai](https://zils.ai/sign-in) and sign in with Google or an email link.
 
 This developer quickstart routes a support request to one of three teams. You will get a structured answer your application can inspect; the API does not move the ticket. For the broader workflow, read [how Zils fits into your application](/getting-started/ecosystem).
 
 ## 1. Create an API key
 
-Sign in at [zils.ai/train](https://zils.ai/train), open **API keys**, and create a named key. Save the secret when it is shown; it is displayed only once. Keep it in your server's secret storage, away from browser code and source control. If your account lacks access, [contact Zils](https://zils.ai/contact).
+Sign in at [zils.ai/train](https://zils.ai/train), open **API keys**, and create a named key. Save the secret when it is shown; it is displayed only once. Keep it in your server's secret storage, away from browser code and source control.
 
 Key management uses your signed-in session. Prediction calls use the resulting Zils API key. These credentials are not interchangeable.
 
