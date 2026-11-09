@@ -5,6 +5,23 @@ description: Product and developer-tool updates for Zils.
 
 # Changelog
 
+## Customer models pay miners
+
+November 9, 2026
+
+**20% of emissions for customer models.** Miners who train customers' open-tier
+models now have a share: the adapter track gets 20% of emissions, paid from what
+customers spend using those models through the API, up to half that spend; the
+rest burns. Lite and mini keep 25% each; flash and z3, still closed, go from 25%
+to 15% each. See [pool shares](/operations/soup#pool-shares).
+
+**Customer jobs need the current miner release.** A miner that takes customer jobs
+now names its installed release in every claim, and customer jobs go only to
+accepted releases. An outdated miner logs "Run zils-miner update". The release
+also deletes a customer's training data as soon as the miner is done with the job.
+Releases and their notes are on the
+[releases page](https://github.com/ooo-hq/zils/releases).
+
 ## Zils is live on Bittensor mainnet
 
 November 3, 2026
