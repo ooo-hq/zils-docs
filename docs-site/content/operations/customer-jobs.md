@@ -136,8 +136,9 @@ for continuous operation.
 
 Work arrives in this order:
 
-1. **Qualification jobs.** Synthetic jobs that grade the host. Zils pays for one
-   qualification run per hotkey every 30 days. They earn nothing.
+1. **Qualification jobs.** Synthetic jobs that grade the host. Zils pays for up
+   to three qualification runs per hotkey every 30 days, queued one at a time.
+   They earn nothing.
 2. **Customer jobs**, once three qualification reports pass.
 
 A successful submission prints `Submitted candidate for job ...`. That means the
