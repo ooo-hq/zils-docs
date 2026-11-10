@@ -106,7 +106,9 @@ terms hash:
     "path": "/absolute/path/to/your/wallets"
   },
   "terms_sha256": "YOUR_TERMS_SHA256",
-  "qualification": ".private/qualification/qualification.json"
+  "qualification": ".private/qualification/qualification.json",
+  "graded_scheduling": true,
+  "graded_min_free_mib": 12288
 }
 ```
 
@@ -115,7 +117,10 @@ chmod 600 .private/queue-miner.json
 ```
 
 The wallet directory must hold the named hotkey on this machine; the worker
-checks that its address matches `hotkey` before it starts. Use a dedicated
+checks that its address matches `hotkey` before it starts. `graded_scheduling`
+is required: it makes the worker send a signed heartbeat every 15 seconds, which
+is how the coordinator sees that it is online and has free GPU memory. Without
+it the worker is never offered a job, qualification runs included. Use a dedicated
 operating-system account for the miner.
 
 ## 4. Start the worker
@@ -137,8 +142,8 @@ for continuous operation.
 Work arrives in this order:
 
 1. **Qualification jobs.** Synthetic jobs that grade the host. Zils pays for up
-   to three qualification runs per hotkey every 30 days, queued one at a time.
-   They earn nothing.
+   to three qualification runs per hotkey every 30 days, queued one at a time and
+   only while your worker is online and sending heartbeats. They earn nothing.
 2. **Customer jobs**, once three qualification reports pass.
 
 A successful submission prints `Submitted candidate for job ...`. That means the
