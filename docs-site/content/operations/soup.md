@@ -1,6 +1,6 @@
 ---
 title: Soup pool
-description: "How the z3 soup pools work: the four pools, what a body is, how to commit one, how a daily round builds the soup, and how seats, the crown and releases pay."
+description: "How the z3 soup pools work: the four pools, what a body is, how to commit one, how a daily round builds the soup, how seats, the crown and the weekly soup pay, and how releases work."
 ---
 
 # Soup pool
@@ -22,7 +22,7 @@ There is one soup pool per model size, each with its own bodies, rounds, seats a
 
 The z3 chassis uses `prefix_bidir` attention and the `header-v1` prompt layout; both are fixed by the chassis, so a z3 body is an ordinary Qwen3.8-27B-layout fine-tune. Round items longer than a pool's input cap are left out of that pool's rounds.
 
-Lite and mini run rounds from the start. Flash and z3 open later, each at a block fixed in the validator configuration. A pool pays nothing before it opens; its share burns (see [Pool shares](#pool-shares)). Bodies committed to a pool before it opens are admitted at its first round.
+Lite and mini run rounds from the start. Flash and z3 open later, each at a block fixed in the validator configuration. A pool pays nothing before it opens; its share burns (see [Pool shares](#pool-shares)). A pool takes no submissions until then: validators ignore a body committed before the pool's opening block, even after it opens. Commit flash and z3 bodies only once the pool is open.
 
 ## What a body is
 
@@ -50,7 +50,7 @@ curl -fsSL https://zils.ai/install.sh | sh
    zils-miner commit-body --pool <pool> --repo <you>/<body-repo> --path ./my-body --write-owner
    ```
 
-   `--pool` is `d3-lite`, `d3-mini` (the default), `d3-flash` or `d3` (z3).
+   `--pool` is `d3-lite`, `d3-mini` (the default), `d3-flash` or `d3` (z3). A commitment to a pool made before its opening block is ignored; see [Four pools](#four-pools).
 
 2. Upload the folder to your Hugging Face model repo and note the commit sha the upload prints (`hf auth login` once with a write token). The body hash does not cover the ownership file, so anyone who copies a public body could commit its hash first: upload to a **private** repo, commit while it is private, and make it public before the round's commit deadline. Validators download after the deadline, and a repo that is still private then fails.
 
@@ -85,8 +85,8 @@ Validators run one soup round per day for each open soup pool:
 5. **Solo:** each pool body is graded alone on the chassis. Every score from here on (solo, greedy, contribution, crown) is on the items of this round and the validator's last two finished rounds pooled together (`decision_rounds`, default 3), because one subset's noise is larger than the greedy margin. A new body is graded on the earlier rounds' items too.
 
    Under the default scoring, `calibrated_brier`, the validator holds apart a private 20% of those items, chosen by a secret that changes every round, and fits one temperature per body or soup on them. The other 80% are scored at that temperature on Brier skill (ranked probability score skill for Score questions), each against the best constant answer for the family. Confidence counts, but sharpening or softening a body's probabilities without changing its answers earns nothing. Bodies are always graded at the temperature the validator fits; a temperature in a body's own files is never read. The margins below apply on this scale.
-6. **Greedy soup:** starting from the best single body, add the next best only if the soup's score rises by at least **0.5** points; stop at **5** members.
-7. **Contribution:** each member is left out once; what the soup loses without it is its contribution.
+6. **Greedy soup:** starting from the best single body, add the next best only if the soup's score rises by at least **0.5** points; stop at **5** members. The current soup stays unless the new one beats it by at least **0.5** points too, so a light re-tune of the soup cannot take its members' seats for a gain within noise. A current soup with a member that was not graded this round is not kept.
+7. **Contribution:** each member is left out once; what the soup loses without it is its contribution. A fine-tune is credited with what it adds over its base instead: the soup's score minus the score of the soup with the base in its place (see [Fine-tunes](#pay)).
 
 ## Pay
 
@@ -94,20 +94,21 @@ Each pool's emission share pays **five seats of 16% each** (80% in all) and **20
 
 | Part | Share | Who earns it |
 | --- | --- | --- |
-| Soup seats | 5 × 16% | One seat for each member whose contribution is at least **0.5** points, multiplied by its rate and subject to the fine-tune rule below. Empty seats, house seats and seats below the floor burn. |
+| Soup seats | 5 × 16% | One seat for each member whose contribution is at least **0.5** points, multiplied by its rate; a fine-tune's contribution is measured over its base (below). Empty seats, house seats and seats below the floor burn. |
 | Crown | 20% | The round's best single body that is not a house ingredient, multiplied by its rate, only if it beats every house ingredient alone and the current soup by at least **1.2** points on the pooled items. Otherwise the crown burns. A soup usually beats its members, so expect the crown to burn in most rounds; it pays for a body that is better than the soup by itself. |
 
-**Fine-tunes (launch rule).** A seat is credited by what the soup loses without the body, so a fine-tune that takes its base's place would also be credited with its base's contribution. Until seats are credited relative to a body's base, validators split each body's change over the allowed bases (house ingredients, listed public models, the soup and the release). If at least half of it comes from those bases, the body is a fine-tune, and its bases are the ones explaining at least 10% of it:
+**Fine-tunes.** A seat is credited by what the soup loses without the body, so a fine-tune that takes its base's place would also be credited with its base's contribution. Validators therefore credit a fine-tune against its base. They split each body's change over the allowed bases (house ingredients, listed public models, the soup and the release). If at least half of it comes from those bases, the body is a fine-tune, and its bases are the ones explaining at least 10% of it:
 
-- If one of its bases is a listed public model, it is paid at the scout rate.
-- Otherwise its seat is paid only if the body alone beats the best of its bases by at least **1.2** points on the round's items. If a base cannot be scored that round, the seat is unpaid.
+- If one of its bases is a listed public model, it is paid at the scout rate. Listed models are not graded, so a fine-tune cannot be compared with them.
+- Otherwise its contribution is the soup's score minus the score of the soup with a base in the fine-tune's place, for the base that leaves it least, and never more than its leave-one-out contribution. The seat floor applies to that number. A base that is already a member takes no second place, so leave-one-out stands.
+- The soup base is the soup the body was admitted against. Validators keep a copy of it while a body admitted against it is in the pool.
 
-A body held back this way keeps its place in the soup and its seat share burns. Train enough to beat what you started from.
+A fine-tune whose base cannot be scored that round keeps its place in the soup and its seat share burns. Train enough to add to what you started from.
 
 | Rate | Multiplier | Applies to |
 | --- | --- | --- |
 | Trainer | 1.0 | A body you trained, including a fine-tune of a house ingredient, the current soup or the release. |
-| Scout | 0.25 | An unchanged or lightly changed re-upload of a model on the pool's known-public list (weight-change cosine of at least 0.9 to it), or a fine-tune of a listed model under the launch rule above. |
+| Scout | 0.25 | An unchanged or lightly changed re-upload of a model on the pool's known-public list (weight-change cosine of at least 0.9 to it), or a fine-tune of a listed model under the fine-tune rule above. |
 | House mix | 0.25 | A body whose change from Qwen is almost entirely a mix of house ingredients' and listed models' changes (less than 5% left over; real fine-tunes leave about 10%), or, when it was admitted, almost entirely a mix of house ingredients, listed models, the soup and the release. |
 | House ingredient | 0 | The open decision models of the pool's size already public at launch. The pool includes them unpaid. |
 
@@ -115,9 +116,22 @@ Each pool has its own house ingredients, listed in the `zils` repository under `
 
 Each pool may also have a **known-public list** of other public decision models of its size, each pinned to a revision: `soup-known-lite.json` and `soup-known-mini.json` in the same folder. Flash and z3 have none. Finding one of these models and committing it unchanged or lightly changed earns the scout rate. Full pay is for real training: a fine-tune that moves well away from every listed model (cosine under 0.9) earns the trainer rate, whichever model it started from. Validators resolve each list entry once, keep only a private sketch of its weights and delete the files; listed models are never graded, seated or paid themselves.
 
-**Scouting.** The list is not the limit of what you can commit. Any open fine-tune of the pool's Qwen parent that passes the eligibility checks under [What a body is](#what-a-body-is) can be committed by the first hotkey to find it, listed or not. The list only names the public models validators already know about, and those pay 0.25. A find that is not on the list and far from every listed model (cosine under 0.9) pays the trainer rate even though you did not train it: the pool cannot tell a find from a fine-tune and does not need to, because every body earns its seat the same way, by making the soup better on the round's items. If the find is itself a fine-tune of a house ingredient, the soup or the release, its seat pays only if it beats that base by 1.2 points, like any other fine-tune. Hunting Hugging Face for strong open decision models of the pool's size, adding the Qwen vision tower when the export is text-only, and committing them first is real work the pool pays for. Check a candidate with `zils-miner commit-body --pool <pool> --path ./found-body --check` before you upload it.
+**Scouting.** The list is not the limit of what you can commit. Any open fine-tune of the pool's Qwen parent that passes the eligibility checks under [What a body is](#what-a-body-is) can be committed by the first hotkey to find it, listed or not. The list only names the public models validators already know about, and those pay 0.25. A find that is not on the list and far from every listed model (cosine under 0.9) pays the trainer rate even though you did not train it: the pool cannot tell a find from a fine-tune and does not need to, because every body earns its seat the same way, by making the soup better on the round's items. If the find is itself a fine-tune of a house ingredient, the soup or the release, its seat is credited with what it adds over that base, like any other fine-tune. Hunting Hugging Face for strong open decision models of the pool's size, adding the Qwen vision tower when the export is text-only, and committing them first is real work the pool pays for. Check a candidate with `zils-miner commit-body --pool <pool> --path ./found-body --check` before you upload it.
 
 Every unearned part burns to the subnet owner's uid. Until miners submit new bodies, most of a pool's share burns.
+
+### Weekly soup
+
+A validator can also run a **weekly judge** for a pool (its `soup_weeks` setting). The judge grades on a private sealed set that no nightly round draws from, so a body that was lucky on one night's items is not paid for a week. Nightly rounds keep running as above. Once the judge has picked a pool's first weekly soup, that validator pays the pool this way instead of the nightly seats and crown:
+
+| Part | Share | Who earns it |
+| --- | --- | --- |
+| Weekly seats | 5 × 16% | One seat for the week for each member of the weekly soup whose contribution on the sealed set is at least **0.5** points, multiplied by its rate. A fine-tune is credited with what it adds over its base, as in a nightly round. Empty and unpaid seats burn. |
+| Nightly joins | 20% | Each night, the bodies the night's soup takes in for the first time and whose contribution is at least **0.5** points (the seat floor, measured as for a nightly seat) share the 20% equally, each part multiplied by its rate. A body is paid for joining once. A night with no such body burns its 20%. |
+
+- **The judge** runs after the Monday round. It starts from that round's soup, tries adding the two best pool bodies left out of it (each joins if it lifts the soup by at least **0.5** points on the sealed set), drops a member the soup is at least 0.5 points better without, and replaces the current weekly soup only if the result beats it by the validator's bar. Otherwise the current weekly soup and its seats carry over.
+- **Stay public:** each nightly round checks that the seated bodies' committed revisions are still public. A seat whose revision is private or gone stops for the rest of the week; a network failure does not stop it.
+- A weekly soup whose round is more than 14 days old seats nobody, so a judge that stopped running does not pay old seats.
 
 ### Pool shares
 
@@ -131,4 +145,4 @@ Each round's public record lists the soup members (hotkey, body hash, rate), the
 
 A soup is not served until it is released. Every 14 to 28 days, at a release window, the current soup must beat the current release by at least +1 point with a positive lower bound on each of two sealed release draws that rounds never use, pass the 12-hour confirmation draw and the pinned three-seed adapter suite. A reviewed promotion then makes it that tier's next z3 version; the released soup carries the temperature fitted for it, which serving applies. Members are paid through seats, not as kings, and the release itself has no single winner.
 
-The member cap (5), pool size, change bound (0.15), 80/20 split, fixed seat value, rates (1.0 / 0.25 / 0), the fine-tune launch rule, the scoring, pool shares and release cadence are policy choices made for the launch, not tuned results. The greedy margin (0.5) and the crown and fine-tune bars (1.2) are about 2.5 standard errors of the differences they test, measured by resampling the items of a 3,000-item dry run and scaled to the pooled three-round window; a smaller real gain is not paid until the pool has more items. The seat floor (0.5) equals the greedy margin. It is about 1.5 standard errors of a contribution, so a seat can be paid one round and missed the next on the same body.
+The member cap (5), pool size, change bound (0.15), 80/20 split, fixed seat value, rates (1.0 / 0.25 / 0), the scoring, pool shares, the weekly judge's settings and release cadence are policy choices, not tuned results. The greedy margin (0.5) and the crown bar (1.2) are about 2.5 standard errors of the differences they test, measured by resampling the items of a 3,000-item dry run and scaled to the pooled three-round window; a smaller real gain is not paid until the pool has more items. The seat floor (0.5) equals the greedy margin. It is about 1.5 standard errors of a contribution, so a seat can be paid one round and missed the next on the same body.
