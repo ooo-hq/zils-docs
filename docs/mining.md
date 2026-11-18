@@ -238,7 +238,10 @@ Validators run one soup round per day for each open soup pool:
    so a light re-tune of the soup cannot take its members' seats for a gain
    within noise. A current soup with a member that was not graded this round is
    not kept.
-7. **Contribution:** each member's leave-one-out effect on the soup's score.
+7. **Contribution:** each member's leave-one-out effect on the soup's score. A
+   fine-tune is credited with what it adds over its base instead: the soup's
+   score minus the score of the soup with the base in its place (see
+   [fine-tunes](model-pools.md#fine-tunes)).
 
 ### Pay
 
@@ -250,11 +253,11 @@ member stops earning at once.
 - **Seats:** each member whose contribution is at least **0.5** points earns one
   seat, 16% of the pool's share multiplied by its rate. Empty seats, house seats
   and seats below the floor burn.
-- **Fine-tunes (launch rule):** if at least half of your body's change comes from
-  house ingredients, the soup or the release, your seat is paid only if your
-  body alone beats the best of those bases by at least **1.2** points. If part
-  of it (10% or more) comes from a listed public model, it is paid at the scout
-  rate. Train enough to beat what you started from.
+- **Fine-tunes:** if at least half of your body's change comes from house
+  ingredients, the soup or the release, your body is a fine-tune and its seat is
+  credited with what it adds over its base (step 7), not with its base's own
+  contribution. If part of it (10% or more) comes from a listed public model, it
+  is paid at the scout rate. Train enough to add to what you started from.
 - **Crown:** the round's best single body that is not a house ingredient takes the
   20%, multiplied by its rate, only if it beats every house ingredient alone and
   the current soup by at least **1.2** points on the pooled items; otherwise the
@@ -297,7 +300,7 @@ listed model (sketch cosine under 0.9), pays the trainer rate even though you di
 not train it: the pool cannot tell a find from a fine-tune and does not need to,
 because every body earns its seat the same way, by making the soup better on the
 round's items. If the find is itself a fine-tune of a house ingredient, the soup
-or the release, its seat pays only if it beats that base by 1.2 points, like any
+or the release, its seat is credited with what it adds over that base, like any
 other fine-tune. Hunting Hugging Face for strong open decision models of the
 pool's size, adding the Qwen vision tower when the export is text-only, and
 committing them first is real work the pool pays for. Check a candidate before
@@ -309,6 +312,35 @@ zils-miner commit-body --pool <pool> --path ./found-body --check
 
 Every unearned part burns to the subnet owner's uid, as in every track. Until
 miners submit new bodies, most of the pool's share burns.
+
+### Weekly soup
+
+A validator can also run a **weekly judge** for a pool (its `soup_weeks`
+setting). The judge grades on a private sealed set that no nightly round draws
+from, so a body that was lucky on one night's items is not paid for a week. Once
+the judge has picked a pool's first weekly soup, that validator pays the pool
+this way instead of the seats and crown above:
+
+- **The judge** runs after the Monday round. It starts from that round's soup,
+  tries adding the two best pool bodies left out of it (each joins if it lifts
+  the soup by at least **0.5** points on the sealed set), drops a member the soup
+  is at least 0.5 points better without, and replaces the current weekly soup
+  only if the result beats it by the validator's bar. Otherwise the current weekly
+  soup and its seats carry over.
+- **Weekly seats (80%):** each member of the weekly soup whose contribution on the
+  sealed set is at least **0.5** points holds one seat, 16% of the pool's share
+  times its rate, for the week. A fine-tune is credited with what it adds over its
+  base, as in a nightly round. Empty and unpaid seats burn.
+- **Nightly joins (20%):** each night, the bodies the night's soup takes in for
+  the first time and whose contribution is at least **0.5** points (the seat
+  floor, measured as for a nightly seat) share the 20% equally, each part times
+  its rate. A body is paid for joining once. A night with no such member burns
+  its 20%.
+- **Stay public:** each nightly round checks that the seated bodies' committed
+  revisions are still public. A seat whose revision is private or gone stops for
+  the rest of the week; a network failure does not stop it.
+- A weekly soup whose round is more than 14 days old seats nobody, so a judge that
+  stopped running does not pay old seats.
 
 **Pool shares.** The launch configuration (`zils/data/base-pools-launch.json`)
 gives the base pools 80% of all emissions and the adapter track the other 20%.
@@ -345,6 +377,135 @@ move with it, usually down when the new items are harder. Seats and the crown
 compare bodies on the same items, so compare your body with the soup and the
 other bodies within a round, not with its scores from before the change.
 
+### Why a body has no seat
+
+The public record names only the seated bodies. For your own bodies, a validator
+keeps a private report of each round and gives it only to the hotkey that
+committed them:
+
+```bash
+zils-miner report
+```
+
+The command signs the request with your hotkey and checks the validator's
+signature on the reply. A validator answers only for the hotkey that signs, so
+no other miner can read your report, and it covers the newest finished round of
+each soup pool.
+
+By default the request goes through the hosted API at `https://training.zils.ai`,
+which passes it unchanged to its validator and returns the validator's signed
+answer. The hosted API can read the answer as it passes; it cannot ask for your
+report itself or change the answer. To ask a validator directly, give its URL
+and hotkey, which its operator can tell you:
+
+```bash
+zils-miner report --validator <validator URL> --validator-hotkey <validator hotkey>
+```
+
+Each validator grades on its own private items, so two validators' reports can
+differ.
+
+For each body the command prints the stage, the reason in a sentence, the
+numbers next to their bars, and the next step:
+
+```text
+d3-mini · round d3-mini-2026-11-10
+
+✗ body 3f9a1c0b7e2d  not selected
+  Adding your body did not raise the soup's score by the margin needed.
+
+  soup gain      +0.0   needed +0.5
+  alone          59.5   soup 64.0
+  screening      61.0   needed 55.0
+
+  category      yours   soup
+  reasoning      60.0   64.0
+  language       60.0   64.0
+  retrieval      60.0   64.0
+  tools          51.5   64.0   ← furthest behind
+  arts           60.0   64.0
+
+  Next: train where the soup is weak, not where it is already strong.
+  Codes: not_selected / no_soup_gain (docs/mining.md, "Why a body has no seat")
+```
+
+The numbers above are an example. Scores are rounded to half a point, and a score
+that missed its bar is always shown below the bar. The last line gives the stage
+and reason codes of the signed reply, listed below.
+
+| Stage | Meaning |
+|---|---|
+| `refused` | The commitment or the body failed a check. Commit a new revision. |
+| `deferred` | Nothing is wrong with the body yet; the validator tries again in a later round. |
+| `screened_out` | The body was not among the bodies graded in full this round. |
+| `not_selected` | The body was graded alone, but the soup did not take it. |
+| `seated_unpaid` | The body is in the soup, but its seat does not pay. |
+| `seated` | The body is in the soup and its seat pays at its rate. |
+
+| Reason | Stage | What it means and what to do |
+|---|---|---|
+| `bad_commitment` | refused | The commitment text is malformed or names an unknown pool. |
+| `owner_file` | refused | `zils-owner.json` is missing or names another hotkey. |
+| `license` | refused | The model card has no accepted license. |
+| `hash_mismatch` | refused | The downloaded body does not hash to the commitment. |
+| `bad_format` | refused | A tensor is missing, extra, misshapen or of the wrong type. `commit-body --check` shows which. |
+| `not_finite` | refused | A weight is NaN or infinite. |
+| `too_large` | refused | The body is over the pool's size limit. |
+| `change_cap` | refused | The body moved further from the pool's parent than the change bound allows. |
+| `no_change` | refused | The body is the pool's parent, unchanged. |
+| `near_copy` | refused | The body is a near-copy of an earlier body, or mostly built from other miners' bodies. |
+| `house_reupload` | refused | The body is a re-upload of a house ingredient. |
+| `twin` | refused | The body answers almost exactly like a body already in the pool. |
+| `committed_first_by_another` | refused | Another hotkey committed this exact body first. |
+| `rejected_earlier`, `failed_earlier` | refused | This body, or this commitment, already failed in an earlier round. |
+| `check_failed` | refused | Another check failed. Run `zils-miner commit-body --check` on the body. |
+| `round_limit` | deferred | The round's limit on new bodies, claims, downloads or disk was reached first. |
+| `download_failed` | deferred | The validator could not download the repo. Check that it is public. |
+| `backing_off` | deferred | The hotkey's last claim failed, so it sits out a few rounds. |
+| `grade_failed` | deferred | The body could not be graded this round. After three such rounds it is refused. |
+| `below_screen` | screened_out | `screening` shows your score on the screening items and the lowest score that entered the pool. |
+| `pool_full` | screened_out | An earlier body of yours was left out of this round's full pool. |
+| `no_soup_gain` | not_selected | `soup gain` shows what adding your body did to the soup's score and the gain needed. |
+| `soup_full` | not_selected | The soup reached its member limit before your body's turn. Bodies are tried in solo-score order. |
+| `current_soup_kept` | not_selected | Your body was in the new soup, but that soup did not beat the current one by the margin. |
+| `below_floor` | seated_unpaid | `contribution` shows your contribution and the floor. |
+| `fine_tune_gate` | seated_unpaid | Your body is a fine-tune and its base could not be scored this round. It is tried again next round. |
+| `unpaid_rate` | seated_unpaid | The body's rate is 0. |
+| `weekly_judge` | seated_unpaid | With a weekly soup: your body is in tonight's soup, and seats are paid on the weekly soup. |
+| `went_private` | seated_unpaid | Your body's committed revision is no longer public, so its weekly seat stopped for the rest of the week. |
+
+With a weekly soup, `week seat` shows your contribution on the sealed set next to
+the floor, and `joined` shows the share of the pool paid for joining tonight's
+soup.
+
+A graded body also shows `alone` (its score alone next to the soup's) and its
+score in each of the five exam categories next to the soup's, both on the
+round's decision items. The categories show where a body is behind
+the soup. Because the soup takes a body only when it makes the soup better, a
+body that is strong where the soup is weak is worth more than one that is a
+little better everywhere.
+
+The report never includes exam items, labels, per-family scores, copy
+measurements or the body a copy matched.
+
+### Dashboard
+
+The same report, with your customer jobs, is available as a private web page:
+
+```bash
+zils-miner dashboard
+```
+
+The command signs a report request with your hotkey, as `zils-miner report`
+does, and sends it to the hosted API at `https://training.zils.ai`. The hosted
+API passes it to its validator, keeps the validator's answer for 24 hours and
+returns a link to a page on the website. The command prints the link.
+
+The page shows the report as it was when the link was made. The hosted API
+cannot ask a validator for your report without a request your hotkey signed, so
+run the command again for a fresh report. Anyone who has the link can read the
+page until it expires; treat it like a password.
+
 ### Releases
 
 A soup is not served until it is released. Every 14 to 28 days, at a release
@@ -356,7 +517,7 @@ z3 version. Members are paid through seats, not as kings.
 
 The member cap (5), pool sizes, change bound (0.15), seat/crown split (80/20), rates
 (1.0 / 0.25 / 0) and release cadence are policy choices made for the launch, not
-tuned results. The greedy margin (0.5) and the crown and fine-tune bars (1.2) are
+tuned results. The greedy margin (0.5) and the crown bar (1.2) are
 about 2.5 standard errors of the differences they test, measured by resampling the
 items of a 3,000-item dry run and scaled to the pooled three-round window; a smaller
 real gain is not paid until the pool has more items. The seat floor (0.5) equals the
